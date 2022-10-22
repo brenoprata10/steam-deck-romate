@@ -1,6 +1,6 @@
 import {MemoryRouter as Router, Routes, Route} from 'react-router-dom'
 import icon from '../../assets/icon.svg'
-import './App.css'
+import './App.scss'
 
 const Hello = () => {
 	return (
@@ -15,7 +15,7 @@ const Hello = () => {
 						<span role='img' aria-label='books'>
 							📚
 						</span>
-						Read our docs
+						Read our d
 					</button>
 				</a>
 				<a href='https://github.com/sponsors/electron-react-boilerplate' target='_blank' rel='noreferrer'>
