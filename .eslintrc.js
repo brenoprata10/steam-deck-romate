@@ -35,6 +35,8 @@ module.exports = {
 		'no-multiple-empty-lines': ['error', {max: 1, maxBOF: 0, maxEOF: 0}],
 		'react/react-in-jsx-scope': 'off',
 		'react/jsx-filename-extension': [1, {extensions: ['.ts', '.tsx']}],
+		"react-hooks/rules-of-hooks": "error",
+		"react-hooks/exhaustive-deps": "error",
 		'prettier/prettier': 'error',
 		'@typescript-eslint/parser': 'off'
 	}

@@ -8,13 +8,15 @@ export enum EButtonVariant {
 const Button = ({
 	variant = EButtonVariant.PRIMARY,
 	children,
+	disabled,
 	onClick
 }: {
 	variant?: EButtonVariant
 	children: React.ReactNode
+	disabled?: boolean
 	onClick?: () => void
 }) => (
-	<button className={`${styles.button} ${styles[`button--${variant}`]}`} onClick={onClick}>
+	<button className={`${styles.button} ${styles[`button--${variant}`]}`} onClick={onClick} disabled={disabled}>
 		{children}
 	</button>
 )

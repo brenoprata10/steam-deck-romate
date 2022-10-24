@@ -22,7 +22,8 @@
 
 	&--selected {
 		img {
-			animation: wiggly-scale 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+			background-color: var(--primary-color);
+			animation: wiggly-scale 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 		}
 	}
 

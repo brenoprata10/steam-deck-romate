@@ -9,7 +9,7 @@ const CardOption = ({
 	label: string
 	imageSrc: string
 	isSelected: boolean
-	onClick?: () => void
+	onClick: () => void
 }) => {
 	return (
 		<div className={`${styles['card-option']} ${isSelected ? styles['card-option--selected'] : ''}`} onClick={onClick}>

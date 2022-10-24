@@ -10,10 +10,17 @@
 	cursor: pointer;
 	border: none;
 	text-transform: uppercase;
-	transition: transform 0.2s;
+	transition: 0.2s;
 
 	&:hover {
 		transform: scale(1.05);
+	}
+
+	&:disabled {
+		background-color: var(--light-gray);
+		color: var(--black-color);
+		opacity: 0.6;
+		cursor: not-allowed;
 	}
 
 	&--PRIMARY {
