@@ -9,10 +9,14 @@ import {useCallback, useContext} from 'react'
 import {CommonContext, CommonDispatchContext} from 'renderer/context'
 import ESetup from 'renderer/enums/ESetup'
 import {EAction} from 'renderer/reducer'
+import useSelectFolder from 'renderer/hooks/useSelectFolder'
+import {getFileNamesFromFolder} from 'renderer/utils/files'
 
 const Setup = () => {
-	const {setupFlow} = useContext(CommonContext)
+	const {setupFlow, games} = useContext(CommonContext)
+	console.log(games)
 	const dispatch = useContext(CommonDispatchContext)
+	const {trigger: selectFolder} = useSelectFolder('Select Custom Folder')
 
 	const changeSetupFlow = useCallback(
 		(setup: ESetup) => {
@@ -21,13 +25,28 @@ const Setup = () => {
 		[dispatch]
 	)
 
-	const setEmuDeckFlow = useCallback(() => {
-		changeSetupFlow(ESetup.EMU_DECK)
-	}, [changeSetupFlow])
+	const setCustomFolderGames = useCallback(async () => {
+		const {canceled, filePaths: folders} = await selectFolder()
+		if (canceled) {
+			return
+		}
+		dispatch({
+			type: EAction.SET_GAMES,
+			payload: getFileNamesFromFolder(folders[0]).map((fileName) => ({
+				name: fileName,
+				path: `${folders[0]}/${fileName}`
+			}))
+		})
+	}, [dispatch, selectFolder])
 
-	const setCustomFolderFlow = useCallback(() => {
-		changeSetupFlow(ESetup.CUSTOM_FOLDER)
-	}, [changeSetupFlow])
+	const setEmuDeckGames = useCallback(async () => {
+		// TODO
+	}, [])
+
+	const onNext = useCallback(
+		() => (setupFlow === ESetup.CUSTOM_FOLDER ? setCustomFolderGames() : setEmuDeckGames()),
+		[setupFlow, setCustomFolderGames, setEmuDeckGames]
+	)
 
 	return (
 		<Page
@@ -37,7 +56,11 @@ const Setup = () => {
 			footerComponent={
 				<PageFooter
 					leadingComponent={<Button variant={EButtonVariant.SECONDARY}>About</Button>}
-					trailingComponent={<Button disabled={!setupFlow}>Next</Button>}
+					trailingComponent={
+						<Button disabled={!setupFlow} onClick={onNext}>
+							Next
+						</Button>
+					}
 				/>
 			}
 		>
@@ -46,13 +69,17 @@ const Setup = () => {
 					isSelected={setupFlow === ESetup.EMU_DECK}
 					imageSrc={EMUDECK_IMG}
 					label={'Emu Deck'}
-					onClick={setEmuDeckFlow}
+					onClick={() => {
+						changeSetupFlow(ESetup.EMU_DECK)
+					}}
 				/>
 				<CardOption
 					isSelected={setupFlow === ESetup.CUSTOM_FOLDER}
 					imageSrc={CUSTOM_FOLDER_IMG}
 					label={'Custom Folder'}
-					onClick={setCustomFolderFlow}
+					onClick={() => {
+						changeSetupFlow(ESetup.CUSTOM_FOLDER)
+					}}
 				/>
 			</div>
 		</Page>

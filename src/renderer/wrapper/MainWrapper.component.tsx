@@ -15,6 +15,7 @@ const MainWrapper = () => {
 					<Router>
 						<Routes>
 							<Route path='/' element={<Setup />} />
+							<Route path='/configure-assets' element={<Setup />} />
 						</Routes>
 					</Router>
 				</main>
