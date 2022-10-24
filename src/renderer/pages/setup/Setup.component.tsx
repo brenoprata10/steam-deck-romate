@@ -27,14 +27,17 @@ const Setup = () => {
 
 	const setCustomFolderGames = useCallback(async () => {
 		const {canceled, filePaths: folders} = await selectFolder()
-		if (canceled) {
+		if (canceled && folders.length > 0) {
 			return
 		}
+		const selectedFolderPath = folders[0]
+		const folderName = selectedFolderPath.match('[\\w\\s_-]+$')?.[0]
 		dispatch({
 			type: EAction.SET_GAMES,
-			payload: getFileNamesFromFolder(folders[0]).map((fileName) => ({
+			payload: getFileNamesFromFolder(selectedFolderPath).map((fileName) => ({
 				name: fileName,
-				path: `${folders[0]}/${fileName}`
+				path: `${selectedFolderPath}/${fileName}`,
+				collections: [folderName ?? 'Misc']
 			}))
 		})
 	}, [dispatch, selectFolder])
