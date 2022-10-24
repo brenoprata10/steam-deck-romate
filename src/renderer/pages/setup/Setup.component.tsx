@@ -27,17 +27,16 @@ const Setup = () => {
 
 	const setCustomFolderGames = useCallback(async () => {
 		const {canceled, filePaths: folders} = await selectFolder()
-		if (canceled && folders.length > 0) {
+		if (canceled || folders.length > 0) {
 			return
 		}
 		const selectedFolderPath = folders[0]
-		const folderName = selectedFolderPath.match('[\\w\\s_-]+$')?.[0]
 		dispatch({
 			type: EAction.SET_GAMES,
 			payload: getFileNamesFromFolder(selectedFolderPath).map((fileName) => ({
 				name: fileName,
 				path: `${selectedFolderPath}/${fileName}`,
-				collections: [folderName ?? 'Misc']
+				collections: []
 			}))
 		})
 	}, [dispatch, selectFolder])
@@ -80,6 +79,7 @@ const Setup = () => {
 					isSelected={setupFlow === ESetup.CUSTOM_FOLDER}
 					imageSrc={CUSTOM_FOLDER_IMG}
 					label={'Custom Folder'}
+					description={'Only .desktop files are supported.'}
 					onClick={() => {
 						changeSetupFlow(ESetup.CUSTOM_FOLDER)
 					}}

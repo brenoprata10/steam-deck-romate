@@ -2,10 +2,10 @@
 
 .card-option {
 	display: flex;
-	justify-content: center;
-	flex-wrap: wrap;
+	flex-direction: column;
 	max-width: 12rem;
 	cursor: pointer;
+	text-align: center;
 
 	&:hover {
 		img {
@@ -31,5 +31,12 @@
 		margin-top: 0.625em;
 		font-size: 1.5rem;
 		font-weight: bold;
+	}
+
+	.description {
+		margin-top: 0.5em;
+		font-size: 1.1rem;
+		font-weight: bold;
+		color: lightgray;
 	}
 }
