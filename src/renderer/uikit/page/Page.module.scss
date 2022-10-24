@@ -1,6 +1,9 @@
+$page-margin-bottom: 3.1rem;
+$page-margin-horizontal: 3.9rem;
+
 .page-container {
 	width: 100%;
-	margin: 5.6rem 3.9rem 3.1rem;
+	margin: 4rem $page-margin-horizontal $page-margin-bottom;
 
 	.title {
 		font-size: 3rem;

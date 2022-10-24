@@ -1,0 +1,26 @@
+@use '../../scss/animations.scss';
+
+.button {
+	font-family: inherit;
+	font-weight: bold;
+	font-size: 0.875rem;
+	border-radius: 25px;
+	padding: 1em 2em;
+	color: white;
+	cursor: pointer;
+	border: none;
+	text-transform: uppercase;
+	transition: transform 0.2s;
+
+	&:hover {
+		transform: scale(1.05);
+	}
+
+	&--PRIMARY {
+		background-color: var(--primary-color);
+	}
+
+	&--SECONDARY {
+		background-color: var(--secondary-color);
+	}
+}

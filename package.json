@@ -72,12 +72,15 @@
     }
   },
   "dependencies": {
+    "assert": "^2.0.0",
+    "buffer": "^6.0.3",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
     "electron-updater": "^5.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.3.0"
+    "react-router-dom": "^6.3.0",
+    "steam-binary-vdf": "^0.1.0"
   },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",

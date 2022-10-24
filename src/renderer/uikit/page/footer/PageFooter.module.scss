@@ -1,0 +1,18 @@
+@use '../Page.module.scss' as page;
+
+.page-footer {
+	$page-footer-width: 100%;
+
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: $page-footer-width;
+
+	.content {
+		display: flex;
+		justify-content: space-between;
+		width: calc($page-footer-width - page.$page-margin-horizontal * 2);
+		margin: 0 page.$page-margin-horizontal 3rem;
+		padding-top: 1rem;
+	}
+}

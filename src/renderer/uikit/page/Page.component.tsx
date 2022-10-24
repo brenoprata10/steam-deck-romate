@@ -4,12 +4,14 @@ const Page = ({
 	title,
 	subtitle,
 	children,
-	contentClassName
+	contentClassName,
+	footerComponent
 }: {
 	title: string
 	subtitle: string
 	children: React.ReactNode
 	contentClassName?: string
+	footerComponent?: React.ReactNode
 }) => {
 	return (
 		<div className={styles['page-container']}>
@@ -18,7 +20,7 @@ const Page = ({
 				<h2 className={styles.subtitle}>{subtitle}</h2>
 			</header>
 			<div className={contentClassName}>{children}</div>
-			<footer>I am the footer</footer>
+			<footer>{footerComponent}</footer>
 		</div>
 	)
 }
