@@ -72,6 +72,10 @@
     }
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.2.0",
+    "@fortawesome/free-regular-svg-icons": "^6.2.0",
+    "@fortawesome/free-solid-svg-icons": "^6.2.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "assert": "^2.0.0",
     "buffer": "^6.0.3",
     "electron-debug": "^3.2.0",

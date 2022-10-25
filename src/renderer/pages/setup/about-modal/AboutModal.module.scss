@@ -1,0 +1,44 @@
+@use '../../../scss/animations.scss';
+
+.about-modal {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+
+	.contribute {
+		margin-top: 3rem;
+	}
+
+	.support-wrapper {
+		display: flex;
+		justify-content: space-around;
+		margin-top: 3.3rem;
+
+		.support-item {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			cursor: pointer;
+
+			&:hover {
+				animation: wiggly-scale 0.3s ease-in-out;
+			}
+
+			.asset {
+				width: 5.5rem;
+				height: 5.5rem;
+			}
+
+			span {
+				margin-top: 1.4rem;
+			}
+		}
+	}
+
+	.developer {
+		margin-top: 4rem;
+		width: 100%;
+		text-align: center;
+	}
+}

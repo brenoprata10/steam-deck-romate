@@ -5,16 +5,18 @@ import CUSTOM_FOLDER_IMG from '../../../../assets/setup-assets/custom-folder.jpg
 import styles from './Setup.module.scss'
 import PageFooter from 'renderer/uikit/page/footer/PageFooter.component'
 import Button, {EButtonVariant} from 'renderer/uikit/button/Button.component'
-import {useCallback, useContext} from 'react'
+import {useCallback, useContext, useState} from 'react'
 import {CommonContext, CommonDispatchContext} from 'renderer/context'
 import ESetup from 'renderer/enums/ESetup'
 import {EAction} from 'renderer/reducer'
 import useSelectFolder from 'renderer/hooks/useSelectFolder'
 import {getFileNamesFromFolder} from 'renderer/utils/files'
+import Modal from 'renderer/uikit/modal/Modal.component'
+import AboutModal from './about-modal/AboutModal.component'
 
 const Setup = () => {
+	const [isAboutModalOpened, setIsAboutModalOpened] = useState(false)
 	const {setupFlow, games} = useContext(CommonContext)
-	console.log(games)
 	const dispatch = useContext(CommonDispatchContext)
 	const {trigger: selectFolder} = useSelectFolder('Select Custom Folder')
 
@@ -50,6 +52,8 @@ const Setup = () => {
 		[setupFlow, setCustomFolderGames, setEmuDeckGames]
 	)
 
+	const toggleAboutModalVisibility = useCallback(() => setIsAboutModalOpened(!isAboutModalOpened), [isAboutModalOpened])
+
 	return (
 		<Page
 			title='Welcome!'
@@ -57,7 +61,11 @@ const Setup = () => {
 			contentClassName={styles['setup-step']}
 			footerComponent={
 				<PageFooter
-					leadingComponent={<Button variant={EButtonVariant.SECONDARY}>About</Button>}
+					leadingComponent={
+						<Button onClick={toggleAboutModalVisibility} variant={EButtonVariant.SECONDARY}>
+							About
+						</Button>
+					}
 					trailingComponent={
 						<Button disabled={!setupFlow} onClick={onNext}>
 							Next
@@ -85,6 +93,7 @@ const Setup = () => {
 					}}
 				/>
 			</div>
+			<AboutModal isOpened={isAboutModalOpened} onClose={toggleAboutModalVisibility} />
 		</Page>
 	)
 }
