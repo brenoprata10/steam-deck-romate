@@ -26,7 +26,7 @@
 
 		.content {
 			background-color: #29292e;
-			width: 42rem;
+			width: min(42rem, 50%);
 			border-radius: 15px;
 			padding: 0 2.5rem 2.5rem;
 			animation: bottom-fade-in 0.2s ease-in-out;

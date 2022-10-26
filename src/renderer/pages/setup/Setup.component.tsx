@@ -9,16 +9,20 @@ import {useCallback, useContext, useState} from 'react'
 import {CommonContext, CommonDispatchContext} from 'renderer/context'
 import ESetup from 'renderer/enums/ESetup'
 import {EAction} from 'renderer/reducer'
-import useSelectFolder from 'renderer/hooks/useSelectFolder'
-import {getFileNamesFromFolder} from 'renderer/utils/files'
-import Modal from 'renderer/uikit/modal/Modal.component'
 import AboutModal from './about-modal/AboutModal.component'
+import useSelectMultipleFiles from 'renderer/hooks/useSelectMultipleFiles'
+import {getGameFromDesktopFile} from 'renderer/utils/game'
+import TGame from 'renderer/types/TGame'
 
 const Setup = () => {
 	const [isAboutModalOpened, setIsAboutModalOpened] = useState(false)
 	const {setupFlow, games} = useContext(CommonContext)
+	console.log({games})
 	const dispatch = useContext(CommonDispatchContext)
-	const {trigger: selectFolder} = useSelectFolder('Select Custom Folder')
+	const {trigger: selectMultipleFiles} = useSelectMultipleFiles({
+		title: 'Select .desktop files',
+		extensions: ['desktop']
+	})
 
 	const changeSetupFlow = useCallback(
 		(setup: ESetup) => {
@@ -28,20 +32,19 @@ const Setup = () => {
 	)
 
 	const setCustomFolderGames = useCallback(async () => {
-		const {canceled, filePaths: folders} = await selectFolder()
-		if (canceled || folders.length > 0) {
+		const {canceled, filePaths} = await selectMultipleFiles()
+		if (canceled || filePaths.length === 0) {
 			return
 		}
-		const selectedFolderPath = folders[0]
+		const games: TGame[] = []
+		for (const path of filePaths) {
+			games.push(await getGameFromDesktopFile(path))
+		}
 		dispatch({
 			type: EAction.SET_GAMES,
-			payload: getFileNamesFromFolder(selectedFolderPath).map((fileName) => ({
-				name: fileName,
-				path: `${selectedFolderPath}/${fileName}`,
-				collections: []
-			}))
+			payload: games
 		})
-	}, [dispatch, selectFolder])
+	}, [dispatch, selectMultipleFiles])
 
 	const setEmuDeckGames = useCallback(async () => {
 		// TODO
@@ -86,7 +89,7 @@ const Setup = () => {
 				<CardOption
 					isSelected={setupFlow === ESetup.CUSTOM_FOLDER}
 					imageSrc={CUSTOM_FOLDER_IMG}
-					label={'Custom Folder'}
+					label={'Custom Files'}
 					description={'Only .desktop files are supported.'}
 					onClick={() => {
 						changeSetupFlow(ESetup.CUSTOM_FOLDER)
