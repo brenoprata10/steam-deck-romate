@@ -8,3 +8,7 @@ export const getFileNamesFromFolder = (folderPath: string): string[] => {
 export const getTextFileData = (path: string): Promise<string> => {
 	return fsPromise.readFile(path, {encoding: 'utf8'})
 }
+
+export const getBufferFileData = (path: string): Promise<Buffer> => {
+	return fsPromise.readFile(path)
+}

@@ -1,14 +1,11 @@
-import {readVdf} from 'steam-binary-vdf'
-import fs from 'fs'
+import {readVdf, VdfMap} from 'steam-binary-vdf'
 import {homedir} from 'os'
 import path from 'path'
+import {getBufferFileData} from 'renderer/utils/files'
 
-export const readShortcutsFile = () => {
-	fs.readFile(
-		path.join(homedir(), '.steam/debian-installation/userdata/48553049/config/shortcuts.vdf'),
-		(_, buffer) => {
-			const shortcuts = readVdf(buffer)
-			console.log(shortcuts) // output below;
-		}
+export const getSteamShortcuts = async (): Promise<VdfMap> => {
+	const buffer = await getBufferFileData(
+		path.join(homedir(), '.steam/debian-installation/userdata/48553049/config/shortcuts.vdf')
 	)
+	return readVdf(buffer)
 }
