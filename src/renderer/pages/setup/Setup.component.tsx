@@ -13,11 +13,14 @@ import AboutModal from './about-modal/AboutModal.component'
 import useSelectMultipleFiles from 'renderer/hooks/useSelectMultipleFiles'
 import {getGameFromDesktopFile} from 'renderer/utils/game'
 import TGame from 'renderer/types/TGame'
+import {useNavigate} from 'react-router-dom'
+import {getRoutePath} from 'renderer/route'
+import ERoute from 'renderer/enums/ERoute'
 
 const Setup = () => {
 	const [isAboutModalOpened, setIsAboutModalOpened] = useState(false)
-	const {setupFlow, games} = useContext(CommonContext)
-	console.log({games})
+	const {setupFlow} = useContext(CommonContext)
+	const navigate = useNavigate()
 	const dispatch = useContext(CommonDispatchContext)
 	const {trigger: selectMultipleFiles} = useSelectMultipleFiles({
 		title: 'Select .desktop files',
@@ -44,7 +47,19 @@ const Setup = () => {
 			type: EAction.SET_GAMES,
 			payload: games
 		})
-	}, [dispatch, selectMultipleFiles])
+		navigate(getRoutePath(ERoute.CONFIGURE_ASSETS))
+
+		/* Save shortcut to steam
+		const shortcuts = await getSteamShortcuts()
+		const steamId = generateShortAppId(games[0].path, games[0].name)
+		shortcuts.shortcuts[steamId] = {
+			AppName: games[0].name,
+			Exe: games[0].exec,
+			AppId: steamId
+		}
+		await saveSteamShortcuts(shortcuts)
+		console.log({shortcuts, steamId})*/
+	}, [dispatch, selectMultipleFiles, navigate])
 
 	const setEmuDeckGames = useCallback(async () => {
 		// TODO
