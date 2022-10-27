@@ -4,6 +4,10 @@ import path from 'path'
 import {getBufferFileData} from 'renderer/utils/files'
 import fsPromise from 'fs/promises'
 
+export const getSteamGridAssetsFolderPath = (steamId: string) => {
+	return path.join(homedir(), `.steam/steam/userdata/${steamId}/config/grid`)
+}
+
 const getShortcutsPath = (steamId: string): string => {
 	return path.join(homedir(), `.steam/steam/userdata/${steamId}/config/shortcuts.vdf`)
 }

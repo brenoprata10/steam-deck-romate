@@ -9,12 +9,14 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path'
-import {app, BrowserWindow, shell, ipcMain, dialog, FileFilter} from 'electron'
+import {app, BrowserWindow, shell, ipcMain, dialog} from 'electron'
 import {autoUpdater} from 'electron-updater'
 import log from 'electron-log'
 import MenuBuilder from './menu'
 import {resolveHtmlPath} from './util'
 import EChannel from './enums/EChannel'
+import axios, {AxiosRequestConfig} from 'axios'
+import {download} from 'electron-dl'
 
 class AppUpdater {
 	constructor() {
@@ -37,6 +39,38 @@ ipcMain.handle(EChannel.SELECT_MULTIPLE_FILES, async (_, ...args: Array<string>)
 		properties: ['openFile', 'multiSelections'],
 		filters: [{name: extensions.join(', '), extensions: args.slice(1)}]
 	})
+})
+
+ipcMain.handle(EChannel.STEAM_GRID_REQUEST, async (_, ...args) => {
+	const {url, apiKey, options = {}}: {url: string; apiKey: string; options?: AxiosRequestConfig} = args[0]
+	try {
+		const {data: response} = await axios(`https://www.steamgriddb.com/api/v2${url}`, {
+			...options,
+			headers: {...(options.headers ?? {}), Authorization: `Bearer ${apiKey}`}
+		})
+
+		return response
+	} catch (error) {
+		console.log(error)
+		if (axios.isAxiosError(error) && error.response) {
+			return {success: false, error: {status: error.response.status, statusText: error.response.statusText}}
+		}
+	}
+})
+
+ipcMain.handle(EChannel.DOWNLOAD_ASSET, (_, ...args) => {
+	const {url, directory, fileName: filename}: {url: string; directory: string; fileName: string} = args[0]
+	try {
+		const win = BrowserWindow.getFocusedWindow()
+		if (win) {
+			void download(win, url, {directory, filename})
+		}
+	} catch (error) {
+		console.log(error)
+		if (axios.isAxiosError(error) && error.response) {
+			return {error: {status: error.response.status, statusText: error.response.statusText}}
+		}
+	}
 })
 
 if (process.env.NODE_ENV === 'production') {

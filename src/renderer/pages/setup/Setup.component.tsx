@@ -16,10 +16,12 @@ import TGame from 'renderer/types/TGame'
 import {useNavigate} from 'react-router-dom'
 import {getRoutePath} from 'renderer/route'
 import ERoute from 'renderer/enums/ERoute'
+import SteamGridKeyModal from './steam-grid-key-modal/SteamGridKeyModal.component'
 
 const Setup = () => {
 	const [isAboutModalOpened, setIsAboutModalOpened] = useState(false)
-	const {setupFlow} = useContext(CommonContext)
+	const [isSteamGridModalOpened, setIsSteamGridModalOpened] = useState(false)
+	const {setupFlow, steamGridApiKey} = useContext(CommonContext)
 	const navigate = useNavigate()
 	const dispatch = useContext(CommonDispatchContext)
 	const {trigger: selectMultipleFiles} = useSelectMultipleFiles({
@@ -48,17 +50,6 @@ const Setup = () => {
 			payload: games
 		})
 		navigate(getRoutePath(ERoute.CONFIGURE_ASSETS))
-
-		/* Save shortcut to steam
-		const shortcuts = await getSteamShortcuts()
-		const steamId = generateShortAppId(games[0].path, games[0].name)
-		shortcuts.shortcuts[steamId] = {
-			AppName: games[0].name,
-			Exe: games[0].exec,
-			AppId: steamId
-		}
-		await saveSteamShortcuts(shortcuts)
-		console.log({shortcuts, steamId})*/
 	}, [dispatch, selectMultipleFiles, navigate])
 
 	const setEmuDeckGames = useCallback(async () => {
@@ -72,6 +63,19 @@ const Setup = () => {
 
 	const toggleAboutModalVisibility = useCallback(() => setIsAboutModalOpened(!isAboutModalOpened), [isAboutModalOpened])
 
+	const toggleSteamGridModalVisibility = useCallback(
+		() => setIsSteamGridModalOpened(!isSteamGridModalOpened),
+		[isSteamGridModalOpened]
+	)
+
+	const saveSteamGridKeyToLocalStorage = useCallback(
+		(key: string) => {
+			setIsSteamGridModalOpened(false)
+			dispatch({type: EAction.SET_STEAM_GRID_API_KEY, payload: key})
+		},
+		[dispatch]
+	)
+
 	return (
 		<Page
 			title='Welcome!'
@@ -80,9 +84,18 @@ const Setup = () => {
 			footerComponent={
 				<PageFooter
 					leadingComponent={
-						<Button onClick={toggleAboutModalVisibility} variant={EButtonVariant.SECONDARY}>
-							About
-						</Button>
+						<div>
+							<Button
+								onClick={toggleAboutModalVisibility}
+								variant={EButtonVariant.SECONDARY}
+								className={styles['about-button']}
+							>
+								About
+							</Button>
+							<Button onClick={toggleSteamGridModalVisibility} variant={EButtonVariant.SECONDARY}>
+								Modify Steam Grid Key
+							</Button>
+						</div>
 					}
 					trailingComponent={
 						<Button disabled={!setupFlow} onClick={onNext}>
@@ -112,6 +125,12 @@ const Setup = () => {
 				/>
 			</div>
 			<AboutModal isOpened={isAboutModalOpened} onClose={toggleAboutModalVisibility} />
+			<SteamGridKeyModal
+				isOpened={!steamGridApiKey || isSteamGridModalOpened}
+				isCloseable={Boolean(steamGridApiKey)}
+				onSave={saveSteamGridKeyToLocalStorage}
+				onClose={toggleSteamGridModalVisibility}
+			/>
 		</Page>
 	)
 }

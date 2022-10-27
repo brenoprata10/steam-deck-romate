@@ -19,8 +19,10 @@ const Page = ({
 				<h1 className={styles.title}>{title}</h1>
 				<h2 className={styles.subtitle}>{subtitle}</h2>
 			</header>
-			<div className={contentClassName}>{children}</div>
-			<footer>{footerComponent}</footer>
+			<div className={contentClassName}>
+				{children}
+				<footer>{footerComponent}</footer>
+			</div>
 		</div>
 	)
 }

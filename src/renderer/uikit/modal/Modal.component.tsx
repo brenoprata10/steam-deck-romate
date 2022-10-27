@@ -6,12 +6,16 @@ const Modal = ({
 	isOpened,
 	title,
 	className,
+	isCloseable = true,
+	footer,
 	onClose,
 	children
 }: {
 	isOpened: boolean
 	title: string
 	className?: string
+	isCloseable?: boolean
+	footer?: React.ReactNode
 	onClose: () => void
 	children: React.ReactNode
 }) => {
@@ -25,9 +29,12 @@ const Modal = ({
 				<div className={styles.content}>
 					<div className={styles.header}>
 						<h4>{title}</h4>
-						<FontAwesomeIcon icon={faClose} onClick={onClose} />
+						{isCloseable && <FontAwesomeIcon icon={faClose} onClick={onClose} />}
 					</div>
-					<div className={className}>{children}</div>
+					<div className={className}>
+						{children}
+						{footer}
+					</div>
 				</div>
 			</div>
 		</div>

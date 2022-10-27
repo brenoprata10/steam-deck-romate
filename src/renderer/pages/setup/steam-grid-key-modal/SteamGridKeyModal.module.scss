@@ -1,0 +1,17 @@
+.steam-grid-modal {
+	.save {
+		margin-top: 2rem;
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+
+		.error-message {
+			color: orangered;
+		}
+	}
+
+	input {
+		width: 18rem;
+	}
+}

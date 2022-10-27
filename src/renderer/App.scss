@@ -10,3 +10,17 @@ body {
 .main-wrapper {
 	display: flex;
 }
+
+a {
+	color: white;
+}
+
+input[type='text'],
+select {
+	padding: 12px 20px;
+	margin: 8px 0;
+	display: inline-block;
+	border: 1px solid var(--primary-color);
+	border-radius: 4px;
+	box-sizing: border-box;
+}
