@@ -2,9 +2,8 @@ import EChannel from 'main/enums/EChannel'
 import {useCallback, useContext, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {useMount} from 'react-use'
-import {getGameAssetsById} from 'renderer/api/steam-grid.api'
+import {getGameAssetsByName} from 'renderer/api/steam-grid.api'
 import {CommonDispatchContext} from 'renderer/context'
-import EAssetType from 'renderer/enums/EAssetType'
 import ERoute from 'renderer/enums/ERoute'
 import useGames from 'renderer/hooks/useGames'
 import {EAction} from 'renderer/reducer'
@@ -20,7 +19,7 @@ import * as Electron from 'electron'
 import {getAssetFileName} from 'renderer/utils/steam-assets'
 import useSteamGridApiKey from 'renderer/hooks/useSteamGridApiKey'
 import Paginator from 'renderer/uikit/paginator/Paginator.component'
-import TGame from 'renderer/types/TGame'
+import AssetsGrid from 'renderer/pages/configure-assets/assets-grid/AssetsGrid.component'
 
 const ITEMS_PER_PAGE = 10
 
@@ -32,8 +31,8 @@ const ConfigureAssets = () => {
 	const apiKey = useSteamGridApiKey()
 	const games = useGames()
 	const currentGameIndex = page * ITEMS_PER_PAGE
-	const displayedGames = games.slice(currentGameIndex, currentGameIndex + ITEMS_PER_PAGE)
 	const pagesCount = Math.ceil(games.length / ITEMS_PER_PAGE)
+	const displayedGames = games.slice(currentGameIndex, currentGameIndex + ITEMS_PER_PAGE)
 
 	const fetchGameAssets = useCallback(
 		async ({start, end}: {start: number; end: number}) => {
@@ -46,22 +45,22 @@ const ConfigureAssets = () => {
 				if (gamesSlice.length > 0 && apiKey) {
 					console.log('Fetching game assets: ', gamesSlice.map((game) => game.name).join())
 					const gameCollections = await Promise.all(
-						gamesSlice.map((game) => getGameAssetsById({gameName: game.name, apiKey}))
+						gamesSlice.map((game) => getGameAssetsByName({gameName: game.name, apiKey}))
 					)
-					const newGamesArray: TGame[] = games.map((game, index) => {
-						if (game.assets) {
-							return game
-						}
 
-						const gameCollectionIndex = gamesSlice.findIndex((gameSlice) => gameSlice.currentIndex === index)
-						return {
-							...game,
-							assets: gameCollectionIndex !== undefined ? gameCollections[gameCollectionIndex] : undefined
-						}
-					})
 					dispatch({
 						type: EAction.SET_GAMES,
-						payload: newGamesArray
+						payload: games.map((game, index) => {
+							if (game.assets) {
+								return game
+							}
+
+							const gameCollectionIndex = gamesSlice.findIndex((gameSlice) => gameSlice.currentIndex === index)
+							return {
+								...game,
+								assets: gameCollectionIndex !== undefined ? gameCollections[gameCollectionIndex] : undefined
+							}
+						})
 					})
 				}
 			} catch (error) {
@@ -134,25 +133,11 @@ const ConfigureAssets = () => {
 			{isLoading ? (
 				<span>loading</span>
 			) : (
-				<>
-					{displayedGames.map((game, index) => (
-						<Card key={`${game.name}-${index}`} title={game.name} className={styles.game}>
-							<div className={styles['assets-grid']}>
-								{(Object.keys(game.assets ?? {}) as EAssetType[])
-									.filter((assetType) => game.assets?.[assetType][0]?.thumb)
-									.map((assetType, index: number) => (
-										<div
-											key={`${index}-${assetType}`}
-											className={`${styles.asset} ${styles[`asset-${assetType}`]}`}
-											style={{
-												backgroundImage: `url(${game.assets?.[assetType][0].thumb ?? ''})`
-											}}
-										/>
-									))}
-							</div>
-						</Card>
-					))}
-				</>
+				displayedGames.map((game, index) => (
+					<Card key={`${game.name}-${index}`} title={game.name} className={styles.game}>
+						{game.assets && <AssetsGrid assets={game.assets} />}
+					</Card>
+				))
 			)}
 		</Page>
 	)

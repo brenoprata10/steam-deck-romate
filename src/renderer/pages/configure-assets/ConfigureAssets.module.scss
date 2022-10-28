@@ -3,46 +3,6 @@
 
 	.game {
 		margin-top: 1rem;
-
-		.assets-grid {
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-			align-items: center;
-			justify-items: center;
-			gap: 1rem;
-
-			.asset {
-				height: 12rem;
-				background-size: contain;
-				background-repeat: no-repeat;
-				background-position: center;
-
-				&-ICON {
-					height: 6rem;
-					width: 6rem;
-				}
-
-				&-LOGO {
-					height: 10rem;
-					width: 10rem;
-				}
-
-				&-GRID {
-					height: 6rem;
-					width: 12rem;
-				}
-
-				&-LIBRARY {
-					height: 12rem;
-					width: 10rem;
-				}
-
-				&-HERO {
-					height: 6rem;
-					width: 12rem;
-				}
-			}
-		}
 	}
 
 	.trailing-footer-wrapper {

@@ -29,7 +29,7 @@ export const getGameIdByName = async ({
 	return null
 }
 
-export const getGameAssetsById = async ({
+export const getGameAssetsByName = async ({
 	gameName,
 	apiKey
 }: {
