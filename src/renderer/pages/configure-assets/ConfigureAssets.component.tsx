@@ -20,8 +20,10 @@ import styles from './ConfigureAssets.module.scss'
 import * as Electron from 'electron'
 import {getAssetFileName} from 'renderer/utils/steam-assets'
 import useSteamGridApiKey from 'renderer/hooks/useSteamGridApiKey'
+import Paginator from 'renderer/uikit/paginator/Paginator.component'
+import TGame from 'renderer/types/TGame'
 
-const ITEMS_PER_PAGE = 10
+const ITEMS_PER_PAGE = 2
 
 const ConfigureAssets = () => {
 	const [isLoading, setIsLoading] = useState(true)
@@ -32,33 +34,45 @@ const ConfigureAssets = () => {
 	const games = useGames()
 	const currentGameIndex = page * ITEMS_PER_PAGE
 	const displayedGames = games.slice(currentGameIndex, currentGameIndex + ITEMS_PER_PAGE)
+	const pagesCount = Math.ceil(games.length / ITEMS_PER_PAGE)
 
-	const fetchGameAssets = async ({start, end}: {start: number; end: number}) => {
-		try {
-			setIsLoading(true)
-			const gamesSlice = games
-				.slice(start, end)
-				.map((game, index) => ({...game, currentIndex: start + index}))
-				.filter((game) => !game.assets)
-			if (gamesSlice.length > 0) {
-				console.log('Fetching game assets: ', gamesSlice.map((game) => game.name).join())
-				const gameCollections = await Promise.all(
-					gamesSlice.map((game) => getGameAssetsById({gameName: game.name, apiKey}))
-				)
-				dispatch({
-					type: EAction.SET_GAMES,
-					payload: gamesSlice.map(({currentIndex}, index) => ({
-						...games[currentIndex],
-						assets: gameCollections[index] ?? undefined
-					}))
-				})
+	const fetchGameAssets = useCallback(
+		async ({start, end}: {start: number; end: number}) => {
+			try {
+				setIsLoading(true)
+				const gamesSlice = games
+					.slice(start, end)
+					.map((game, index) => ({...game, currentIndex: start + index}))
+					.filter((game) => !game.assets)
+				if (gamesSlice.length > 0 && apiKey) {
+					console.log('Fetching game assets: ', gamesSlice.map((game) => game.name).join())
+					const gameCollections = await Promise.all(
+						gamesSlice.map((game) => getGameAssetsById({gameName: game.name, apiKey}))
+					)
+					const newGamesArray: TGame[] = games.map((game, index) => {
+						if (game.assets) {
+							return game
+						}
+
+						const gameCollectionIndex = gamesSlice.findIndex((gameSlice) => gameSlice.currentIndex === index)
+						return {
+							...game,
+							assets: gameCollectionIndex !== undefined ? gameCollections[gameCollectionIndex] : undefined
+						}
+					})
+					dispatch({
+						type: EAction.SET_GAMES,
+						payload: newGamesArray
+					})
+				}
+			} catch (error) {
+				console.error(error)
+			} finally {
+				setIsLoading(false)
 			}
-		} catch (error) {
-			console.error(error)
-		} finally {
-			setIsLoading(false)
-		}
-	}
+		},
+		[games, dispatch, apiKey]
+	)
 	console.log(games)
 
 	useMount(() => {
@@ -88,6 +102,15 @@ const ConfigureAssets = () => {
 		//console.log({shortcuts})
 	}, [games])
 
+	const onChangePage = useCallback(
+		(newPage: number) => {
+			setPage(newPage)
+			const newGameIndex = newPage * ITEMS_PER_PAGE
+			void fetchGameAssets({start: newGameIndex, end: newGameIndex + ITEMS_PER_PAGE})
+		},
+		[fetchGameAssets]
+	)
+
 	return (
 		<Page
 			title='Configuration'
@@ -104,25 +127,30 @@ const ConfigureAssets = () => {
 				/>
 			}
 		>
-			{isLoading && <span>loading</span>}
-			{!isLoading &&
-				displayedGames.map((game, index) => (
-					<Card key={`${game.name}-${index}`} title={game.name} className={styles.game}>
-						<div className={styles['assets-grid']}>
-							{(Object.keys(game.assets ?? {}) as EAssetType[])
-								.filter((assetType) => game.assets?.[assetType][0]?.thumb)
-								.map((assetType, index: number) => (
-									<div
-										key={`${index}-${assetType}`}
-										className={`${styles.asset} ${styles[`asset-${assetType}`]}`}
-										style={{
-											backgroundImage: `url(${game.assets?.[assetType][0].thumb ?? ''})`
-										}}
-									/>
-								))}
-						</div>
-					</Card>
-				))}
+			{isLoading ? (
+				<span>loading</span>
+			) : (
+				<>
+					{displayedGames.map((game, index) => (
+						<Card key={`${game.name}-${index}`} title={game.name} className={styles.game}>
+							<div className={styles['assets-grid']}>
+								{(Object.keys(game.assets ?? {}) as EAssetType[])
+									.filter((assetType) => game.assets?.[assetType][0]?.thumb)
+									.map((assetType, index: number) => (
+										<div
+											key={`${index}-${assetType}`}
+											className={`${styles.asset} ${styles[`asset-${assetType}`]}`}
+											style={{
+												backgroundImage: `url(${game.assets?.[assetType][0].thumb ?? ''})`
+											}}
+										/>
+									))}
+							</div>
+						</Card>
+					))}
+					<Paginator pages={pagesCount} currentPage={page} onSelectPage={onChangePage} />
+				</>
+			)}
 		</Page>
 	)
 }
