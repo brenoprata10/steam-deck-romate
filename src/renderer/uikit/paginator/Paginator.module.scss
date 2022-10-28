@@ -1,11 +1,12 @@
 @use '../../scss/animations.scss';
 
 .paginator {
+	$item-size: 2.5rem;
+	$selected-item-size: 2.8rem;
+
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	$item-size: 2.5rem;
-	$selected-item-size: 2.8rem;
 
 	b {
 		margin-right: 0.8rem;
@@ -20,13 +21,11 @@
 		width: $item-size;
 		height: $item-size;
 		text-align: center;
-		vertical-align: center;
 		border-radius: 10px;
-		transition: 0.2s ease-out;
+		transition: 0.3s ease-out;
 		cursor: pointer;
 		font-size: 1.2rem;
 		margin-right: 0.2rem;
-		animation: wiggly-scale 0.3s ease-out;
 
 		&:hover {
 			width: $selected-item-size;
