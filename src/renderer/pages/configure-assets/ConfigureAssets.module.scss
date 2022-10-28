@@ -10,10 +10,15 @@
 		margin-top: 10rem;
 	}
 
-	.game {
-		margin-top: 1rem;
-		animation: bottom-fade-in 0.3s ease-out;
-		user-select: none;
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(60rem, 1fr));
+		gap: 3rem;
+
+		.game {
+			animation: bottom-fade-in 0.3s ease-out;
+			user-select: none;
+		}
 	}
 
 	.trailing-footer-wrapper {

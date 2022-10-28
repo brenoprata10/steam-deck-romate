@@ -136,11 +136,13 @@ const ConfigureAssets = () => {
 					<Loader size={ESize.LARGE} />
 				</div>
 			) : (
-				displayedGames.map((game, index) => (
-					<Card key={`${game.name}-${index}`} title={game.name} className={styles.game}>
-						{game.assets && <AssetsGrid assets={game.assets} />}
-					</Card>
-				))
+				<div className={styles.grid}>
+					{displayedGames.map((game, index) => (
+						<Card key={`${game.name}-${index}`} title={game.name} className={styles.game}>
+							{game.assets && <AssetsGrid assets={game.assets} />}
+						</Card>
+					))}
+				</div>
 			)}
 		</Page>
 	)
