@@ -1,4 +1,3 @@
-import {url} from 'inspector'
 import EChannel from 'main/enums/EChannel'
 import {useCallback, useContext, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
@@ -23,7 +22,7 @@ import useSteamGridApiKey from 'renderer/hooks/useSteamGridApiKey'
 import Paginator from 'renderer/uikit/paginator/Paginator.component'
 import TGame from 'renderer/types/TGame'
 
-const ITEMS_PER_PAGE = 2
+const ITEMS_PER_PAGE = 10
 
 const ConfigureAssets = () => {
 	const [isLoading, setIsLoading] = useState(true)
@@ -123,7 +122,12 @@ const ConfigureAssets = () => {
 							Back
 						</Button>
 					}
-					trailingComponent={<Button onClick={onSave}>Save</Button>}
+					trailingComponent={
+						<div className={styles['trailing-footer-wrapper']}>
+							<Paginator pages={pagesCount} currentPage={page} onSelectPage={onChangePage} />
+							<Button onClick={onSave}>Save</Button>
+						</div>
+					}
 				/>
 			}
 		>
@@ -148,7 +152,6 @@ const ConfigureAssets = () => {
 							</div>
 						</Card>
 					))}
-					<Paginator pages={pagesCount} currentPage={page} onSelectPage={onChangePage} />
 				</>
 			)}
 		</Page>

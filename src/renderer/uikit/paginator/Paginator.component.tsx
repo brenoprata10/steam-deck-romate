@@ -1,3 +1,5 @@
+import styles from './Paginator.module.scss'
+
 const Paginator = ({
 	pages,
 	currentPage,
@@ -6,17 +8,19 @@ const Paginator = ({
 	pages: number
 	currentPage: number
 	onSelectPage: (pageIndex: number) => void
-}) => {
-	console.log(pages)
-	return (
-		<div>
-			{Array.from(Array(pages).keys()).map((pageNumber) => (
-				<div key={`page-number-${pageNumber}`} onClick={() => onSelectPage(pageNumber)}>
-					{pageNumber}
-				</div>
-			))}
-		</div>
-	)
-}
+}) => (
+	<div className={styles.paginator}>
+		<b>Pages:</b>{' '}
+		{Array.from(Array(pages).keys()).map((pageNumber) => (
+			<div
+				key={`page-number-${pageNumber}`}
+				className={`${styles.item} ${currentPage === pageNumber ? styles.selected : ''}`}
+				onClick={() => onSelectPage(pageNumber)}
+			>
+				{pageNumber + 1}
+			</div>
+		))}
+	</div>
+)
 
 export default Paginator
