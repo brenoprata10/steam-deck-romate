@@ -1,0 +1,32 @@
+.loader {
+	border-radius: 50%;
+	animation: spin 2s linear infinite;
+
+	@mixin loader-config($border, $size) {
+		border: $border solid var(--light-gray);
+		border-top: $border solid var(--primary-color);
+		width: $size;
+		height: $size;
+	}
+
+	&-SMALL {
+		@include loader-config(0.5rem, 2.5rem);
+	}
+
+	&-MEDIUM {
+		@include loader-config(0.6rem, 3.5rem);
+	}
+
+	&-LARGE {
+		@include loader-config(0.7rem, 4.5rem);
+	}
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}

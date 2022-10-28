@@ -9,14 +9,14 @@ import {useCallback, useContext, useState} from 'react'
 import {CommonContext, CommonDispatchContext} from 'renderer/context'
 import ESetup from 'renderer/enums/ESetup'
 import {EAction} from 'renderer/reducer'
-import AboutModal from './about-modal/AboutModal.component'
+import AboutModal from 'renderer/pages/setup/about-modal/AboutModal.component'
 import useSelectMultipleFiles from 'renderer/hooks/useSelectMultipleFiles'
 import {getGameFromDesktopFile} from 'renderer/utils/game'
 import TGame from 'renderer/types/TGame'
 import {useNavigate} from 'react-router-dom'
 import {getRoutePath} from 'renderer/route'
 import ERoute from 'renderer/enums/ERoute'
-import SteamGridKeyModal from './steam-grid-key-modal/SteamGridKeyModal.component'
+import SteamGridKeyModal from 'renderer/pages/setup/steam-grid-key-modal/SteamGridKeyModal.component'
 
 const Setup = () => {
 	const [isAboutModalOpened, setIsAboutModalOpened] = useState(false)
@@ -117,7 +117,7 @@ const Setup = () => {
 				<CardOption
 					isSelected={setupFlow === ESetup.CUSTOM_FOLDER}
 					imageSrc={CUSTOM_FOLDER_IMG}
-					label={'Custom Files'}
+					label={'Desktop Files'}
 					description={'Only .desktop files are supported.'}
 					onClick={() => {
 						changeSetupFlow(ESetup.CUSTOM_FOLDER)

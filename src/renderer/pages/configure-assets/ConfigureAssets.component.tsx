@@ -20,6 +20,7 @@ import {getAssetFileName} from 'renderer/utils/steam-assets'
 import useSteamGridApiKey from 'renderer/hooks/useSteamGridApiKey'
 import Paginator from 'renderer/uikit/paginator/Paginator.component'
 import AssetsGrid from 'renderer/pages/configure-assets/assets-grid/AssetsGrid.component'
+import Loader, {ESize} from 'renderer/uikit/loader/Loader.component'
 
 const ITEMS_PER_PAGE = 10
 
@@ -131,7 +132,9 @@ const ConfigureAssets = () => {
 			}
 		>
 			{isLoading ? (
-				<span>loading</span>
+				<div className={styles.loader}>
+					<Loader size={ESize.LARGE} />
+				</div>
 			) : (
 				displayedGames.map((game, index) => (
 					<Card key={`${game.name}-${index}`} title={game.name} className={styles.game}>

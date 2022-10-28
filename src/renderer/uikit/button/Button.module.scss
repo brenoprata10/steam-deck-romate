@@ -11,6 +11,7 @@
 	border: none;
 	text-transform: uppercase;
 	transition: 0.2s;
+	user-select: none;
 
 	&:hover {
 		transform: scale(1.05);

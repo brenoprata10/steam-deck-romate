@@ -1,8 +1,19 @@
+@use '../../scss/animations.scss';
+
 .configure-assets {
 	margin-bottom: 6rem;
 
+	.loader {
+		display: flex;
+		width: 100%;
+		justify-content: center;
+		margin-top: 10rem;
+	}
+
 	.game {
 		margin-top: 1rem;
+		animation: bottom-fade-in 0.3s ease-out;
+		user-select: none;
 	}
 
 	.trailing-footer-wrapper {

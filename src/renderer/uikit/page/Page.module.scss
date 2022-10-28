@@ -8,10 +8,12 @@ $page-margin-horizontal: 3.9rem;
 	.title {
 		font-size: 3rem;
 		font-weight: bold;
+		user-select: none;
 	}
 
 	.subtitle {
 		font-size: 2.5rem;
 		font-weight: bold;
+		user-select: none;
 	}
 }
