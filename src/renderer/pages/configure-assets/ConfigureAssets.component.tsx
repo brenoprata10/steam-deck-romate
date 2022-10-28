@@ -124,7 +124,7 @@ const ConfigureAssets = () => {
 					}
 					trailingComponent={
 						<div className={styles['trailing-footer-wrapper']}>
-							<Paginator pages={pagesCount} currentPage={page} onSelectPage={onChangePage} />
+							{pagesCount > 1 && <Paginator pages={pagesCount} currentPage={page} onSelectPage={onChangePage} />}
 							<Button onClick={onSave}>Save</Button>
 						</div>
 					}
