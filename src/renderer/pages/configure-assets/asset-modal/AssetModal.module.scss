@@ -1,0 +1,25 @@
+.asset-modal {
+	$horizontal-padding: 3rem;
+
+	display: flex;
+	justify-content: space-between;
+	width: calc(100% - $horizontal-padding);
+	height: 74%;
+	padding: 2rem 2.7rem $horizontal-padding;
+
+	.selected-asset {
+		align-self: center;
+	}
+
+	.available-assets {
+		width: 45%;
+
+		.grid {
+			overflow-y: auto;
+			max-height: 100%;
+			margin-top: 1rem;
+			display: grid;
+			gap: 1.5rem;
+		}
+	}
+}

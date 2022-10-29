@@ -30,6 +30,8 @@
 			border-radius: 15px;
 			padding: 0 2.5rem 2.5rem;
 			animation: bottom-fade-in 0.2s ease-in-out;
+			overflow-y: auto;
+			overflow-x: hidden;
 
 			.header {
 				display: flex;
