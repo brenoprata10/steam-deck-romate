@@ -139,7 +139,7 @@ const ConfigureAssets = () => {
 				<div className={styles.grid}>
 					{displayedGames.map((game, index) => (
 						<Card key={`${game.name}-${index}`} title={game.name} className={styles.game}>
-							{game.assets && <AssetsGrid assets={game.assets} />}
+							{game.assets && <AssetsGrid game={game} />}
 						</Card>
 					))}
 				</div>

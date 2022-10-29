@@ -1,4 +1,4 @@
-import Modal from 'renderer/uikit/modal/Modal.component'
+import Modal, {TModalProps} from 'renderer/uikit/modal/Modal.component'
 import styles from './AboutModal.module.scss'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faBug} from '@fortawesome/free-solid-svg-icons'
@@ -18,7 +18,7 @@ const SUPPORT_CONFIG: Array<{label: string; icon?: IconProp; image?: string; lin
 	}
 ]
 
-const AboutModal = ({isOpened, onClose}: {isOpened: boolean; onClose: () => void}) => (
+const AboutModal = ({isOpened, onClose}: TModalProps) => (
 	<Modal className={styles['about-modal']} isOpened={isOpened} title={'Steam Deck Roommate'} onClose={onClose}>
 		<span>The ultimate rom manager for Steam Deck users.</span>
 		<span className={styles.contribute}>Contribute:</span>

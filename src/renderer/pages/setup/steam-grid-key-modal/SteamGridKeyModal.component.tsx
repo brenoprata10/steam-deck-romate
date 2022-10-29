@@ -1,7 +1,7 @@
 import {useCallback, useState} from 'react'
 import {getGameIdByName} from 'renderer/api/steam-grid.api'
 import Button from 'renderer/uikit/button/Button.component'
-import Modal from 'renderer/uikit/modal/Modal.component'
+import Modal, {TModalProps} from 'renderer/uikit/modal/Modal.component'
 import styles from './SteamGridKeyModal.module.scss'
 
 const SteamGridKeyModal = ({
@@ -9,12 +9,7 @@ const SteamGridKeyModal = ({
 	isCloseable,
 	onSave,
 	onClose
-}: {
-	isOpened: boolean
-	isCloseable?: boolean
-	onSave: (key: string) => void
-	onClose: () => void
-}) => {
+}: {onSave: (apiKey: string) => void} & TModalProps) => {
 	const [apiKey, setApiKey] = useState<string | undefined>('')
 	const [errorMessage, setErrorMessage] = useState<string | undefined>()
 

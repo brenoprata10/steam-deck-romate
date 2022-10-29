@@ -1,6 +1,7 @@
 import {LOCAL_STORAGE_STEAM_GRID_API_KEY} from 'renderer/api/steam-grid.api'
 import ESetup from 'renderer/enums/ESetup'
 import TGame from 'renderer/types/TGame'
+
 export type TCommonState = {
 	games: TGame[]
 	setupFlow?: ESetup
