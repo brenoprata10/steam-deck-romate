@@ -8,7 +8,11 @@
 	padding: 2rem 2.7rem $horizontal-padding;
 
 	.selected-asset {
+		display: flex;
+		justify-content: center;
 		align-self: center;
+		flex-wrap: wrap;
+		width: 45%;
 	}
 
 	.available-assets {

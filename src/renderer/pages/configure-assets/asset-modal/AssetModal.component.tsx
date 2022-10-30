@@ -1,6 +1,7 @@
 import EAssetType from 'renderer/enums/EAssetType'
 import {TSteamGridAsset} from 'renderer/types/TApiSteamGridAssets'
 import TGameAssetCollection from 'renderer/types/TGameAssetCollection'
+import ButtonGroup from 'renderer/uikit/button-group/ButtonGroup.component'
 import Image from 'renderer/uikit/image/Image.component'
 import Modal, {TModalProps} from 'renderer/uikit/modal/Modal.component'
 import {getSelectedAsset} from 'renderer/utils/asset'
@@ -35,13 +36,16 @@ const AssetModal = ({
 	selectedAssetType,
 	assets,
 	onSelectAsset,
+	onChangeAssetType,
 	onClose
 }: {
 	selectedAssetType: EAssetType
 	assets: TGameAssetCollection
 	onSelectAsset: (asset: TSteamGridAsset) => void
+	onChangeAssetType: (assetType: EAssetType) => void
 } & TModalProps) => {
 	const selectedAsset = getSelectedAsset({assets: assets[selectedAssetType]})
+	const assetTypes = Object.keys(EAssetType)
 
 	return (
 		<Modal
@@ -52,9 +56,10 @@ const AssetModal = ({
 			height={'42rem'}
 			onClose={onClose}
 		>
-			{selectedAsset?.url && (
-				<Image className={styles['selected-asset']} src={selectedAsset.url} height={'23.3rem'} width={'45%'} />
-			)}
+			<div className={styles['selected-asset']}>
+				{selectedAsset?.url && <Image src={selectedAsset.url} height={'23.3rem'} width={'100%'} />}
+				<ButtonGroup config={assetTypes.map((assetType) => ({label: assetType, value: assetType}))} />
+			</div>
 			<div className={styles['available-assets']}>
 				<b>Available Assets:</b>
 				<div
