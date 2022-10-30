@@ -11,3 +11,20 @@ html {
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 }
+
+::-webkit-scrollbar {
+	z-index: 2;
+	width: 0.5rem;
+}
+::-webkit-scrollbar-track {
+	background: #2e3139;
+	opacity: 0.4;
+}
+::-webkit-scrollbar-thumb {
+	background-color: var(--primary-color);
+	border-radius: 20px;
+
+	&:hover {
+		background-color: var(--secondary-color);
+	}
+}

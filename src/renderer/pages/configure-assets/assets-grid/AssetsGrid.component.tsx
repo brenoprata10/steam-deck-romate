@@ -1,11 +1,14 @@
 import EAssetType from 'renderer/enums/EAssetType'
 import styles from './AssetsGrid.module.scss'
 import AssetModal from 'renderer/pages/configure-assets/asset-modal/AssetModal.component'
-import {useCallback, useState} from 'react'
-import TGame from 'renderer/types/TGame'
+import {useCallback, useContext, useState} from 'react'
 import TGameAssetCollection from 'renderer/types/TGameAssetCollection'
 import Image from 'renderer/uikit/image/Image.component'
 import {getSelectedAsset} from 'renderer/utils/asset'
+import {CommonDispatchContext} from 'renderer/context'
+import {TSteamGridAsset} from 'renderer/types/TApiSteamGridAssets'
+import {EAction} from 'renderer/reducer'
+import React from 'react'
 
 const EMPTY_ASSETS_COLLECTION = {LIBRARY: [], GRID: [], HERO: [], ICON: [], LOGO: []}
 
@@ -16,11 +19,11 @@ const GAME_ASSET_IMAGE_CONFIG: {[assetType in EAssetType]: {height: string; widt
 	},
 	[EAssetType.GRID]: {
 		height: '6rem',
-		width: '12rem'
+		width: '11.5rem'
 	},
 	[EAssetType.HERO]: {
 		height: '6rem',
-		width: '12rem'
+		width: '11.5rem'
 	},
 	[EAssetType.LOGO]: {
 		height: '10rem',
@@ -32,10 +35,18 @@ const GAME_ASSET_IMAGE_CONFIG: {[assetType in EAssetType]: {height: string; widt
 	}
 }
 
-const AssetsGrid = ({game}: {game: TGame}) => {
+const Component = ({
+	gameName,
+	gameId,
+	assets = EMPTY_ASSETS_COLLECTION
+}: {
+	gameName: string
+	gameId: string
+	assets?: TGameAssetCollection
+}) => {
+	const dispatch = useContext(CommonDispatchContext)
 	const [isAssetModalOpened, setIsAssetModalOpened] = useState(false)
 	const [selectedAssetType, setSelectedAssetType] = useState(EAssetType.LIBRARY)
-	const assets: TGameAssetCollection = game.assets ?? EMPTY_ASSETS_COLLECTION
 	const assetsList = (Object.keys(assets) as EAssetType[]).filter((assetType) => assets[assetType][0]?.thumb)
 
 	const onEditAsset = useCallback((assetType: EAssetType) => {
@@ -43,28 +54,40 @@ const AssetsGrid = ({game}: {game: TGame}) => {
 		setSelectedAssetType(assetType)
 	}, [])
 
+	const onSelectAsset = useCallback(
+		(asset: TSteamGridAsset) => {
+			dispatch({
+				type: EAction.SELECT_ASSET,
+				payload: {gameId, assetType: selectedAssetType, assetId: asset.id}
+			})
+		},
+		[gameId, selectedAssetType, dispatch]
+	)
+
 	return (
 		<>
 			<div className={styles['assets-grid']}>
 				{assetsList.map((assetType, index) => (
 					<Image
 						key={`${index}-${assetType}`}
-						src={getSelectedAsset({assets: assets[assetType]}).thumb}
+						src={getSelectedAsset({assets: assets[assetType]})?.thumb ?? null}
 						height={GAME_ASSET_IMAGE_CONFIG[assetType].height}
 						width={GAME_ASSET_IMAGE_CONFIG[assetType].width}
+						className={styles.item}
 						onClick={() => onEditAsset(assetType)}
 					/>
 				))}
 			</div>
 			<AssetModal
 				isOpened={isAssetModalOpened}
-				title={game.name}
+				title={gameName}
 				selectedAssetType={selectedAssetType}
 				assets={assets}
+				onSelectAsset={onSelectAsset}
 				onClose={() => setIsAssetModalOpened(false)}
 			/>
 		</>
 	)
 }
 
-export default AssetsGrid
+export const AssetsGrid = React.memo(Component)

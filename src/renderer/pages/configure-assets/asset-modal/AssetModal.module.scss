@@ -4,7 +4,7 @@
 	display: flex;
 	justify-content: space-between;
 	width: calc(100% - $horizontal-padding);
-	height: 74%;
+	height: 72%;
 	padding: 2rem 2.7rem $horizontal-padding;
 
 	.selected-asset {
@@ -20,6 +20,18 @@
 			margin-top: 1rem;
 			display: grid;
 			gap: 1.5rem;
+
+			.item {
+				cursor: pointer;
+				filter: saturate(100%);
+				transition: 0.2s ease-in-out;
+				-webkit-backface-visibility: hidden;
+				-webkit-transform: translateZ(0) scale(1, 1);
+
+				&:hover {
+					filter: saturate(200%);
+				}
+			}
 		}
 	}
 }

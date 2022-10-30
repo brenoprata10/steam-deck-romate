@@ -19,7 +19,7 @@ import * as Electron from 'electron'
 import {getAssetFileName} from 'renderer/utils/steam-assets'
 import useSteamGridApiKey from 'renderer/hooks/useSteamGridApiKey'
 import Paginator from 'renderer/uikit/paginator/Paginator.component'
-import AssetsGrid from 'renderer/pages/configure-assets/assets-grid/AssetsGrid.component'
+import {AssetsGrid} from 'renderer/pages/configure-assets/assets-grid/AssetsGrid.component'
 import Loader, {ESize} from 'renderer/uikit/loader/Loader.component'
 
 const ITEMS_PER_PAGE = 10
@@ -139,7 +139,7 @@ const ConfigureAssets = () => {
 				<div className={styles.grid}>
 					{displayedGames.map((game, index) => (
 						<Card key={`${game.name}-${index}`} title={game.name} className={styles.game}>
-							{game.assets && <AssetsGrid game={game} />}
+							<AssetsGrid gameName={game.name} gameId={game.id} assets={game.assets} />
 						</Card>
 					))}
 				</div>

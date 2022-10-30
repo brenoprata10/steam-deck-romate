@@ -7,7 +7,7 @@ const Image = ({
 	className,
 	onClick
 }: {
-	src: string
+	src: string | null
 	height: string
 	width: string
 	className?: string
@@ -17,7 +17,7 @@ const Image = ({
 		<div
 			className={`${styles.image} ${className ?? ''}`}
 			style={{
-				backgroundImage: `url(${src})`,
+				backgroundImage: src ? `url(${src})` : undefined,
 				height,
 				width
 			}}

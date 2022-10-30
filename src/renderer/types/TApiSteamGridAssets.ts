@@ -12,7 +12,7 @@ export type TSteamGridAsset = {
 	width: number
 	mime: string
 	// Defines wheter asset is the one that will be used
-	isSelected?: string
+	isSelected?: boolean
 }
 
 type TApiSteamGridAssets = TBaseApiSteamGrid<Array<TSteamGridAsset>>

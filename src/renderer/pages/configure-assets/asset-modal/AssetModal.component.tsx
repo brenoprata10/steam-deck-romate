@@ -1,4 +1,5 @@
 import EAssetType from 'renderer/enums/EAssetType'
+import {TSteamGridAsset} from 'renderer/types/TApiSteamGridAssets'
 import TGameAssetCollection from 'renderer/types/TGameAssetCollection'
 import Image from 'renderer/uikit/image/Image.component'
 import Modal, {TModalProps} from 'renderer/uikit/modal/Modal.component'
@@ -33,8 +34,13 @@ const AssetModal = ({
 	title,
 	selectedAssetType,
 	assets,
+	onSelectAsset,
 	onClose
-}: {selectedAssetType: EAssetType; assets: TGameAssetCollection} & TModalProps) => {
+}: {
+	selectedAssetType: EAssetType
+	assets: TGameAssetCollection
+	onSelectAsset: (asset: TSteamGridAsset) => void
+} & TModalProps) => {
 	const selectedAsset = getSelectedAsset({assets: assets[selectedAssetType]})
 
 	return (
@@ -46,7 +52,9 @@ const AssetModal = ({
 			height={'42rem'}
 			onClose={onClose}
 		>
-			<Image className={styles['selected-asset']} src={selectedAsset.url} height={'23.3rem'} width={'45%'} />
+			{selectedAsset?.url && (
+				<Image className={styles['selected-asset']} src={selectedAsset.url} height={'23.3rem'} width={'45%'} />
+			)}
 			<div className={styles['available-assets']}>
 				<b>Available Assets:</b>
 				<div
@@ -61,6 +69,8 @@ const AssetModal = ({
 							src={asset.thumb}
 							width={GAME_ASSET_IMAGE_CONFIG[selectedAssetType].width}
 							height={GAME_ASSET_IMAGE_CONFIG[selectedAssetType].height}
+							className={styles.item}
+							onClick={() => onSelectAsset(asset)}
 						/>
 					))}
 				</div>
