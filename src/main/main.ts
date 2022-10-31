@@ -58,12 +58,13 @@ ipcMain.handle(EChannel.STEAM_GRID_REQUEST, async (_, ...args) => {
 	}
 })
 
-ipcMain.handle(EChannel.DOWNLOAD_ASSET, (_, ...args) => {
+ipcMain.handle(EChannel.DOWNLOAD_ASSET, async (_, ...args) => {
 	const {url, directory, fileName: filename}: {url: string; directory: string; fileName: string} = args[0]
 	try {
 		const win = BrowserWindow.getFocusedWindow()
 		if (win) {
-			void download(win, url, {directory, filename})
+			const result = await download(win, url, {directory, filename, saveAs: false})
+			return result.getURL()
 		}
 	} catch (error) {
 		console.log(error)

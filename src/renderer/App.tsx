@@ -2,11 +2,12 @@ import {useReducer} from 'react'
 import {MemoryRouter as Router, Routes, Route} from 'react-router-dom'
 import './App.scss'
 import {CommonContext, CommonDispatchContext} from './context'
-import ERoute from './enums/ERoute'
-import Setup from './pages/setup/Setup.component'
-import ConfigureAssets from './pages/configure-assets/ConfigureAssets.component'
-import {INITIAL_STATE, reducer} from './reducer'
-import {getRoutePath} from './route'
+import ERoute from 'renderer/enums/ERoute'
+import Setup from 'renderer/pages/setup/Setup.component'
+import ConfigureAssets from 'renderer/pages/configure-assets/ConfigureAssets.component'
+import {INITIAL_STATE, reducer} from 'renderer/reducer'
+import {getRoutePath} from 'renderer/route'
+import SaveShortcut from 'renderer/pages/save-shortcut/SaveShortcut.component'
 
 export default function App() {
 	const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
@@ -19,6 +20,7 @@ export default function App() {
 						<Routes>
 							<Route path={getRoutePath(ERoute.SETUP)} element={<Setup />} />
 							<Route path={getRoutePath(ERoute.CONFIGURE_ASSETS)} element={<ConfigureAssets />} />
+							<Route path={getRoutePath(ERoute.SAVE)} element={<SaveShortcut />} />
 						</Routes>
 					</Router>
 				</main>

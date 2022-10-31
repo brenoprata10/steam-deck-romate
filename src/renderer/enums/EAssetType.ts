@@ -1,8 +1,8 @@
 enum EAssetType {
 	LOGO = 'LOGO',
-	HERO = 'HERO',
-	GRID = 'GRID',
 	LIBRARY = 'LIBRARY',
+	GRID = 'GRID',
+	HERO = 'HERO',
 	ICON = 'ICON'
 }
 

@@ -5,7 +5,10 @@ const ROUTE_CONFIG: {[route in ERoute]: {path: string}} = {
 		path: '/'
 	},
 	[ERoute.CONFIGURE_ASSETS]: {
-		path: 'configure-assets'
+		path: '/configure-assets'
+	},
+	[ERoute.SAVE]: {
+		path: '/save'
 	}
 }
 
