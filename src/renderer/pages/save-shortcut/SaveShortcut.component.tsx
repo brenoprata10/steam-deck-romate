@@ -10,17 +10,40 @@ import {getSelectedAsset} from 'renderer/utils/asset'
 import {getGameAssetsByName} from 'renderer/api/steam-grid.api'
 import PromiseThrottle from 'promise-throttle'
 import useSteamGridApiKey from 'renderer/hooks/useSteamGridApiKey'
-import {generateShortAppId} from 'renderer/utils/generate-app-id'
 import {VdfMap} from 'steam-binary-vdf'
 import {getFileExtension} from 'renderer/utils/files'
+import {useState} from 'react'
+import Page from 'renderer/uikit/page/Page.component'
+import styles from './SaveShortcut.module.scss'
+
+enum EStep {
+	DOWNLOAD_ASSETS = 'Downloading assets',
+	SAVE_SHORTCUTS = 'Saving Shortcuts',
+	DONE = 'Done.'
+}
+
+const PRIMARY_LOG_COLOR = 'yellow'
+const SECONDARY_LOG_COLOR = 'cyan'
 
 const PROMISE_THROTTLE = new PromiseThrottle({
 	requestsPerSecond: 1
 })
 
 const SaveShortcut = () => {
+	const [step, setStep] = useState(EStep.DOWNLOAD_ASSETS)
 	const apiKey = useSteamGridApiKey()
 	const games = useGames()
+
+	const addToLog = (message: string, color = 'white') => {
+		const logElement = document.getElementById('log-wrapper')
+		const logEntry = document.createElement('p')
+		logEntry.style.color = color
+		logEntry.innerText = message
+		if (logElement) {
+			logElement.appendChild(logEntry)
+			logElement.scrollTop = logElement.scrollHeight
+		}
+	}
 
 	const downloadAssets = async (games: TGame[]) => {
 		for (const game of games) {
@@ -29,31 +52,35 @@ const SaveShortcut = () => {
 
 				if (selectedAsset) {
 					const assetExtension = getFileExtension(selectedAsset.mime)
+					const fileName = getAssetFileName(game.id, assetExtension)[assetType]
 					await Electron.ipcRenderer.invoke(EChannel.DOWNLOAD_ASSET, {
 						url: selectedAsset.url,
-						fileName: getAssetFileName(game.id, assetExtension)[assetType],
+						fileName,
 						directory: getSteamGridAssetsFolderPath('48553049')
 					})
-					console.log(`Downloaded: ${getAssetFileName(game.id, assetExtension)[assetType]}`)
+					addToLog(
+						`Downloaded: ${game.name} / ${assetType.toLocaleLowerCase()} - ${fileName} - ${selectedAsset.url}`,
+						SECONDARY_LOG_COLOR
+					)
 				}
 			}
 		}
-		console.log('Saved game assets')
 	}
 
 	const fetchAssetsForUnloadedGames = async (games: TGame[]): Promise<TGame[]> => {
-		if (!apiKey) {
+		if (!apiKey || games.length === 0) {
 			return []
 		}
+		addToLog(`Fetching additional asset for: ${games.length} games. This might take a while...`, PRIMARY_LOG_COLOR)
 		const responseArray = await Promise.all(
 			games.map((game) => PROMISE_THROTTLE.add(() => getGameAssetsByName({gameName: game.name, apiKey})))
 		)
+		addToLog('Finished fetching additional images.', PRIMARY_LOG_COLOR)
 		return games.map((game, index) => ({...game, assets: responseArray[index]}))
 	}
 
 	const saveShortcuts = async () => {
 		const shortcutsObject = (await getSteamShortcuts()) as {shortcuts: {[id: string]: VdfMap}}
-		console.log({shortcutsObject})
 
 		for (const game of games) {
 			const selectedIcon = getSelectedAsset({assets: game.assets?.ICON ?? []})
@@ -67,11 +94,19 @@ const SaveShortcut = () => {
 				AppId: game.id,
 				icon: iconPath
 			}
+			const shortcutsValue = Object.values(shortcutsObject.shortcuts)
+			const persistedGame = shortcutsValue.find((shortcut) => shortcut.AppId == game.id || shortcut.appid == game.id)
 
-			shortcutsObject.shortcuts[game.id] = shortcutValue
+			if (persistedGame) {
+				const index = shortcutsValue.indexOf(persistedGame)
+				shortcutsObject.shortcuts[index] = shortcutValue
+			} else {
+				shortcutsObject.shortcuts[shortcutsValue.length] = shortcutValue
+			}
 		}
 		await saveSteamShortcuts(shortcutsObject)
 		console.log({shortcutsObject})
+		addToLog('Saving shortcut.vdf to Steam folder.', PRIMARY_LOG_COLOR)
 	}
 
 	useMount(() => {
@@ -82,15 +117,26 @@ const SaveShortcut = () => {
 				downloadAssets(games)
 			])
 			// Download assets for games that were not seen by user in previous step
-			void downloadAssets(unloadedGamesWithAssets)
-			console.log('All assets downloaded.')
-			void saveShortcuts()
+			await downloadAssets(unloadedGamesWithAssets)
+			addToLog('All assets were downloaded.', PRIMARY_LOG_COLOR)
+			setStep(EStep.SAVE_SHORTCUTS)
+			await saveShortcuts()
+			addToLog('All done. Happy gaming! 😀')
+			setStep(EStep.DONE)
 		}
 
 		void createShortcuts()
 	})
 
-	return <span>saving</span>
+	return (
+		<Page title={step === EStep.DONE ? EStep.DONE : 'Saving...'}>
+			<div className={styles['save-shortcut']}>
+				<div id={'log-wrapper'} className={styles['log-wrapper']}>
+					<b>Detailed Log: </b>
+				</div>
+			</div>
+		</Page>
+	)
 }
 
 export default SaveShortcut

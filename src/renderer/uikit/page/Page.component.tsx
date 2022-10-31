@@ -8,7 +8,7 @@ const Page = ({
 	footerComponent
 }: {
 	title: string
-	subtitle: string
+	subtitle?: string
 	children: React.ReactNode
 	contentClassName?: string
 	footerComponent?: React.ReactNode

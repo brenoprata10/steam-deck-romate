@@ -44,13 +44,16 @@ export const getGameAssetsByName = async ({
 	}
 	console.log(`Fetching Game Assets for: ${gameName}`)
 	const [gridsResponse, heroesResponse, logosResponse, iconsResponse] = await Promise.all([
-		getGameAssetById({gameId, assetType: ESteamGridAssetType.GRIDS, apiKey}),
-		getGameAssetById({gameId, assetType: ESteamGridAssetType.HEROES, apiKey}),
+		getGameAssetById({gameId, assetType: ESteamGridAssetType.GRIDS, apiKey, params: 'mimes=image/png'}),
+		getGameAssetById({gameId, assetType: ESteamGridAssetType.HEROES, apiKey, params: 'mimes=image/png'}),
 		getGameAssetById({gameId, assetType: ESteamGridAssetType.LOGOS, apiKey}),
 		getGameAssetById({gameId, assetType: ESteamGridAssetType.ICONS, apiKey})
 	])
 
 	const grids = gridsResponse.success ? gridsResponse.data : []
+	const supportedHorizontalGrids = grids?.filter(
+		(grid) => (grid.width === 460 && grid.height === 215) || (grid.width === 920 && grid.height === 430)
+	)
 	const heroes = heroesResponse.success ? heroesResponse.data : []
 	const logos = logosResponse.success ? logosResponse.data : []
 	const icons = iconsResponse.success ? iconsResponse.data : []
@@ -58,10 +61,8 @@ export const getGameAssetsByName = async ({
 	return {
 		[EAssetType.LOGO]: logos,
 		[EAssetType.LIBRARY]: grids?.filter((grid) => grid.width === 600 && grid.height === 900),
-		[EAssetType.GRID]: grids?.filter(
-			(grid) => (grid.width === 460 && grid.height === 215) || (grid.width === 920 && grid.height === 430)
-		),
-		[EAssetType.HERO]: heroes,
+		[EAssetType.GRID]: supportedHorizontalGrids.length > 0 ? supportedHorizontalGrids : heroes,
+		[EAssetType.HERO]: heroes.length > 0 ? heroes : supportedHorizontalGrids,
 		[EAssetType.ICON]: icons
 	}
 }
