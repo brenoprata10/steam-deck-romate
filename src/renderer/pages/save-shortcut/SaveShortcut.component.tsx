@@ -12,6 +12,7 @@ import PromiseThrottle from 'promise-throttle'
 import useSteamGridApiKey from 'renderer/hooks/useSteamGridApiKey'
 import {generateShortAppId} from 'renderer/utils/generate-app-id'
 import {VdfMap} from 'steam-binary-vdf'
+import {getFileExtension} from 'renderer/utils/files'
 
 const PROMISE_THROTTLE = new PromiseThrottle({
 	requestsPerSecond: 1
@@ -27,7 +28,7 @@ const SaveShortcut = () => {
 				const selectedAsset = getSelectedAsset({assets: game.assets?.[assetType] ?? []})
 
 				if (selectedAsset) {
-					const assetExtension = selectedAsset.mime?.match('\\w+$')?.[0] ?? ''
+					const assetExtension = getFileExtension(selectedAsset.mime)
 					await Electron.ipcRenderer.invoke(EChannel.DOWNLOAD_ASSET, {
 						url: selectedAsset.url,
 						fileName: getAssetFileName(game.id, assetExtension)[assetType],
@@ -52,13 +53,22 @@ const SaveShortcut = () => {
 
 	const saveShortcuts = async () => {
 		const shortcutsObject = (await getSteamShortcuts()) as {shortcuts: {[id: string]: VdfMap}}
+		console.log({shortcutsObject})
 
 		for (const game of games) {
-			shortcutsObject.shortcuts[game.id] = {
+			const selectedIcon = getSelectedAsset({assets: game.assets?.ICON ?? []})
+			const iconFileExtension = getFileExtension(selectedIcon?.mime ?? '')
+			const iconPath = `${getSteamGridAssetsFolderPath('48553049')}/${
+				getAssetFileName(game.id, iconFileExtension).ICON
+			}`
+			const shortcutValue = {
 				AppName: game.name,
 				Exe: game.exec,
-				AppId: game.id
+				AppId: game.id,
+				icon: iconPath
 			}
+
+			shortcutsObject.shortcuts[game.id] = shortcutValue
 		}
 		await saveSteamShortcuts(shortcutsObject)
 		console.log({shortcutsObject})
@@ -66,7 +76,11 @@ const SaveShortcut = () => {
 
 	useMount(() => {
 		const createShortcuts = async () => {
-			const [unloadedGamesWithAssets] = await Promise.all([fetchAssetsForUnloadedGames(games), downloadAssets(games)])
+			const unloadedGames = games.filter((game) => !game.assets)
+			const [unloadedGamesWithAssets] = await Promise.all([
+				fetchAssetsForUnloadedGames(unloadedGames),
+				downloadAssets(games)
+			])
 			// Download assets for games that were not seen by user in previous step
 			void downloadAssets(unloadedGamesWithAssets)
 			console.log('All assets downloaded.')

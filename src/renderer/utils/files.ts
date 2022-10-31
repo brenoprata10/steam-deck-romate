@@ -12,3 +12,7 @@ export const getTextFileData = (path: string): Promise<string> => {
 export const getBufferFileData = (path: string): Promise<Buffer> => {
 	return fsPromise.readFile(path)
 }
+
+export const getFileExtension = (fileName: string) => {
+	return fileName.match('\\w+$')?.[0] ?? ''
+}

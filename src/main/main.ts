@@ -63,7 +63,7 @@ ipcMain.handle(EChannel.DOWNLOAD_ASSET, async (_, ...args) => {
 	try {
 		const win = BrowserWindow.getFocusedWindow()
 		if (win) {
-			const result = await download(win, url, {directory, filename, saveAs: false})
+			const result = await download(win, url, {directory, filename, saveAs: false, overwrite: true})
 			return result.getURL()
 		}
 	} catch (error) {
