@@ -84,6 +84,7 @@
     "electron-dl": "^3.4.1",
     "electron-log": "^4.4.8",
     "electron-updater": "^5.2.3",
+    "promise-throttle": "^1.1.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",

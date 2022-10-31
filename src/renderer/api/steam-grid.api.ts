@@ -39,8 +39,10 @@ export const getGameAssetsByName = async ({
 	const gameId = await getGameIdByName({gameName, apiKey})
 	if (!gameId) {
 		console.warn(`Could not fetch id for game '${gameName}'`)
+		console.groupEnd()
 		return
 	}
+	console.log(`Fetching Game Assets for: ${gameName}`)
 	const [gridsResponse, heroesResponse, logosResponse, iconsResponse] = await Promise.all([
 		getGameAssetById({gameId, assetType: ESteamGridAssetType.GRIDS, apiKey}),
 		getGameAssetById({gameId, assetType: ESteamGridAssetType.HEROES, apiKey}),

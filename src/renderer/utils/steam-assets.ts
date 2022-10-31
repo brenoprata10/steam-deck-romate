@@ -5,7 +5,7 @@ export const getAssetFileName = (shortAppId: number | string, extension: string)
 		[EAssetType.GRID]: `${shortAppId}.${extension}`,
 		[EAssetType.HERO]: `${shortAppId}_hero.${extension}`,
 		[EAssetType.LIBRARY]: `${shortAppId}p.${extension}`,
-		[EAssetType.LOGO]: `${shortAppId}p.${extension}`,
-		[EAssetType.ICON]: `${shortAppId}p.${extension}`
+		[EAssetType.LOGO]: `${shortAppId}l.${extension}`,
+		[EAssetType.ICON]: `${shortAppId}i.${extension}`
 	}
 }
