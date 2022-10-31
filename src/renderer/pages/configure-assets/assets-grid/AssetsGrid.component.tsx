@@ -84,6 +84,7 @@ const Component = ({
 				selectedAssetType={selectedAssetType}
 				assets={assets}
 				onSelectAsset={onSelectAsset}
+				onChangeAssetType={setSelectedAssetType}
 				onClose={() => setIsAssetModalOpened(false)}
 			/>
 		</>

@@ -45,7 +45,7 @@ const AssetModal = ({
 	onChangeAssetType: (assetType: EAssetType) => void
 } & TModalProps) => {
 	const selectedAsset = getSelectedAsset({assets: assets[selectedAssetType]})
-	const assetTypes = Object.keys(EAssetType)
+	const assetTypes = Object.keys(EAssetType) as EAssetType[]
 
 	return (
 		<Modal
@@ -58,7 +58,14 @@ const AssetModal = ({
 		>
 			<div className={styles['selected-asset']}>
 				{selectedAsset?.url && <Image src={selectedAsset.url} height={'23.3rem'} width={'100%'} />}
-				<ButtonGroup config={assetTypes.map((assetType) => ({label: assetType, value: assetType}))} />
+				<ButtonGroup
+					className={styles['asset-type-group']}
+					items={assetTypes.map((assetType) => ({
+						label: assetType,
+						isSelected: selectedAssetType === assetType,
+						onClick: () => onChangeAssetType(assetType)
+					}))}
+				/>
 			</div>
 			<div className={styles['available-assets']}>
 				<b>Available Assets:</b>
