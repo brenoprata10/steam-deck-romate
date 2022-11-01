@@ -6,7 +6,6 @@ import ESteamGridAssetType from 'renderer/enums/ESteamGridAssetType'
 import EAssetType from 'renderer/enums/EAssetType'
 import TGameAssetCollection from 'renderer/types/TGameAssetCollection'
 import TBaseApiSteamGrid from 'renderer/types/TBaseApiSteamGrid'
-import {AxiosError} from 'axios'
 
 export const LOCAL_STORAGE_STEAM_GRID_API_KEY = 'steam-grid-api-key'
 

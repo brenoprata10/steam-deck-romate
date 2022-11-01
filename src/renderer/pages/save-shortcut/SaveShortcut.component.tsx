@@ -15,6 +15,7 @@ import {getFileExtension} from 'renderer/utils/files'
 import {useState} from 'react'
 import Page from 'renderer/uikit/page/Page.component'
 import styles from './SaveShortcut.module.scss'
+import useSteamUserId from 'renderer/hooks/useSteamUserId'
 
 enum EStep {
 	DOWNLOAD_ASSETS = 'Downloading assets',
@@ -32,6 +33,7 @@ const PROMISE_THROTTLE = new PromiseThrottle({
 const SaveShortcut = () => {
 	const [step, setStep] = useState(EStep.DOWNLOAD_ASSETS)
 	const apiKey = useSteamGridApiKey()
+	const steamUserId = useSteamUserId()
 	const games = useGames()
 
 	const addToLog = (message: string, color = 'white') => {
@@ -50,13 +52,13 @@ const SaveShortcut = () => {
 			for (const assetType of Object.keys(EAssetType) as EAssetType[]) {
 				const selectedAsset = getSelectedAsset({assets: game.assets?.[assetType] ?? []})
 
-				if (selectedAsset) {
+				if (selectedAsset && steamUserId) {
 					const assetExtension = getFileExtension(selectedAsset.mime)
 					const fileName = getAssetFileName(game.id, assetExtension)[assetType]
 					await Electron.ipcRenderer.invoke(EChannel.DOWNLOAD_ASSET, {
 						url: selectedAsset.url,
 						fileName,
-						directory: getSteamGridAssetsFolderPath('48553049')
+						directory: getSteamGridAssetsFolderPath(steamUserId)
 					})
 					addToLog(
 						`Downloaded: ${game.name} / ${assetType.toLocaleLowerCase()} - ${fileName} - ${selectedAsset.url}`,
@@ -80,12 +82,15 @@ const SaveShortcut = () => {
 	}
 
 	const saveShortcuts = async () => {
-		const shortcutsObject = (await getSteamShortcuts()) as {shortcuts: {[id: string]: VdfMap}}
+		if (!steamUserId) {
+			throw Error('Steam user Id not provided.')
+		}
+		const shortcutsObject = (await getSteamShortcuts({steamUserId})) as {shortcuts: {[id: string]: VdfMap}}
 
 		for (const game of games) {
 			const selectedIcon = getSelectedAsset({assets: game.assets?.ICON ?? []})
 			const iconFileExtension = getFileExtension(selectedIcon?.mime ?? '')
-			const iconPath = `${getSteamGridAssetsFolderPath('48553049')}/${
+			const iconPath = `${getSteamGridAssetsFolderPath(steamUserId)}/${
 				getAssetFileName(game.id, iconFileExtension).ICON
 			}`
 			const shortcutValue = {
@@ -104,7 +109,7 @@ const SaveShortcut = () => {
 				shortcutsObject.shortcuts[shortcutsValue.length] = shortcutValue
 			}
 		}
-		await saveSteamShortcuts(shortcutsObject)
+		await saveSteamShortcuts({shortcuts: shortcutsObject, steamUserId})
 		console.log({shortcutsObject})
 		addToLog('Saving shortcut.vdf to Steam folder.', PRIMARY_LOG_COLOR)
 	}

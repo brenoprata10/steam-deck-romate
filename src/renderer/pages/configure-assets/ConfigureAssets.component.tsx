@@ -72,7 +72,7 @@ const ConfigureAssets = () => {
 		void fetchGameAssets({start: 0, end: ITEMS_PER_PAGE})
 	})
 
-	const onBack = useCallback(() => navigate(getRoutePath(ERoute.SETUP)), [navigate])
+	const onBack = useCallback(() => navigate(getRoutePath(ERoute.SELECT_ACCOUNT)), [navigate])
 	const onSave = useCallback(() => navigate(getRoutePath(ERoute.SAVE)), [navigate])
 
 	const onChangePage = useCallback(

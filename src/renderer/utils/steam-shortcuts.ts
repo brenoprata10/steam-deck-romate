@@ -12,14 +12,13 @@ const getShortcutsPath = (steamId: string): string => {
 	return path.join(homedir(), `.steam/steam/userdata/${steamId}/config/shortcuts.vdf`)
 }
 
-export const getSteamShortcuts = async (): Promise<VdfMap> => {
-	const buffer = await getBufferFileData(getShortcutsPath('48553049'))
+export const getSteamShortcuts = async ({steamUserId}: {steamUserId: string}): Promise<VdfMap> => {
+	const buffer = await getBufferFileData(getShortcutsPath(steamUserId))
 	return readVdf(buffer)
 }
 
-export const saveSteamShortcuts = async (shortcuts: VdfMap) => {
+export const saveSteamShortcuts = async ({shortcuts, steamUserId}: {shortcuts: VdfMap; steamUserId: string}) => {
 	const outBuffer = writeVdf(shortcuts)
 
-	await fsPromise.writeFile(getShortcutsPath('48553049'), outBuffer)
-	console.log('File saved')
+	await fsPromise.writeFile(getShortcutsPath(steamUserId), outBuffer)
 }

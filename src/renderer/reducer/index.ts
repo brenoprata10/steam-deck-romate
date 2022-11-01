@@ -6,6 +6,7 @@ import TGame from 'renderer/types/TGame'
 
 export type TCommonState = {
 	games: TGame[]
+	steamUserId?: string | null
 	setupFlow?: ESetup
 	steamGridApiKey?: string | null
 }
@@ -19,7 +20,8 @@ export enum EAction {
 	SET_SETUP_FLOW = 'SET_SETUP_FLOW',
 	SET_GAMES = 'SET_GAMES',
 	SET_STEAM_GRID_API_KEY = 'SET_STEAM_GRID_API_KEY',
-	SELECT_ASSET = 'SELECT_ASSET'
+	SELECT_ASSET = 'SELECT_ASSET',
+	SET_STEAM_USER_ID = 'SET_STEAM_USER_ID'
 }
 
 export type TAction =
@@ -30,6 +32,7 @@ export type TAction =
 	| {type: EAction.SET_GAMES; payload: TGame[]}
 	| {type: EAction.SET_STEAM_GRID_API_KEY; payload: string}
 	| {type: EAction.SELECT_ASSET; payload: {gameId: string; assetType: EAssetType; assetId: number}}
+	| {type: EAction.SET_STEAM_USER_ID; payload: string}
 
 export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 	switch (action.type) {
@@ -40,6 +43,8 @@ export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 		case EAction.SET_STEAM_GRID_API_KEY:
 			localStorage.setItem(LOCAL_STORAGE_STEAM_GRID_API_KEY, action.payload)
 			return {...state, steamGridApiKey: action.payload}
+		case EAction.SET_STEAM_USER_ID:
+			return {...state, steamUserId: action.payload}
 		case EAction.SELECT_ASSET: {
 			const {gameId, assetType, assetId} = action.payload
 			const modifiedGame = state.games.find((game) => game.id === gameId)

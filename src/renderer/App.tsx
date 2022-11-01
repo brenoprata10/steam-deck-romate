@@ -8,6 +8,7 @@ import ConfigureAssets from 'renderer/pages/configure-assets/ConfigureAssets.com
 import {INITIAL_STATE, reducer} from 'renderer/reducer'
 import {getRoutePath} from 'renderer/route'
 import SaveShortcut from 'renderer/pages/save-shortcut/SaveShortcut.component'
+import SelectUserAccount from 'renderer/pages/select-user-account/SelectUserAccount'
 
 export default function App() {
 	const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
@@ -19,6 +20,7 @@ export default function App() {
 					<Router>
 						<Routes>
 							<Route path={getRoutePath(ERoute.SETUP)} element={<Setup />} />
+							<Route path={getRoutePath(ERoute.SELECT_ACCOUNT)} element={<SelectUserAccount />} />
 							<Route path={getRoutePath(ERoute.CONFIGURE_ASSETS)} element={<ConfigureAssets />} />
 							<Route path={getRoutePath(ERoute.SAVE)} element={<SaveShortcut />} />
 						</Routes>

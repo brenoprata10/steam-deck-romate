@@ -49,7 +49,7 @@ const Setup = () => {
 			type: EAction.SET_GAMES,
 			payload: games
 		})
-		navigate(getRoutePath(ERoute.CONFIGURE_ASSETS))
+		navigate(getRoutePath(ERoute.SELECT_ACCOUNT))
 	}, [dispatch, selectMultipleFiles, navigate])
 
 	const setEmuDeckGames = useCallback(async () => {
