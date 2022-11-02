@@ -52,13 +52,9 @@ const Setup = () => {
 		navigate(getRoutePath(ERoute.SELECT_ACCOUNT))
 	}, [dispatch, selectMultipleFiles, navigate])
 
-	const setEmuDeckGames = useCallback(async () => {
-		// TODO
-	}, [])
-
 	const onNext = useCallback(
-		() => (setupFlow === ESetup.CUSTOM_FOLDER ? setCustomFolderGames() : setEmuDeckGames()),
-		[setupFlow, setCustomFolderGames, setEmuDeckGames]
+		() => (setupFlow === ESetup.CUSTOM_FOLDER ? setCustomFolderGames() : undefined),
+		[setupFlow, setCustomFolderGames]
 	)
 
 	const toggleAboutModalVisibility = useCallback(() => setIsAboutModalOpened(!isAboutModalOpened), [isAboutModalOpened])

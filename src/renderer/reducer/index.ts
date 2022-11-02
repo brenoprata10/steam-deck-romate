@@ -9,6 +9,7 @@ export type TCommonState = {
 	steamUserId?: string | null
 	setupFlow?: ESetup
 	steamGridApiKey?: string | null
+	storageDevicePath?: string
 }
 
 export const INITIAL_STATE: TCommonState = {
@@ -21,7 +22,8 @@ export enum EAction {
 	SET_GAMES = 'SET_GAMES',
 	SET_STEAM_GRID_API_KEY = 'SET_STEAM_GRID_API_KEY',
 	SELECT_ASSET = 'SELECT_ASSET',
-	SET_STEAM_USER_ID = 'SET_STEAM_USER_ID'
+	SET_STEAM_USER_ID = 'SET_STEAM_USER_ID',
+	SET_STORAGE_DEVICE_PATH = 'SET_STORAGE_DEVICE_PATH'
 }
 
 export type TAction =
@@ -33,6 +35,7 @@ export type TAction =
 	| {type: EAction.SET_STEAM_GRID_API_KEY; payload: string}
 	| {type: EAction.SELECT_ASSET; payload: {gameId: string; assetType: EAssetType; assetId: number}}
 	| {type: EAction.SET_STEAM_USER_ID; payload: string}
+	| {type: EAction.SET_STORAGE_DEVICE_PATH; payload: string}
 
 export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 	switch (action.type) {
@@ -45,6 +48,8 @@ export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 			return {...state, steamGridApiKey: action.payload}
 		case EAction.SET_STEAM_USER_ID:
 			return {...state, steamUserId: action.payload}
+		case EAction.SET_STORAGE_DEVICE_PATH:
+			return {...state, storageDevicePath: action.payload}
 		case EAction.SELECT_ASSET: {
 			const {gameId, assetType, assetId} = action.payload
 			const modifiedGame = state.games.find((game) => game.id === gameId)
