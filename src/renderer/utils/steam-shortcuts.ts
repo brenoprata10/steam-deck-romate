@@ -27,27 +27,33 @@ const getUserAccountsPath = () => {
 export const getAvailableUserAccounts = async (): Promise<TUserData[]> => {
 	const lineValuesRegex = new RegExp('[\\w\\s_\\-?/.><,:;|[{\\]}+!@#$%^&*()=]+', 'mg')
 	const usersId = getFileNamesFromFolder(getUserAccountsPath())
-	const users: TUserData[] = []
+	const users: TUserData[] = usersId.map((userId) => ({
+		id: userId
+	}))
 
-	for (const userId of usersId) {
-		const localConfigData = await getTextFileData(getLocalConfigPath(userId))
-		let name, avatarPictureSrc
+	try {
+		for (const user of users) {
+			const localConfigData = await getTextFileData(getLocalConfigPath(user.id))
 
-		for (const line of localConfigData.split('\n')) {
-			const isPersonaNameLine = line.match('PersonaName')?.[0]
-			const isAvatarLine = line.match('avatar')?.[0]
-			if (!name && isPersonaNameLine) {
-				name = line.match(lineValuesRegex)?.pop()
-			}
-			if (!avatarPictureSrc && isAvatarLine) {
-				const avatarId = line.match(lineValuesRegex)?.pop()
-				avatarPictureSrc = avatarId ? `${STEAM_AVATAR_AKAMAI_URL}/${avatarId}_medium.jpg` : 'Not available'
+			for (const line of localConfigData.split('\n')) {
+				if (user.name && user.avatarPictureSrc) {
+					break
+				}
+				const isPersonaNameLine = line.match('PersonaName')?.[0]
+				const isAvatarLine = line.match('avatar')?.[0]
+				if (!user.name && isPersonaNameLine) {
+					user.name = line.match(lineValuesRegex)?.pop()
+				}
+				if (!user.avatarPictureSrc && isAvatarLine) {
+					const avatarId = line.match(lineValuesRegex)?.pop()
+					user.avatarPictureSrc = avatarId ? `${STEAM_AVATAR_AKAMAI_URL}/${avatarId}_full.jpg` : 'Not available'
+				}
 			}
 		}
-		users.push({id: userId, name, avatarPictureSrc})
+	} catch (error) {
+		console.error(error)
 	}
 
-	console.log(users)
 	return users
 }
 
