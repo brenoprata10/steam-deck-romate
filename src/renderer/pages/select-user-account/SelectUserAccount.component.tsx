@@ -62,6 +62,9 @@ const SelectUserAccount = () => {
 				{userAccounts.map((userAccount) => (
 					<CardOption
 						key={userAccount.id}
+						imageClassName={
+							userAccount.id !== steamUserId && !userAccount.avatarPictureSrc ? styles['default-image'] : undefined
+						}
 						isSelected={userAccount.id === steamUserId}
 						imageSrc={userAccount.avatarPictureSrc ?? DECK_LOGO}
 						label={userAccount.name ?? userAccount.id}

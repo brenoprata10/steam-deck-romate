@@ -5,21 +5,21 @@ const CardOption = ({
 	description,
 	imageSrc,
 	isSelected,
+	imageClassName,
 	onClick
 }: {
 	label: string
 	description?: string
 	imageSrc: string
 	isSelected: boolean
+	imageClassName?: string
 	onClick: () => void
-}) => {
-	return (
-		<div className={`${styles['card-option']} ${isSelected ? styles['card-option--selected'] : ''}`} onClick={onClick}>
-			<img src={imageSrc} />
-			<span className={styles.label}>{label}</span>
-			<span className={styles.description}>{description}</span>
-		</div>
-	)
-}
+}) => (
+	<div className={`${styles['card-option']} ${isSelected ? styles['card-option--selected'] : ''}`} onClick={onClick}>
+		<img className={imageClassName} src={imageSrc} />
+		<span className={styles.label}>{label}</span>
+		<span className={styles.description}>{description}</span>
+	</div>
+)
 
 export default CardOption
