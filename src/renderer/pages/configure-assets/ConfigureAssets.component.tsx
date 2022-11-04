@@ -80,6 +80,7 @@ const ConfigureAssets = () => {
 			setPage(newPage)
 			const newGameIndex = newPage * ITEMS_PER_PAGE
 			void fetchGameAssets({start: newGameIndex, end: newGameIndex + ITEMS_PER_PAGE})
+			window.scrollTo({top: 0, behavior: 'smooth'})
 		},
 		[fetchGameAssets]
 	)

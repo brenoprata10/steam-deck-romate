@@ -1,21 +1,26 @@
-import {useMount} from 'react-use'
-import useGames from 'renderer/hooks/useGames'
-import TGame from 'renderer/types/TGame'
 import * as Electron from 'electron'
-import {getAssetFileName} from 'renderer/utils/steam-assets'
-import {getSteamGridAssetsFolderPath, saveSteamShortcuts, getSteamShortcuts} from 'renderer/utils/steam-shortcuts'
 import EChannel from 'main/enums/EChannel'
-import EAssetType from 'renderer/enums/EAssetType'
-import {getSelectedAsset} from 'renderer/utils/asset'
-import {getGameAssetsByName} from 'renderer/api/steam-grid.api'
 import PromiseThrottle from 'promise-throttle'
+import {useCallback, useState} from 'react'
+import {useNavigate} from 'react-router-dom'
+import {useMount} from 'react-use'
+import {getGameAssetsByName} from 'renderer/api/steam-grid.api'
+import EAssetType from 'renderer/enums/EAssetType'
+import ERoute from 'renderer/enums/ERoute'
+import useGames from 'renderer/hooks/useGames'
 import useSteamGridApiKey from 'renderer/hooks/useSteamGridApiKey'
-import {VdfMap} from 'steam-binary-vdf'
-import {getFileExtension} from 'renderer/utils/files'
-import {useState} from 'react'
-import Page from 'renderer/uikit/page/Page.component'
-import styles from './SaveShortcut.module.scss'
 import useSteamUserId from 'renderer/hooks/useSteamUserId'
+import {getRoutePath} from 'renderer/route'
+import TGame from 'renderer/types/TGame'
+import Button, {EButtonVariant} from 'renderer/uikit/button/Button.component'
+import PageFooter from 'renderer/uikit/page/footer/PageFooter.component'
+import Page from 'renderer/uikit/page/Page.component'
+import {getSelectedAsset} from 'renderer/utils/asset'
+import {getFileExtension} from 'renderer/utils/files'
+import {getAssetFileName} from 'renderer/utils/steam-assets'
+import {getSteamGridAssetsFolderPath, getSteamShortcuts, saveSteamShortcuts} from 'renderer/utils/steam-shortcuts'
+import {VdfMap} from 'steam-binary-vdf'
+import styles from './SaveShortcut.module.scss'
 
 enum EStep {
 	DOWNLOAD_ASSETS = 'Downloading assets',
@@ -32,6 +37,7 @@ const PROMISE_THROTTLE = new PromiseThrottle({
 
 const SaveShortcut = () => {
 	const [step, setStep] = useState(EStep.DOWNLOAD_ASSETS)
+	const navigate = useNavigate()
 	const apiKey = useSteamGridApiKey()
 	const steamUserId = useSteamUserId()
 	const games = useGames()
@@ -133,8 +139,23 @@ const SaveShortcut = () => {
 		void createShortcuts()
 	})
 
+	const onBackToSetup = useCallback(() => navigate(getRoutePath(ERoute.SETUP)), [navigate])
+
 	return (
-		<Page title={step === EStep.DONE ? EStep.DONE : 'Saving...'}>
+		<Page
+			title={step === EStep.DONE ? EStep.DONE : 'Saving...'}
+			footerComponent={
+				<PageFooter
+					leadingComponent={
+						<div>
+							<Button onClick={onBackToSetup} variant={EButtonVariant.SECONDARY} className={styles['about-button']}>
+								Back
+							</Button>
+						</div>
+					}
+				/>
+			}
+		>
 			<div className={styles['save-shortcut']}>
 				<div id={'log-wrapper'} className={styles['log-wrapper']}>
 					<b>Detailed Log: </b>
