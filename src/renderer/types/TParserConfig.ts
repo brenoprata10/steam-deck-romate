@@ -4,7 +4,6 @@ type TParserConfig = {
 		modifier: string
 		arguments: string
 		path: string
-		appendArgumentsToExecutable: boolean
 	}
 	supportedFileTypes: string[]
 	category?: string

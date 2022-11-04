@@ -20,6 +20,8 @@ import SteamGridKeyModal from 'renderer/pages/setup/steam-grid-key-modal/SteamGr
 import useSetupFlow from 'renderer/hooks/useSetupFlow'
 import useSteamGridApiKey from 'renderer/hooks/useSteamGridApiKey'
 import useSelectFolder from 'renderer/hooks/useSelectFolder'
+import {getEmuDeckConfigFile} from 'renderer/api/emu-deck.api'
+import {getGamesFromParsers} from 'renderer/utils/parser'
 
 const Setup = () => {
 	const [isAboutModalOpened, setIsAboutModalOpened] = useState(false)
@@ -39,34 +41,42 @@ const Setup = () => {
 		[dispatch]
 	)
 
-	const setCustomFolderGames = useCallback(async () => {
+	const getCustomFolderGames = useCallback(async (): Promise<TGame[]> => {
 		const {canceled, filePaths} = await selectMultipleFiles()
 		if (canceled || filePaths.length === 0) {
-			return
+			return []
 		}
 		const games: TGame[] = []
 		for (const path of filePaths) {
 			games.push(await getGameFromDesktopFile(path))
 		}
-		dispatch({
-			type: EAction.SET_GAMES,
-			payload: games
-		})
-		navigate(getRoutePath(ERoute.SELECT_ACCOUNT))
-	}, [dispatch, selectMultipleFiles, navigate])
 
-	const setEmuDeckGames = useCallback(async () => {
+		return games
+	}, [selectMultipleFiles])
+
+	const getEmuDeckGames = useCallback(async (): Promise<TGame[]> => {
 		const {canceled, filePaths} = await selectFolder()
 		if (canceled || filePaths.length === 0) {
-			return
+			return []
 		}
-		const emuDeckEmulationFolderPath = filePaths[0]
+		const emulationFolderPath = filePaths[0]
+		const emuDeckConfig = await getEmuDeckConfigFile(emulationFolderPath)
+		return getGamesFromParsers(emuDeckConfig)
 	}, [selectFolder])
 
-	const onNext = useCallback(
-		() => (setupFlow === ESetup.CUSTOM_FOLDER ? setCustomFolderGames() : setEmuDeckGames()),
-		[setupFlow, setCustomFolderGames, setEmuDeckGames]
-	)
+	const onNext = useCallback(async () => {
+		const gamesPromise = setupFlow === ESetup.CUSTOM_FOLDER ? getCustomFolderGames : getEmuDeckGames
+		const games = await gamesPromise()
+		if (games.length > 0) {
+			dispatch({
+				type: EAction.SET_GAMES,
+				payload: games
+			})
+			navigate(getRoutePath(ERoute.SELECT_ACCOUNT))
+		} else {
+			alert('No games found.\nThe folder is empty, please check your input.')
+		}
+	}, [setupFlow, navigate, dispatch, getCustomFolderGames, getEmuDeckGames])
 
 	const toggleAboutModalVisibility = useCallback(() => setIsAboutModalOpened(!isAboutModalOpened), [isAboutModalOpened])
 
