@@ -145,15 +145,17 @@ const SaveShortcut = () => {
 		<Page
 			title={step === EStep.DONE ? EStep.DONE : 'Saving...'}
 			footerComponent={
-				<PageFooter
-					leadingComponent={
-						<div>
-							<Button onClick={onBackToSetup} variant={EButtonVariant.SECONDARY} className={styles['about-button']}>
-								Back
-							</Button>
-						</div>
-					}
-				/>
+				step === EStep.DONE && (
+					<PageFooter
+						leadingComponent={
+							<div>
+								<Button onClick={onBackToSetup} variant={EButtonVariant.SECONDARY} className={styles['about-button']}>
+									Back to Home
+								</Button>
+							</div>
+						}
+					/>
+				)
 			}
 		>
 			<div className={styles['save-shortcut']}>
