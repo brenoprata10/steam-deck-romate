@@ -6,7 +6,7 @@ import styles from './Setup.module.scss'
 import PageFooter from 'renderer/uikit/page/footer/PageFooter.component'
 import Button, {EButtonVariant} from 'renderer/uikit/button/Button.component'
 import {useCallback, useContext, useState} from 'react'
-import {CommonContext, CommonDispatchContext} from 'renderer/context'
+import {CommonDispatchContext} from 'renderer/context'
 import ESetup from 'renderer/enums/ESetup'
 import {EAction} from 'renderer/reducer'
 import AboutModal from 'renderer/pages/setup/about-modal/AboutModal.component'
@@ -17,22 +17,25 @@ import {useNavigate} from 'react-router-dom'
 import {getRoutePath} from 'renderer/route'
 import ERoute from 'renderer/enums/ERoute'
 import SteamGridKeyModal from 'renderer/pages/setup/steam-grid-key-modal/SteamGridKeyModal.component'
+import useSetupFlow from 'renderer/hooks/useSetupFlow'
+import useSteamGridApiKey from 'renderer/hooks/useSteamGridApiKey'
+import useSelectFolder from 'renderer/hooks/useSelectFolder'
 
 const Setup = () => {
 	const [isAboutModalOpened, setIsAboutModalOpened] = useState(false)
 	const [isSteamGridModalOpened, setIsSteamGridModalOpened] = useState(false)
-	const {setupFlow, steamGridApiKey} = useContext(CommonContext)
+	const steamGridApiKey = useSteamGridApiKey()
+	const setupFlow = useSetupFlow()
 	const navigate = useNavigate()
 	const dispatch = useContext(CommonDispatchContext)
 	const {trigger: selectMultipleFiles} = useSelectMultipleFiles({
 		title: 'Select .desktop files',
 		extensions: ['desktop']
 	})
+	const {trigger: selectFolder} = useSelectFolder('Select "Emulation" folder used for Emu Deck Setup')
 
 	const changeSetupFlow = useCallback(
-		(setup: ESetup) => {
-			dispatch({type: EAction.SET_SETUP_FLOW, payload: setup})
-		},
+		(setup: ESetup) => dispatch({type: EAction.SET_SETUP_FLOW, payload: setup}),
 		[dispatch]
 	)
 
@@ -52,9 +55,17 @@ const Setup = () => {
 		navigate(getRoutePath(ERoute.SELECT_ACCOUNT))
 	}, [dispatch, selectMultipleFiles, navigate])
 
+	const setEmuDeckGames = useCallback(async () => {
+		const {canceled, filePaths} = await selectFolder()
+		if (canceled || filePaths.length === 0) {
+			return
+		}
+		const emuDeckEmulationFolderPath = filePaths[0]
+	}, [selectFolder])
+
 	const onNext = useCallback(
-		() => (setupFlow === ESetup.CUSTOM_FOLDER ? setCustomFolderGames() : undefined),
-		[setupFlow, setCustomFolderGames]
+		() => (setupFlow === ESetup.CUSTOM_FOLDER ? setCustomFolderGames() : setEmuDeckGames()),
+		[setupFlow, setCustomFolderGames, setEmuDeckGames]
 	)
 
 	const toggleAboutModalVisibility = useCallback(() => setIsAboutModalOpened(!isAboutModalOpened), [isAboutModalOpened])
