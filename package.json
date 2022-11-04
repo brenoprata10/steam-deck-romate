@@ -38,7 +38,7 @@
     "*.{css,scss}": [
       "prettier --ignore-path .eslintignore --single-quote --parser scss --write"
     ],
-    "*.{html,md,yml}": [
+    "*.{html,md}": [
       "prettier --ignore-path .eslintignore --single-quote --write"
     ]
   },
