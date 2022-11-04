@@ -8,7 +8,9 @@ export const getEmuDeckConfigFile = async (emulationFolderPath: string) => {
 		)
 
 		const emuDeckParserFile = (await response.json()) as TSteamRomManagerParserConfig[]
-		return emuDeckParserFile.map((parser) => mapEmuDeckSteamRomManagerParser(parser, emulationFolderPath))
+		return emuDeckParserFile
+			.filter((parser) => !parser.disabled)
+			.map((parser) => mapEmuDeckSteamRomManagerParser(parser, emulationFolderPath))
 	} catch (error) {
 		console.error(error)
 		throw Error('Could not load EmuDeck config file.')

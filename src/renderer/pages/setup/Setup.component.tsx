@@ -67,6 +67,7 @@ const Setup = () => {
 	const onNext = useCallback(async () => {
 		const gamesPromise = setupFlow === ESetup.CUSTOM_FOLDER ? getCustomFolderGames : getEmuDeckGames
 		const games = await gamesPromise()
+
 		if (games.length > 0) {
 			dispatch({
 				type: EAction.SET_GAMES,
