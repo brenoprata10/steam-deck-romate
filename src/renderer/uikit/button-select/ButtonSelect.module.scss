@@ -19,9 +19,10 @@
 		color: white;
 		backdrop-filter: blur(3px);
 		width: 10rem;
-		padding: 0.5rem 1rem;
-		border-radius: 15px;
+		padding: 0.8rem 1rem;
+		border-radius: 10px;
 		border-top-right-radius: 0;
+		z-index: 10;
 
 		&--PRIMARY {
 			background-color: rgba(var(--primary-color-rgb), 0.5);
@@ -33,9 +34,24 @@
 
 		.option {
 			display: flex;
+			padding: 0.7rem 0;
+			border-bottom: 1px solid white;
+			transition: 0.3s;
+			-webkit-backface-visibility: hidden;
+			-webkit-transform: translateZ(0) scale(1, 1);
 
 			svg {
 				margin-right: 0.7em;
+				align-self: center;
+			}
+
+			&:last-child {
+				border-bottom: none;
+				padding-bottom: 0;
+			}
+
+			&:hover {
+				transform: scale(1.05);
 			}
 		}
 	}

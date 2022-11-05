@@ -1,7 +1,7 @@
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {useState} from 'react'
-import Button, {EButtonSize, EButtonVariant} from 'renderer/uikit/button/Button.component'
+import {EButtonVariant} from 'renderer/uikit/button/Button.component'
 import styles from './ButtonSelect.module.scss'
 
 export type TButtonSelectOption<T> = {label: string; icon: IconProp; value: T}
