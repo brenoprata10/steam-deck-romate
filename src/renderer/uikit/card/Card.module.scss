@@ -8,9 +8,16 @@
 		width: 100%;
 		justify-content: center;
 		margin-bottom: 1.8rem;
+		position: relative;
 
 		.title {
 			font-size: 1.5rem;
+		}
+
+		.options-button {
+			position: absolute;
+			right: -2.6rem;
+			top: 0;
 		}
 	}
 }

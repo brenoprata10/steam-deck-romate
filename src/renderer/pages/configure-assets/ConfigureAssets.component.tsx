@@ -16,6 +16,7 @@ import useSteamGridApiKey from 'renderer/hooks/useSteamGridApiKey'
 import Paginator from 'renderer/uikit/paginator/Paginator.component'
 import {AssetsGrid} from 'renderer/pages/configure-assets/assets-grid/AssetsGrid.component'
 import Loader, {ESize} from 'renderer/uikit/loader/Loader.component'
+import {faSquare, faSquareCheck, faSearch} from '@fortawesome/free-solid-svg-icons'
 
 const ITEMS_PER_PAGE = 10
 
@@ -113,7 +114,15 @@ const ConfigureAssets = () => {
 			) : (
 				<div className={styles.grid}>
 					{displayedGames.map((game, index) => (
-						<Card key={`${game.name}-${index}`} title={game.name} className={styles.game}>
+						<Card
+							key={`${game.name}-${index}`}
+							title={game.name}
+							options={[
+								{icon: faSquare, label: 'Mark as Ignored', value: 'mark as ignored'},
+								{icon: faSearch, label: 'Change Search Term', value: 'mark as ignored'}
+							]}
+							className={styles.game}
+						>
 							<AssetsGrid gameName={game.name} gameId={game.id} assets={game.assets} />
 						</Card>
 					))}

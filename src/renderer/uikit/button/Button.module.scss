@@ -5,13 +5,14 @@
 	font-weight: bold;
 	font-size: 0.875rem;
 	border-radius: 25px;
-	padding: 1em 2em;
 	color: white;
 	cursor: pointer;
 	border: none;
 	text-transform: uppercase;
 	transition: 0.2s;
 	user-select: none;
+	-webkit-backface-visibility: hidden;
+	-webkit-transform: translateZ(0) scale(1, 1);
 
 	&:hover {
 		transform: scale(1.05);
@@ -24,11 +25,34 @@
 		cursor: not-allowed;
 	}
 
+	&-SMALL {
+		padding: 0.5em 1em;
+	}
+
+	&-MEDIUM {
+		padding: 1em 2em;
+	}
+
 	&--PRIMARY {
 		background-color: var(--primary-color);
 	}
 
 	&--SECONDARY {
 		background-color: var(--secondary-color);
+	}
+
+	&-transparent {
+		background-color: transparent;
+		border: 1px solid;
+
+		&-PRIMARY {
+			border-color: var(--primary-color);
+			color: var(--primary-color);
+		}
+
+		&-SECONDARY {
+			border-color: var(--secondary-color);
+			color: var(--secondary-color);
+		}
 	}
 }

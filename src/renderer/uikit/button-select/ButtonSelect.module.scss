@@ -1,0 +1,42 @@
+@use '../../scss/animations.scss';
+
+.button-select {
+	position: relative;
+	cursor: pointer;
+
+	.overlay-wrapper {
+		transition: 0.1s ease-in;
+
+		&:hover {
+			transform: scale(1.1);
+		}
+	}
+
+	.overlay {
+		position: absolute;
+		left: -11rem;
+		font-weight: bold;
+		color: white;
+		backdrop-filter: blur(3px);
+		width: 10rem;
+		padding: 0.5rem 1rem;
+		border-radius: 15px;
+		border-top-right-radius: 0;
+
+		&--PRIMARY {
+			background-color: rgba(var(--primary-color-rgb), 0.5);
+		}
+
+		&--SECONDARY {
+			background-color: rgba(var(--secondary-color-rgb), 0.5);
+		}
+
+		.option {
+			display: flex;
+
+			svg {
+				margin-right: 0.7em;
+			}
+		}
+	}
+}
