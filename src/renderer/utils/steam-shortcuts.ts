@@ -44,10 +44,10 @@ export const getAvailableUserAccounts = async (): Promise<TUserData[]> => {
 				if (!user.name && isPersonaNameLine) {
 					user.name = line.match(lineValuesRegex)?.pop()
 				}
-				if (!user.avatarPictureSrc && isAvatarLine) {
+				/*if (!user.avatarPictureSrc && isAvatarLine && ) {
 					const avatarId = line.match(lineValuesRegex)?.pop()
 					user.avatarPictureSrc = avatarId ? `${STEAM_AVATAR_AKAMAI_URL}/${avatarId}_full.jpg` : 'Not available'
-				}
+				}*/
 			}
 		}
 	} catch (error) {
