@@ -19,6 +19,13 @@
 			animation: bottom-fade-in 0.3s ease-out;
 			user-select: none;
 		}
+
+		.ignored {
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			animation: fade-in 0.3s ease-out;
+		}
 	}
 
 	.trailing-footer-wrapper {

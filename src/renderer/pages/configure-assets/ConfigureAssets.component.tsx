@@ -18,6 +18,11 @@ import {AssetsGrid} from 'renderer/pages/configure-assets/assets-grid/AssetsGrid
 import Loader, {ESize} from 'renderer/uikit/loader/Loader.component'
 import {faSquare, faSquareCheck, faSearch} from '@fortawesome/free-solid-svg-icons'
 
+enum EGameCardOption {
+	MARK_IGNORED = 'Mark as Ignored',
+	CHANGE_SEARCH_TERM = 'Change Search Term'
+}
+
 const ITEMS_PER_PAGE = 10
 
 const ConfigureAssets = () => {
@@ -86,6 +91,16 @@ const ConfigureAssets = () => {
 		[fetchGameAssets]
 	)
 
+	const toggleIgnoredGameStatus = useCallback(
+		(gameId: string) => dispatch({type: EAction.TOGGLE_IGNORED_GAME_STATUS, payload: {gameId}}),
+		[dispatch]
+	)
+
+	const handleGameCardOptionClick = useCallback(
+		(value: EGameCardOption, gameId: string) =>
+			value === EGameCardOption.MARK_IGNORED ? toggleIgnoredGameStatus(gameId) : console.log('Change search term'),
+		[toggleIgnoredGameStatus]
+	)
 	return (
 		<Page
 			title='Configuration'
@@ -118,12 +133,23 @@ const ConfigureAssets = () => {
 							key={`${game.name}-${index}`}
 							title={game.name}
 							options={[
-								{icon: faSquare, label: 'Mark as Ignored', value: 'mark as ignored'},
-								{icon: faSearch, label: 'Change Search Term', value: 'mark as ignored'}
+								{
+									icon: game.isIgnored ? faSquareCheck : faSquare,
+									label: EGameCardOption.MARK_IGNORED,
+									value: EGameCardOption.MARK_IGNORED
+								},
+								{icon: faSearch, label: EGameCardOption.CHANGE_SEARCH_TERM, value: EGameCardOption.CHANGE_SEARCH_TERM}
 							]}
+							onOptionClick={(value) => handleGameCardOptionClick(value, game.id)}
 							className={styles.game}
 						>
-							<AssetsGrid gameName={game.name} gameId={game.id} assets={game.assets} />
+							{!game.isIgnored ? (
+								<AssetsGrid gameName={game.name} gameId={game.id} assets={game.assets} />
+							) : (
+								<div className={styles.ignored}>
+									<b>Marked as Ignored. Shortcut and assets will not be created/modified.</b>
+								</div>
+							)}
 						</Card>
 					))}
 				</div>

@@ -67,16 +67,20 @@ const Component = ({
 	return (
 		<>
 			<div className={styles['assets-grid']}>
-				{assetsList.map((assetType, index) => (
-					<Image
-						key={`${index}-${assetType}`}
-						src={getSelectedAsset({assets: assets[assetType]})?.thumb ?? null}
-						height={GAME_ASSET_IMAGE_CONFIG[assetType].height}
-						width={GAME_ASSET_IMAGE_CONFIG[assetType].width}
-						className={styles.item}
-						onClick={() => onEditAsset(assetType)}
-					/>
-				))}
+				{assetsList.length > 0 ? (
+					assetsList.map((assetType, index) => (
+						<Image
+							key={`${index}-${assetType}`}
+							src={getSelectedAsset({assets: assets[assetType]})?.thumb ?? null}
+							height={GAME_ASSET_IMAGE_CONFIG[assetType].height}
+							width={GAME_ASSET_IMAGE_CONFIG[assetType].width}
+							className={styles.item}
+							onClick={() => onEditAsset(assetType)}
+						/>
+					))
+				) : (
+					<b>No assets were located for term: &quot;{gameName}&quot;.</b>
+				)}
 			</div>
 			<AssetModal
 				isOpened={isAssetModalOpened}

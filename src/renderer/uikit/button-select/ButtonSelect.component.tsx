@@ -15,7 +15,7 @@ const ButtonSelect = <T extends any>({
 }: {
 	icon: IconProp
 	options: TButtonSelectOption<T>[]
-	variant: EButtonVariant
+	variant?: EButtonVariant
 	onClick: (value: T) => void
 }) => {
 	const [isOverlayOpened, setIsOverlayOpened] = useState(false)
@@ -26,12 +26,18 @@ const ButtonSelect = <T extends any>({
 				<FontAwesomeIcon icon={icon} size={'2x'} onClick={() => setIsOverlayOpened(!isOverlayOpened)} />
 			</div>
 			{isOverlayOpened && (
-				<div className={`${styles.overlay} ${styles[`overlay--${variant}`]}`}>
+				<div
+					className={`${styles.overlay} ${styles[`overlay--${variant}`]}`}
+					onMouseLeave={() => setIsOverlayOpened(false)}
+				>
 					{options.map((option, index) => (
-						<div key={`${index}-${option.label}`} className={styles.option} onClick={() => onClick(option.value)}>
-							<FontAwesomeIcon icon={option.icon} />
-							<span>{option.label}</span>
-						</div>
+						<>
+							<div key={`${index}-${option.label}`} className={styles.option} onClick={() => onClick(option.value)}>
+								<FontAwesomeIcon icon={option.icon} />
+								<span>{option.label}</span>
+							</div>
+							{options.length - 1 !== index && <div className={styles.divider} />}
+						</>
 					))}
 				</div>
 			)}

@@ -7,7 +7,7 @@ type TGame = {
 	exec: string
 	collections: string[]
 	assets?: TGameAssetCollection
-	disabled?: boolean
+	isIgnored?: boolean
 }
 
 export default TGame

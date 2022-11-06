@@ -40,7 +40,7 @@ const SaveShortcut = () => {
 	const navigate = useNavigate()
 	const apiKey = useSteamGridApiKey()
 	const steamUserId = useSteamUserId()
-	const games = useGames()
+	const games = useGames().filter((game) => !game.isIgnored)
 
 	const addToLog = (message: string, color = 'white') => {
 		const logElement = document.getElementById('log-wrapper')

@@ -23,6 +23,7 @@
 		border-radius: 10px;
 		border-top-right-radius: 0;
 		z-index: 10;
+		animation: fade-in 0.2s ease-in;
 
 		&--PRIMARY {
 			background-color: rgba(var(--primary-color-rgb), 0.5);
@@ -33,12 +34,12 @@
 		}
 
 		.option {
+			position: relative;
 			display: flex;
 			padding: 0.7rem 0;
-			border-bottom: 1px solid white;
 			transition: 0.3s;
 			-webkit-backface-visibility: hidden;
-			-webkit-transform: translateZ(0) scale(1, 1);
+			-webkit-transform: perspective(1000px);
 
 			svg {
 				margin-right: 0.7em;
@@ -53,6 +54,14 @@
 			&:hover {
 				transform: scale(1.05);
 			}
+		}
+
+		.divider {
+			content: '';
+			height: 1px;
+			background-color: white;
+			transform: scale(1);
+			width: 100%;
 		}
 	}
 }
