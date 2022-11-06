@@ -79,7 +79,7 @@ const Component = ({
 						/>
 					))
 				) : (
-					<b>No assets were located for term: &quot;{gameName}&quot;.</b>
+					<b>No assets were located for current search term.</b>
 				)}
 			</div>
 			<AssetModal

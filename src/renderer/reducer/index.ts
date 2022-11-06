@@ -3,6 +3,7 @@ import EAssetType from 'renderer/enums/EAssetType'
 import ESetup from 'renderer/enums/ESetup'
 import {TSteamGridAsset} from 'renderer/types/TApiSteamGridAssets'
 import TGame from 'renderer/types/TGame'
+import TGameAssetCollection from 'renderer/types/TGameAssetCollection'
 
 export type TCommonState = {
 	games: TGame[]
@@ -24,7 +25,8 @@ export enum EAction {
 	SET_STEAM_GRID_API_KEY = 'SET_STEAM_GRID_API_KEY',
 	SELECT_ASSET = 'SELECT_ASSET',
 	SET_STEAM_USER_ID = 'SET_STEAM_USER_ID',
-	SET_STORAGE_DEVICE_PATH = 'SET_STORAGE_DEVICE_PATH'
+	SET_STORAGE_DEVICE_PATH = 'SET_STORAGE_DEVICE_PATH',
+	UPDATE_GAME_ASSETS = 'UPDATE_GAME_ASSETS'
 }
 
 export type TAction =
@@ -38,6 +40,7 @@ export type TAction =
 	| {type: EAction.SELECT_ASSET; payload: {gameId: string; assetType: EAssetType; assetId: number}}
 	| {type: EAction.SET_STEAM_USER_ID; payload: string}
 	| {type: EAction.SET_STORAGE_DEVICE_PATH; payload: string}
+	| {type: EAction.UPDATE_GAME_ASSETS; payload: {gameId: string; assets: TGameAssetCollection}}
 
 export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 	switch (action.type) {
@@ -59,6 +62,13 @@ export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 			return {...state, steamUserId: action.payload}
 		case EAction.SET_STORAGE_DEVICE_PATH:
 			return {...state, storageDevicePath: action.payload}
+		case EAction.UPDATE_GAME_ASSETS:
+			return {
+				...state,
+				games: state.games.map((game) =>
+					game.id === action.payload.gameId ? {...game, assets: action.payload.assets} : game
+				)
+			}
 		case EAction.SELECT_ASSET: {
 			const {gameId, assetType, assetId} = action.payload
 			const modifiedGame = state.games.find((game) => game.id === gameId)

@@ -17,6 +17,8 @@ import Paginator from 'renderer/uikit/paginator/Paginator.component'
 import {AssetsGrid} from 'renderer/pages/configure-assets/assets-grid/AssetsGrid.component'
 import Loader, {ESize} from 'renderer/uikit/loader/Loader.component'
 import {faSquare, faSquareCheck, faSearch} from '@fortawesome/free-solid-svg-icons'
+import ChangeSearchModal from './change-search-modal/ChangeSearchModal.component'
+import TGame from 'renderer/types/TGame'
 
 enum EGameCardOption {
 	MARK_IGNORED = 'Mark as Ignored',
@@ -27,6 +29,7 @@ const ITEMS_PER_PAGE = 10
 
 const ConfigureAssets = () => {
 	const [isLoading, setIsLoading] = useState(true)
+	const [gameToChangeSearchTerm, setGameToChangeSearchTerm] = useState<TGame | null>(null)
 	const [page, setPage] = useState(0)
 	const navigate = useNavigate()
 	const dispatch = useContext(CommonDispatchContext)
@@ -96,10 +99,17 @@ const ConfigureAssets = () => {
 		[dispatch]
 	)
 
+	const openChangeSearchTermModal = useCallback(
+		(gameId: string) => {
+			setGameToChangeSearchTerm(games.find((game) => game.id === gameId) ?? null)
+		},
+		[games]
+	)
+
 	const handleGameCardOptionClick = useCallback(
 		(value: EGameCardOption, gameId: string) =>
-			value === EGameCardOption.MARK_IGNORED ? toggleIgnoredGameStatus(gameId) : console.log('Change search term'),
-		[toggleIgnoredGameStatus]
+			value === EGameCardOption.MARK_IGNORED ? toggleIgnoredGameStatus(gameId) : openChangeSearchTermModal(gameId),
+		[toggleIgnoredGameStatus, openChangeSearchTermModal]
 	)
 	return (
 		<Page
@@ -153,6 +163,9 @@ const ConfigureAssets = () => {
 						</Card>
 					))}
 				</div>
+			)}
+			{gameToChangeSearchTerm && (
+				<ChangeSearchModal game={gameToChangeSearchTerm} onClose={() => setGameToChangeSearchTerm(null)} />
 			)}
 		</Page>
 	)

@@ -6,7 +6,7 @@ export enum ESize {
 	LARGE = 'LARGE'
 }
 
-const Loader = ({size = ESize.MEDIUM}: {size: ESize}) => {
+const Loader = ({size = ESize.MEDIUM}: {size?: ESize}) => {
 	return <div className={`${styles.loader} ${styles[`loader-${size}`]}`} />
 }
 

@@ -1,0 +1,21 @@
+.change-search-modal {
+	.save {
+		width: 100%;
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	.label {
+		width: 100%;
+	}
+
+	.preview {
+		margin-left: 0.7rem;
+	}
+
+	.loader {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+	}
+}

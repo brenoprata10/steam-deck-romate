@@ -31,13 +31,13 @@ const ButtonSelect = <T extends any>({
 					onMouseLeave={() => setIsOverlayOpened(false)}
 				>
 					{options.map((option, index) => (
-						<>
-							<div key={`${index}-${option.label}`} className={styles.option} onClick={() => onClick(option.value)}>
+						<div key={`${index}-${option.label}`}>
+							<div className={styles.option} onClick={() => onClick(option.value)}>
 								<FontAwesomeIcon icon={option.icon} />
 								<span>{option.label}</span>
 							</div>
 							{options.length - 1 !== index && <div className={styles.divider} />}
-						</>
+						</div>
 					))}
 				</div>
 			)}
