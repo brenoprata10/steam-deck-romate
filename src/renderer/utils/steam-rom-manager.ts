@@ -20,12 +20,16 @@ export const mapEmuDeckSteamRomManagerParser = (
 	emulationFolderPath: string
 ): TParserConfig => {
 	// Only linux support for now
-	const args = executableArgs
+	let args = executableArgs
 		.replace('${os:win|cores|${os:mac|${racores}|${os:linux|${racores}}}}', '')
 		.replace('${/}', '/')
 		.replace('${os:win|dll|${os:mac|dylib|${os:linux|so}}}', 'so')
 	const executablePath = executableModifier.replaceAll('${exePath}', executable.path)
-	const path = executable.appendArgsToExecutable ? `${executablePath} ${args}` : executablePath
+	let path = executablePath
+	if (executable.appendArgsToExecutable) {
+		path = `${executablePath} ${args}`
+		args = ''
+	}
 	const romDirectory = emudeckRomDirectory.replace(DEFAULT_EMUDECK_EMULATION_FOLDER_PATH, emulationFolderPath)
 
 	return {
