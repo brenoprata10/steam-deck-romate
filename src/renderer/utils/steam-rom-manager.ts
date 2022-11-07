@@ -24,13 +24,13 @@ export const mapEmuDeckSteamRomManagerParser = (
 		.replace('${os:win|cores|${os:mac|${racores}|${os:linux|${racores}}}}', '')
 		.replace('${/}', '/')
 		.replace('${os:win|dll|${os:mac|dylib|${os:linux|so}}}', 'so')
-	const executablePath = executable.appendArgsToExecutable ? `"${executable.path}" ${args}` : executable.path
+	const executablePath = executableModifier.replaceAll('${exePath}', executable.path)
+	const path = executable.appendArgsToExecutable ? `${executablePath} ${args}` : executablePath
 	const romDirectory = emudeckRomDirectory.replace(DEFAULT_EMUDECK_EMULATION_FOLDER_PATH, emulationFolderPath)
 
 	return {
 		executable: {
-			path: executablePath,
-			modifier: executableModifier.replaceAll('${exePath}', executablePath),
+			path,
 			arguments: args
 		},
 		romDirectory,

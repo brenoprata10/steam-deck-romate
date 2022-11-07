@@ -1,7 +1,6 @@
 type TParserConfig = {
 	romDirectory: string
 	executable: {
-		modifier: string
 		arguments: string
 		path: string
 	}

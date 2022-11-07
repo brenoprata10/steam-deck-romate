@@ -13,13 +13,15 @@ export const getGamesFromParser = (parser: TParserConfig): TGame[] => {
 		const name = getFileNameWithoutExtension(romFileName)
 		const path = `${parser.romDirectory}/${romFileName}`
 		const exec = parser.executable.path.replace('${filePath}', path)
+		const launchOptions = parser.executable.arguments.replace('${filePath}', path)
 
 		return {
 			id: generateShortAppId(parser.romDirectory, name),
 			exec,
 			name,
 			collections: parser.category ? [parser.category] : [],
-			path
+			path,
+			launchOptions
 		}
 	})
 }

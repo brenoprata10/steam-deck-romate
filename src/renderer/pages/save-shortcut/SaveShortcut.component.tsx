@@ -103,7 +103,8 @@ const SaveShortcut = () => {
 				AppName: game.name,
 				Exe: game.exec,
 				AppId: game.id,
-				icon: iconPath
+				icon: iconPath,
+				LaunchOptions: game.launchOptions ?? ''
 			}
 			const shortcutsValue = Object.values(shortcutsObject.shortcuts)
 			const persistedGame = shortcutsValue.find((shortcut) => shortcut.AppId == game.id || shortcut.appid == game.id)

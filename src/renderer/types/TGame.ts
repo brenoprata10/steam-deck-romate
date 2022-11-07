@@ -6,6 +6,7 @@ type TGame = {
 	path: string
 	exec: string
 	collections: string[]
+	launchOptions?: string
 	assets?: TGameAssetCollection
 	isIgnored?: boolean
 }
