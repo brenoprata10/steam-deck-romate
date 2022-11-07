@@ -54,7 +54,11 @@ const SelectUserAccount = () => {
 							Back
 						</Button>
 					}
-					trailingComponent={<Button onClick={onNext}>Next</Button>}
+					trailingComponent={
+						<Button disabled={!steamUserId} onClick={onNext}>
+							Next
+						</Button>
+					}
 				/>
 			}
 		>
