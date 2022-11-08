@@ -18,6 +18,20 @@
 		.game {
 			animation: bottom-fade-in 0.3s ease-out;
 			user-select: none;
+
+			.title {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				width: fit-content;
+
+				.tags {
+					margin-top: 0.7rem;
+					display: flex;
+					gap: 0.5rem;
+				}
+			}
 		}
 
 		.ignored {

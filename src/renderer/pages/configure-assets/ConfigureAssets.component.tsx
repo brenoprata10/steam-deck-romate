@@ -19,6 +19,7 @@ import Loader, {ESize} from 'renderer/uikit/loader/Loader.component'
 import {faSquare, faSquareCheck, faSearch} from '@fortawesome/free-solid-svg-icons'
 import ChangeSearchModal from './change-search-modal/ChangeSearchModal.component'
 import TGame from 'renderer/types/TGame'
+import Tag from 'renderer/uikit/tag/Tag.component'
 
 enum EGameCardOption {
 	MARK_IGNORED = 'Mark as Ignored',
@@ -141,7 +142,17 @@ const ConfigureAssets = () => {
 					{displayedGames.map((game, index) => (
 						<Card
 							key={`${game.name}-${index}`}
-							title={game.name}
+							title={
+								<div className={styles.title}>
+									<span>{game.name}</span>
+									<div className={styles.tags}>
+										{!game.hasCacheEntry && <Tag>NEW</Tag>}
+										{game.collections.map((collection) => (
+											<Tag key={`${collection}-${game.id}`}>{collection}</Tag>
+										))}
+									</div>
+								</div>
+							}
 							options={[
 								{
 									icon: game.isIgnored ? faSquareCheck : faSquare,

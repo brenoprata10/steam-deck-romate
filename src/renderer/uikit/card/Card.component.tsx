@@ -10,7 +10,7 @@ const Card = <T extends any>({
 	onOptionClick,
 	children
 }: {
-	title: string
+	title: string | React.ReactNode
 	className?: string
 	options?: TButtonSelectOption<T>[]
 	onOptionClick?: (value: T) => void

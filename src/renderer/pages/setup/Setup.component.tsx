@@ -11,7 +11,7 @@ import ESetup from 'renderer/enums/ESetup'
 import {EAction} from 'renderer/reducer'
 import AboutModal from 'renderer/pages/setup/about-modal/AboutModal.component'
 import useSelectMultipleFiles from 'renderer/hooks/useSelectMultipleFiles'
-import {getGameFromDesktopFile} from 'renderer/utils/game'
+import {getCachedGames, getGameFromDesktopFile} from 'renderer/utils/game'
 import TGame from 'renderer/types/TGame'
 import {useNavigate} from 'react-router-dom'
 import {getRoutePath} from 'renderer/route'
@@ -22,6 +22,7 @@ import useSteamGridApiKey from 'renderer/hooks/useSteamGridApiKey'
 import useSelectFolder from 'renderer/hooks/useSelectFolder'
 import {getEmuDeckConfigFile} from 'renderer/api/emu-deck.api'
 import {getGamesFromParsers} from 'renderer/utils/parser'
+import ELocalStorageKey from 'renderer/enums/ELocalStorageKey'
 
 const Setup = () => {
 	const [isAboutModalOpened, setIsAboutModalOpened] = useState(false)
@@ -65,8 +66,12 @@ const Setup = () => {
 	}, [selectFolder])
 
 	const onNext = useCallback(async () => {
+		const cachedGames = getCachedGames()
 		const gamesPromise = setupFlow === ESetup.CUSTOM_FOLDER ? getCustomFolderGames : getEmuDeckGames
-		const games = await gamesPromise()
+		const games = (await gamesPromise()).map((game) => ({
+			...game,
+			hasCacheEntry: cachedGames.some((cachedGame) => cachedGame.id === game.id)
+		}))
 
 		if (games.length > 0) {
 			dispatch({

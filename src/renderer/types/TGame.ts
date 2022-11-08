@@ -9,6 +9,8 @@ type TGame = {
 	launchOptions?: string
 	assets?: TGameAssetCollection
 	isIgnored?: boolean
+	// Used to determine if game was already added on a previous run
+	hasCacheEntry?: boolean
 }
 
 export default TGame

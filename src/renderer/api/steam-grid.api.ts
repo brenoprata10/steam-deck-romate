@@ -7,8 +7,6 @@ import EAssetType from 'renderer/enums/EAssetType'
 import TGameAssetCollection from 'renderer/types/TGameAssetCollection'
 import TBaseApiSteamGrid from 'renderer/types/TBaseApiSteamGrid'
 
-export const LOCAL_STORAGE_STEAM_GRID_API_KEY = 'steam-grid-api-key'
-
 export const getGameIdByName = async ({
 	gameName: gameName,
 	apiKey

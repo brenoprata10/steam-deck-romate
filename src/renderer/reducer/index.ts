@@ -1,5 +1,5 @@
-import {LOCAL_STORAGE_STEAM_GRID_API_KEY} from 'renderer/api/steam-grid.api'
 import EAssetType from 'renderer/enums/EAssetType'
+import ELocalStorageKey from 'renderer/enums/ELocalStorageKey'
 import ESetup from 'renderer/enums/ESetup'
 import {TSteamGridAsset} from 'renderer/types/TApiSteamGridAssets'
 import TGame from 'renderer/types/TGame'
@@ -15,7 +15,7 @@ export type TCommonState = {
 
 export const INITIAL_STATE: TCommonState = {
 	games: [],
-	steamGridApiKey: localStorage.getItem(LOCAL_STORAGE_STEAM_GRID_API_KEY)
+	steamGridApiKey: localStorage.getItem(ELocalStorageKey.STEAM_GRID_API_KEY)
 }
 
 export enum EAction {
@@ -56,7 +56,7 @@ export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 				)
 			}
 		case EAction.SET_STEAM_GRID_API_KEY:
-			localStorage.setItem(LOCAL_STORAGE_STEAM_GRID_API_KEY, action.payload)
+			localStorage.setItem(ELocalStorageKey.STEAM_GRID_API_KEY, action.payload)
 			return {...state, steamGridApiKey: action.payload}
 		case EAction.SET_STEAM_USER_ID:
 			return {...state, steamUserId: action.payload}

@@ -6,6 +6,7 @@ import {useNavigate} from 'react-router-dom'
 import {useMount} from 'react-use'
 import {getGameAssetsByName} from 'renderer/api/steam-grid.api'
 import EAssetType from 'renderer/enums/EAssetType'
+import ELocalStorageKey from 'renderer/enums/ELocalStorageKey'
 import ERoute from 'renderer/enums/ERoute'
 import useGames from 'renderer/hooks/useGames'
 import useSteamGridApiKey from 'renderer/hooks/useSteamGridApiKey'
@@ -17,6 +18,7 @@ import PageFooter from 'renderer/uikit/page/footer/PageFooter.component'
 import Page from 'renderer/uikit/page/Page.component'
 import {getSelectedAsset} from 'renderer/utils/asset'
 import {getFileExtension} from 'renderer/utils/files'
+import {getCachedGames} from 'renderer/utils/game'
 import {getAssetFileName} from 'renderer/utils/steam-assets'
 import {getSteamGridAssetsFolderPath, getSteamShortcuts, saveSteamShortcuts} from 'renderer/utils/steam-shortcuts'
 import {VdfMap} from 'steam-binary-vdf'
@@ -121,6 +123,20 @@ const SaveShortcut = () => {
 		addToLog('Saving shortcut.vdf to Steam folder.', PRIMARY_LOG_COLOR)
 	}
 
+	const saveGamesToLocalStorage = useCallback(() => {
+		const updatedCachedGames = [...games]
+		const cachedGames = getCachedGames()
+		if (cachedGames.length > 0) {
+			for (const cachedGame of cachedGames) {
+				const duplicatedGame = games.find((game) => game.id === cachedGame.id)
+				if (!duplicatedGame) {
+					updatedCachedGames.push(cachedGame)
+				}
+			}
+		}
+		localStorage.setItem(ELocalStorageKey.CACHED_GAMES, JSON.stringify(updatedCachedGames))
+	}, [games])
+
 	useMount(() => {
 		const createShortcuts = async () => {
 			const unloadedGames = games.filter((game) => !game.assets)
@@ -133,6 +149,7 @@ const SaveShortcut = () => {
 			addToLog('All assets were downloaded.', PRIMARY_LOG_COLOR)
 			setStep(EStep.SAVE_SHORTCUTS)
 			await saveShortcuts()
+			saveGamesToLocalStorage()
 			addToLog('All done. Happy gaming! 😀')
 			setStep(EStep.DONE)
 		}

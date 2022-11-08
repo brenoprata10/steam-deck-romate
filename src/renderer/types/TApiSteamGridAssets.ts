@@ -11,6 +11,8 @@ export type TSteamGridAsset = {
 	height: number
 	width: number
 	mime: string
+	// Used to verify if cached game already have downloaded asset
+	isDownloaded?: boolean
 	// Defines wheter asset is the one that will be used
 	isSelected?: boolean
 }

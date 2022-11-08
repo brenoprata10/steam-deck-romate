@@ -1,3 +1,4 @@
+import ELocalStorageKey from 'renderer/enums/ELocalStorageKey'
 import TGame from 'renderer/types/TGame'
 import {getTextFileData} from 'renderer/utils/files'
 import {generateShortAppId} from 'renderer/utils/generate-app-id'
@@ -30,4 +31,12 @@ export const getGameFromDesktopFile = async (path: string): Promise<TGame> => {
 	game.id = generateShortAppId(game.path, game.name)
 
 	return game
+}
+
+export const getCachedGames = (): TGame[] => {
+	const cachedGamesLocalStorage = localStorage.getItem(ELocalStorageKey.CACHED_GAMES)
+	if (cachedGamesLocalStorage) {
+		return JSON.parse(cachedGamesLocalStorage) as TGame[]
+	}
+	return []
 }
