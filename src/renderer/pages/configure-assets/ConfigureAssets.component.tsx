@@ -17,9 +17,10 @@ import Paginator from 'renderer/uikit/paginator/Paginator.component'
 import {AssetsGrid} from 'renderer/pages/configure-assets/assets-grid/AssetsGrid.component'
 import Loader, {ESize} from 'renderer/uikit/loader/Loader.component'
 import {faSquare, faSquareCheck, faSearch} from '@fortawesome/free-solid-svg-icons'
-import ChangeSearchModal from './change-search-modal/ChangeSearchModal.component'
+import ChangeSearchModal from 'renderer/pages/configure-assets/change-search-modal/ChangeSearchModal.component'
 import TGame from 'renderer/types/TGame'
 import Tag from 'renderer/uikit/tag/Tag.component'
+import {getAssetsWithPreSelection, isCachedGame} from 'renderer/utils/game'
 
 enum EGameCardOption {
 	MARK_IGNORED = 'Mark as Ignored',
@@ -62,9 +63,11 @@ const ConfigureAssets = () => {
 							}
 
 							const gameCollectionIndex = gamesSlice.findIndex((gameSlice) => gameSlice.currentIndex === index)
+							const gameAssets = gameCollectionIndex !== undefined ? gameCollections[gameCollectionIndex] : undefined
+
 							return {
 								...game,
-								assets: gameCollectionIndex !== undefined ? gameCollections[gameCollectionIndex] : undefined
+								assets: isCachedGame(game.id) ? getAssetsWithPreSelection(game.id, gameAssets) : gameAssets
 							}
 						})
 					})

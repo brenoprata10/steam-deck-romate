@@ -18,7 +18,7 @@ import PageFooter from 'renderer/uikit/page/footer/PageFooter.component'
 import Page from 'renderer/uikit/page/Page.component'
 import {getSelectedAsset} from 'renderer/utils/asset'
 import {getFileExtension} from 'renderer/utils/files'
-import {getCachedGames} from 'renderer/utils/game'
+import {getAssetsWithPreSelection, getCachedGames} from 'renderer/utils/game'
 import {getAssetFileName} from 'renderer/utils/steam-assets'
 import {getSteamGridAssetsFolderPath, getSteamShortcuts, saveSteamShortcuts} from 'renderer/utils/steam-shortcuts'
 import {VdfMap} from 'steam-binary-vdf'
@@ -56,9 +56,19 @@ const SaveShortcut = () => {
 	}
 
 	const downloadAssets = async (games: TGame[]) => {
+		let skippedCount = 0
+
 		for (const game of games) {
 			for (const assetType of Object.keys(EAssetType) as EAssetType[]) {
 				const selectedAsset = getSelectedAsset({assets: game.assets?.[assetType] ?? []})
+				const cachedGame = getCachedGames().find((cachedGame) => cachedGame.id === game.id)
+				const isAssetAlreadyDownloaded =
+					getSelectedAsset({assets: cachedGame?.assets?.[assetType] ?? []})?.id === selectedAsset?.id
+
+				if (isAssetAlreadyDownloaded) {
+					skippedCount++
+					continue
+				}
 
 				if (selectedAsset && steamUserId) {
 					const assetExtension = getFileExtension(selectedAsset.mime)
@@ -75,6 +85,9 @@ const SaveShortcut = () => {
 				}
 			}
 		}
+		if (skippedCount > 0) {
+			addToLog(`Skipped ${skippedCount} unmodified files.`, SECONDARY_LOG_COLOR)
+		}
 	}
 
 	const fetchAssetsForUnloadedGames = async (games: TGame[]): Promise<TGame[]> => {
@@ -86,7 +99,7 @@ const SaveShortcut = () => {
 			games.map((game) => PROMISE_THROTTLE.add(() => getGameAssetsByName({gameName: game.name, apiKey})))
 		)
 		addToLog('Finished fetching additional images.', PRIMARY_LOG_COLOR)
-		return games.map((game, index) => ({...game, assets: responseArray[index]}))
+		return games.map((game, index) => ({...game, assets: getAssetsWithPreSelection(game.id, responseArray[index])}))
 	}
 
 	const saveShortcuts = async () => {
@@ -123,19 +136,19 @@ const SaveShortcut = () => {
 		addToLog('Saving shortcut.vdf to Steam folder.', PRIMARY_LOG_COLOR)
 	}
 
-	const saveGamesToLocalStorage = useCallback(() => {
-		const updatedCachedGames = [...games]
+	const saveGamesToLocalStorage = useCallback((updatedGames: TGame[]) => {
+		const updatedCachedGames = [...updatedGames]
 		const cachedGames = getCachedGames()
 		if (cachedGames.length > 0) {
 			for (const cachedGame of cachedGames) {
-				const duplicatedGame = games.find((game) => game.id === cachedGame.id)
+				const duplicatedGame = updatedGames.find((game) => game.id === cachedGame.id)
 				if (!duplicatedGame) {
 					updatedCachedGames.push(cachedGame)
 				}
 			}
 		}
 		localStorage.setItem(ELocalStorageKey.CACHED_GAMES, JSON.stringify(updatedCachedGames))
-	}, [games])
+	}, [])
 
 	useMount(() => {
 		const createShortcuts = async () => {
@@ -149,7 +162,9 @@ const SaveShortcut = () => {
 			addToLog('All assets were downloaded.', PRIMARY_LOG_COLOR)
 			setStep(EStep.SAVE_SHORTCUTS)
 			await saveShortcuts()
-			saveGamesToLocalStorage()
+			saveGamesToLocalStorage(
+				games.map((game) => unloadedGamesWithAssets.find((unloadedGame) => unloadedGame.id === game.id) ?? game)
+			)
 			addToLog('All done. Happy gaming! 😀')
 			setStep(EStep.DONE)
 		}

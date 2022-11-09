@@ -22,7 +22,6 @@ import useSteamGridApiKey from 'renderer/hooks/useSteamGridApiKey'
 import useSelectFolder from 'renderer/hooks/useSelectFolder'
 import {getEmuDeckConfigFile} from 'renderer/api/emu-deck.api'
 import {getGamesFromParsers} from 'renderer/utils/parser'
-import ELocalStorageKey from 'renderer/enums/ELocalStorageKey'
 
 const Setup = () => {
 	const [isAboutModalOpened, setIsAboutModalOpened] = useState(false)
