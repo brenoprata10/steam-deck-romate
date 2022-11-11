@@ -21,6 +21,7 @@ import ChangeSearchModal from 'renderer/pages/configure-assets/change-search-mod
 import TGame from 'renderer/types/TGame'
 import Tag from 'renderer/uikit/tag/Tag.component'
 import {getAssetsWithPreSelection, getGameSearchTerm, isCachedGame} from 'renderer/utils/game'
+import ParserConfigModal from './parser-config-modal/ParserConfigModal.component'
 
 enum EGameCardOption {
 	MARK_IGNORED = 'Mark as Ignored',
@@ -32,6 +33,7 @@ const ITEMS_PER_PAGE = 10
 const ConfigureAssets = () => {
 	const [isLoading, setIsLoading] = useState(true)
 	const [gameToChangeSearchTerm, setGameToChangeSearchTerm] = useState<TGame | null>(null)
+	const [isConfigModalOpened, setIsConfigModalOpened] = useState(true)
 	const [page, setPage] = useState(0)
 	const navigate = useNavigate()
 	const dispatch = useContext(CommonDispatchContext)
@@ -181,6 +183,7 @@ const ConfigureAssets = () => {
 			{gameToChangeSearchTerm && (
 				<ChangeSearchModal game={gameToChangeSearchTerm} onClose={() => setGameToChangeSearchTerm(null)} />
 			)}
+			<ParserConfigModal isOpened={isConfigModalOpened} games={games} onClose={() => setIsConfigModalOpened(false)} />
 		</Page>
 	)
 }
