@@ -20,7 +20,7 @@ import {faSquare, faSquareCheck, faSearch} from '@fortawesome/free-solid-svg-ico
 import ChangeSearchModal from 'renderer/pages/configure-assets/change-search-modal/ChangeSearchModal.component'
 import TGame from 'renderer/types/TGame'
 import Tag from 'renderer/uikit/tag/Tag.component'
-import {getAssetsWithPreSelection, isCachedGame} from 'renderer/utils/game'
+import {getAssetsWithPreSelection, getGameSearchTerm, isCachedGame} from 'renderer/utils/game'
 
 enum EGameCardOption {
 	MARK_IGNORED = 'Mark as Ignored',
@@ -52,7 +52,7 @@ const ConfigureAssets = () => {
 				if (gamesSlice.length > 0 && apiKey) {
 					console.log('Fetching game assets: ', gamesSlice.map((game) => game.name).join())
 					const gameCollections = await Promise.all(
-						gamesSlice.map((game) => getGameAssetsByName({gameName: game.name, apiKey}))
+						gamesSlice.map((game) => getGameAssetsByName({gameName: getGameSearchTerm(game), apiKey}))
 					)
 
 					dispatch({

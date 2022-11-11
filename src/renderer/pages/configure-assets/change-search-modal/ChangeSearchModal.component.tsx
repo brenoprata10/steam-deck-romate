@@ -8,27 +8,30 @@ import TGame from 'renderer/types/TGame'
 import Button from 'renderer/uikit/button/Button.component'
 import Loader from 'renderer/uikit/loader/Loader.component'
 import Modal from 'renderer/uikit/modal/Modal.component'
+import {getGameSearchTerm} from 'renderer/utils/game'
 import styles from './ChangeSearchModal.module.scss'
 
 const ChangeSearchModal = ({game, onClose}: {game: TGame; onClose: () => void}) => {
 	const apiKey = useSteamGridApiKey()
 	const dispatch = useContext(CommonDispatchContext)
-	const [searchTerm, setSearchTerm] = useState(game.name)
+	const searchTerm = getGameSearchTerm(game)
+	const [inputSearchTerm, setInputSearchTerm] = useState(searchTerm)
 	const [state, fetchAssets] = useAsyncFn(async () => {
 		if (!apiKey) {
 			throw Error('No API key provided')
 		}
-		const gameAssets = await getGameAssetsByName({gameName: searchTerm, apiKey})
+		const gameAssets = await getGameAssetsByName({gameName: inputSearchTerm, apiKey})
 		if (!gameAssets) {
 			alert(`No assets were located for search term: "${searchTerm}".`)
 			throw Error('No assets found')
 		}
+		dispatch({type: EAction.UPDATE_GAME_SEARCH_TERM, payload: {gameId: game.id, searchTerm: inputSearchTerm}})
 		dispatch({type: EAction.UPDATE_GAME_ASSETS, payload: {gameId: game.id, assets: gameAssets}})
 		onClose()
-	}, [apiKey, searchTerm, game])
+	}, [apiKey, game, inputSearchTerm])
 
 	const onChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchTerm(event.target.value)
+		setInputSearchTerm(event.target.value)
 	}, [])
 
 	return (
@@ -52,7 +55,7 @@ const ChangeSearchModal = ({game, onClose}: {game: TGame; onClose: () => void}) 
 			) : (
 				<p>
 					<label htmlFor={'search-term'}>New Search Term:</label>{' '}
-					<input id={'search-term'} autoFocus value={searchTerm} type={'text'} onChange={onChange} />
+					<input id={'search-term'} autoFocus value={inputSearchTerm} type={'text'} onChange={onChange} />
 				</p>
 			)}
 		</Modal>

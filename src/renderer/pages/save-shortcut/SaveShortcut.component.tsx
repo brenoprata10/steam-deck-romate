@@ -18,7 +18,7 @@ import PageFooter from 'renderer/uikit/page/footer/PageFooter.component'
 import Page from 'renderer/uikit/page/Page.component'
 import {getSelectedAsset} from 'renderer/utils/asset'
 import {getFileExtension} from 'renderer/utils/files'
-import {getAssetsWithPreSelection, getCachedGames} from 'renderer/utils/game'
+import {getAssetsWithPreSelection, getCachedGames, getGameSearchTerm} from 'renderer/utils/game'
 import {getAssetFileName} from 'renderer/utils/steam-assets'
 import {getSteamGridAssetsFolderPath, getSteamShortcuts, saveSteamShortcuts} from 'renderer/utils/steam-shortcuts'
 import {VdfMap} from 'steam-binary-vdf'
@@ -96,7 +96,7 @@ const SaveShortcut = () => {
 		}
 		addToLog(`Fetching additional asset for: ${games.length} games. This might take a while...`, PRIMARY_LOG_COLOR)
 		const responseArray = await Promise.all(
-			games.map((game) => PROMISE_THROTTLE.add(() => getGameAssetsByName({gameName: game.name, apiKey})))
+			games.map((game) => PROMISE_THROTTLE.add(() => getGameAssetsByName({gameName: getGameSearchTerm(game), apiKey})))
 		)
 		addToLog('Finished fetching additional images.', PRIMARY_LOG_COLOR)
 		return games.map((game, index) => ({...game, assets: getAssetsWithPreSelection(game.id, responseArray[index])}))

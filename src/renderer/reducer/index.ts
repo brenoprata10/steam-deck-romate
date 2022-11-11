@@ -26,7 +26,8 @@ export enum EAction {
 	SELECT_ASSET = 'SELECT_ASSET',
 	SET_STEAM_USER_ID = 'SET_STEAM_USER_ID',
 	SET_STORAGE_DEVICE_PATH = 'SET_STORAGE_DEVICE_PATH',
-	UPDATE_GAME_ASSETS = 'UPDATE_GAME_ASSETS'
+	UPDATE_GAME_ASSETS = 'UPDATE_GAME_ASSETS',
+	UPDATE_GAME_SEARCH_TERM = 'UPDATE_GAME_SEARCH_TERM'
 }
 
 export type TAction =
@@ -41,6 +42,7 @@ export type TAction =
 	| {type: EAction.SET_STEAM_USER_ID; payload: string}
 	| {type: EAction.SET_STORAGE_DEVICE_PATH; payload: string}
 	| {type: EAction.UPDATE_GAME_ASSETS; payload: {gameId: string; assets: TGameAssetCollection}}
+	| {type: EAction.UPDATE_GAME_SEARCH_TERM; payload: {gameId: string; searchTerm: string}}
 
 export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 	switch (action.type) {
@@ -67,6 +69,13 @@ export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 				...state,
 				games: state.games.map((game) =>
 					game.id === action.payload.gameId ? {...game, assets: action.payload.assets} : game
+				)
+			}
+		case EAction.UPDATE_GAME_SEARCH_TERM:
+			return {
+				...state,
+				games: state.games.map((game) =>
+					game.id === action.payload.gameId ? {...game, searchTerm: action.payload.searchTerm} : game
 				)
 			}
 		case EAction.SELECT_ASSET: {
