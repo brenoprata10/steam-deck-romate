@@ -1,6 +1,7 @@
 import TGame from 'renderer/types/TGame'
 import Button from 'renderer/uikit/button/Button.component'
 import Modal from 'renderer/uikit/modal/Modal.component'
+import GameCollection from 'renderer/pages/configure-assets/parser-config-modal/game-collection/GameCollection.component'
 import styles from './ParserConfigModal.module.scss'
 
 const ParserConfigModal = ({isOpened, games, onClose}: {isOpened: boolean; games: TGame[]; onClose: () => void}) => {
@@ -22,9 +23,15 @@ const ParserConfigModal = ({isOpened, games, onClose}: {isOpened: boolean; games
 		>
 			<div className={styles['collection-list']}>
 				{Array.from(availableCollections).map((collection) => (
-					<div key={collection} className={styles.item}>
-						{collection}
-					</div>
+					<GameCollection
+						key={collection}
+						games={games.filter((game) =>
+							game.collections.some((gameCollection) => gameCollection.trim() === collection.trim())
+						)}
+						collection={collection}
+						onCollectionClick={() => console.log('Collection Click')}
+						onGameClick={() => console.log('Game CLick')}
+					/>
 				))}
 			</div>
 		</Modal>
