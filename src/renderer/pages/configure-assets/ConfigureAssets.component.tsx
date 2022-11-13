@@ -101,7 +101,7 @@ const ConfigureAssets = () => {
 	)
 
 	const toggleIgnoredGameStatus = useCallback(
-		(gameId: string) => dispatch({type: EAction.TOGGLE_IGNORED_GAME_STATUS, payload: {gameId}}),
+		(gameId: string) => dispatch({type: EAction.TOGGLE_IGNORED_GAME_STATUS, payload: {gameIds: [gameId]}}),
 		[dispatch]
 	)
 
@@ -150,12 +150,14 @@ const ConfigureAssets = () => {
 							title={
 								<div className={styles.title}>
 									<span>{game.name}</span>
-									<div className={styles.tags}>
-										{!game.hasCacheEntry && <Tag>NEW</Tag>}
-										{game.collections.map((collection) => (
-											<Tag key={`${collection}-${game.id}`}>{collection}</Tag>
-										))}
-									</div>
+									{!game.isIgnored && (
+										<div className={styles.tags}>
+											{!game.hasCacheEntry && <Tag>NEW</Tag>}
+											{game.collections.map((collection) => (
+												<Tag key={`${collection}-${game.id}`}>{collection}</Tag>
+											))}
+										</div>
+									)}
 								</div>
 							}
 							options={[

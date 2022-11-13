@@ -22,6 +22,7 @@ export enum EAction {
 	SET_SETUP_FLOW = 'SET_SETUP_FLOW',
 	SET_GAMES = 'SET_GAMES',
 	TOGGLE_IGNORED_GAME_STATUS = 'TOGGLE_IGNORED_GAME_STATUS',
+	SET_IGNORED_GAME_STATUS = 'SET_IGNORED_GAME_STATUS',
 	SET_STEAM_GRID_API_KEY = 'SET_STEAM_GRID_API_KEY',
 	SELECT_ASSET = 'SELECT_ASSET',
 	SET_STEAM_USER_ID = 'SET_STEAM_USER_ID',
@@ -36,7 +37,8 @@ export type TAction =
 			payload: ESetup
 	  }
 	| {type: EAction.SET_GAMES; payload: TGame[]}
-	| {type: EAction.TOGGLE_IGNORED_GAME_STATUS; payload: {gameId: string}}
+	| {type: EAction.TOGGLE_IGNORED_GAME_STATUS; payload: {gameIds: string[]}}
+	| {type: EAction.SET_IGNORED_GAME_STATUS; payload: {gameIds: string[]; isIgnored: boolean}}
 	| {type: EAction.SET_STEAM_GRID_API_KEY; payload: string}
 	| {type: EAction.SELECT_ASSET; payload: {gameId: string; assetType: EAssetType; assetId: number}}
 	| {type: EAction.SET_STEAM_USER_ID; payload: string}
@@ -54,7 +56,16 @@ export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 			return {
 				...state,
 				games: state.games.map((game) =>
-					game.id !== action.payload.gameId ? game : {...game, isIgnored: !game.isIgnored}
+					action.payload.gameIds.every((gameId) => gameId !== game.id) ? game : {...game, isIgnored: !game.isIgnored}
+				)
+			}
+		case EAction.SET_IGNORED_GAME_STATUS:
+			return {
+				...state,
+				games: state.games.map((game) =>
+					action.payload.gameIds.every((gameId) => gameId !== game.id)
+						? game
+						: {...game, isIgnored: action.payload.isIgnored}
 				)
 			}
 		case EAction.SET_STEAM_GRID_API_KEY:
