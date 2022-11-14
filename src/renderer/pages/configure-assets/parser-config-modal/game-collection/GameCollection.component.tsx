@@ -21,17 +21,17 @@ const GameCollection = ({
 		[onGameClick]
 	)
 
-	const isIgnoredCollection = games.some((game) => game.isIgnored)
+	const isExcludedCollection = games.some((game) => game.isExcluded)
 
 	return (
 		<div className={styles['parser-config-game-collection']}>
-			<Checkbox id={collection} label={collection} onChange={onCollectionClick} checked={!isIgnoredCollection} />
+			<Checkbox id={collection} label={collection} onChange={onCollectionClick} checked={!isExcludedCollection} />
 			{games.map((game) => (
 				<div className={styles['game-item']} key={`${game.id}-${collection}`}>
 					<Checkbox
 						id={`${game.id}-${collection}`}
 						label={game.name}
-						checked={!game.isIgnored}
+						checked={!game.isExcluded}
 						onChange={() => handleGameClick(game)}
 					/>
 				</div>

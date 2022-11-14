@@ -22,12 +22,15 @@ export enum EAction {
 	SET_SETUP_FLOW = 'SET_SETUP_FLOW',
 	SET_GAMES = 'SET_GAMES',
 	TOGGLE_IGNORED_GAME_STATUS = 'TOGGLE_IGNORED_GAME_STATUS',
+	TOGGLE_EXCLUDED_GAME_STATUS = 'TOGGLE_EXCLUDED_GAME_STATUS',
 	SET_IGNORED_GAME_STATUS = 'SET_IGNORED_GAME_STATUS',
+	SET_EXCLUDED_GAME_STATUS = 'SET_EXCLUDED_GAME_STATUS',
 	SET_STEAM_GRID_API_KEY = 'SET_STEAM_GRID_API_KEY',
 	SELECT_ASSET = 'SELECT_ASSET',
 	SET_STEAM_USER_ID = 'SET_STEAM_USER_ID',
 	SET_STORAGE_DEVICE_PATH = 'SET_STORAGE_DEVICE_PATH',
 	UPDATE_GAME_ASSETS = 'UPDATE_GAME_ASSETS',
+	UPDATE_GAMES_ASSETS = 'UPDATE_GAMES_ASSETS',
 	UPDATE_GAME_SEARCH_TERM = 'UPDATE_GAME_SEARCH_TERM'
 }
 
@@ -38,12 +41,14 @@ export type TAction =
 	  }
 	| {type: EAction.SET_GAMES; payload: TGame[]}
 	| {type: EAction.TOGGLE_IGNORED_GAME_STATUS; payload: {gameIds: string[]}}
+	| {type: EAction.TOGGLE_EXCLUDED_GAME_STATUS; payload: {gameIds: string[]}}
 	| {type: EAction.SET_IGNORED_GAME_STATUS; payload: {gameIds: string[]; isIgnored: boolean}}
+	| {type: EAction.SET_EXCLUDED_GAME_STATUS; payload: {gameIds: string[]; isExcluded: boolean}}
 	| {type: EAction.SET_STEAM_GRID_API_KEY; payload: string}
 	| {type: EAction.SELECT_ASSET; payload: {gameId: string; assetType: EAssetType; assetId: number}}
 	| {type: EAction.SET_STEAM_USER_ID; payload: string}
 	| {type: EAction.SET_STORAGE_DEVICE_PATH; payload: string}
-	| {type: EAction.UPDATE_GAME_ASSETS; payload: {gameId: string; assets: TGameAssetCollection}}
+	| {type: EAction.UPDATE_GAMES_ASSETS; payload: Array<{gameId: string; assets?: TGameAssetCollection}>}
 	| {type: EAction.UPDATE_GAME_SEARCH_TERM; payload: {gameId: string; searchTerm: string}}
 
 export const reducer = (state: TCommonState, action: TAction): TCommonState => {
@@ -59,6 +64,13 @@ export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 					action.payload.gameIds.every((gameId) => gameId !== game.id) ? game : {...game, isIgnored: !game.isIgnored}
 				)
 			}
+		case EAction.TOGGLE_EXCLUDED_GAME_STATUS:
+			return {
+				...state,
+				games: state.games.map((game) =>
+					action.payload.gameIds.every((gameId) => gameId !== game.id) ? game : {...game, isExcluded: !game.isExcluded}
+				)
+			}
 		case EAction.SET_IGNORED_GAME_STATUS:
 			return {
 				...state,
@@ -68,6 +80,15 @@ export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 						: {...game, isIgnored: action.payload.isIgnored}
 				)
 			}
+		case EAction.SET_EXCLUDED_GAME_STATUS:
+			return {
+				...state,
+				games: state.games.map((game) =>
+					action.payload.gameIds.every((gameId) => gameId !== game.id)
+						? game
+						: {...game, isExcluded: action.payload.isExcluded}
+				)
+			}
 		case EAction.SET_STEAM_GRID_API_KEY:
 			localStorage.setItem(ELocalStorageKey.STEAM_GRID_API_KEY, action.payload)
 			return {...state, steamGridApiKey: action.payload}
@@ -75,11 +96,13 @@ export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 			return {...state, steamUserId: action.payload}
 		case EAction.SET_STORAGE_DEVICE_PATH:
 			return {...state, storageDevicePath: action.payload}
-		case EAction.UPDATE_GAME_ASSETS:
+		case EAction.UPDATE_GAMES_ASSETS:
 			return {
 				...state,
 				games: state.games.map((game) =>
-					game.id === action.payload.gameId ? {...game, assets: action.payload.assets} : game
+					action.payload.some(({gameId}) => gameId === game.id)
+						? {...game, assets: action.payload.find(({gameId}) => gameId === game.id)?.assets}
+						: game
 				)
 			}
 		case EAction.UPDATE_GAME_SEARCH_TERM:

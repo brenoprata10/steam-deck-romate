@@ -26,7 +26,7 @@ const ChangeSearchModal = ({game, onClose}: {game: TGame; onClose: () => void}) 
 			throw Error('No assets found')
 		}
 		dispatch({type: EAction.UPDATE_GAME_SEARCH_TERM, payload: {gameId: game.id, searchTerm: inputSearchTerm}})
-		dispatch({type: EAction.UPDATE_GAME_ASSETS, payload: {gameId: game.id, assets: gameAssets}})
+		dispatch({type: EAction.UPDATE_GAMES_ASSETS, payload: [{gameId: game.id, assets: gameAssets}]})
 		onClose()
 	}, [apiKey, game, inputSearchTerm])
 

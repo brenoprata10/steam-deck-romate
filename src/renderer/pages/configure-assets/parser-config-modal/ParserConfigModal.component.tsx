@@ -7,8 +7,10 @@ import {useContext, useCallback, useState} from 'react'
 import {CommonDispatchContext} from 'renderer/context'
 import {EAction} from 'renderer/reducer'
 import Radio from 'renderer/uikit/radio/Radio.component'
+import useGames from 'renderer/hooks/useGames'
 
-const ParserConfigModal = ({isOpened, games, onClose}: {isOpened: boolean; games: TGame[]; onClose: () => void}) => {
+const ParserConfigModal = ({isOpened, onClose}: {isOpened: boolean; onClose: () => void}) => {
+	const games = useGames()
 	const dispatch = useContext(CommonDispatchContext)
 	const [shouldManageAllEntries, setShouldManageAllEntries] = useState(true)
 
@@ -22,27 +24,27 @@ const ParserConfigModal = ({isOpened, games, onClose}: {isOpened: boolean; games
 		[games]
 	)
 
-	const onToggleGameIgnoredStatus = useCallback(
+	const onToggleGameExcludedStatus = useCallback(
 		(game: TGame) => {
-			dispatch({type: EAction.TOGGLE_IGNORED_GAME_STATUS, payload: {gameIds: [game.id]}})
+			dispatch({type: EAction.TOGGLE_EXCLUDED_GAME_STATUS, payload: {gameIds: [game.id]}})
 		},
 		[dispatch]
 	)
 
-	const onSetGamesIgnoredStatus = useCallback(
-		({games, isIgnored}: {games: TGame[]; isIgnored: boolean}) => {
-			dispatch({type: EAction.SET_IGNORED_GAME_STATUS, payload: {gameIds: games.map((game) => game.id), isIgnored}})
+	const onSetGamesExcludedStatus = useCallback(
+		({games, isExcluded}: {games: TGame[]; isExcluded: boolean}) => {
+			dispatch({type: EAction.SET_EXCLUDED_GAME_STATUS, payload: {gameIds: games.map((game) => game.id), isExcluded}})
 		},
 		[dispatch]
 	)
 
-	const onToggleCollectionIgnoredStatus = useCallback(
+	const onToggleCollectionExcludedStatus = useCallback(
 		(collection: string) => {
 			const gamesCollection = getGamesByCollection(collection)
 			const gameIds = gamesCollection.map((game) => game.id)
-			const isIgnoredCollection = gamesCollection.some((game) => game.isIgnored)
+			const isExcludedCollection = gamesCollection.some((game) => game.isExcluded)
 
-			dispatch({type: EAction.SET_IGNORED_GAME_STATUS, payload: {gameIds, isIgnored: !isIgnoredCollection}})
+			dispatch({type: EAction.SET_EXCLUDED_GAME_STATUS, payload: {gameIds, isExcluded: !isExcludedCollection}})
 		},
 		[dispatch, getGamesByCollection]
 	)
@@ -67,7 +69,7 @@ const ParserConfigModal = ({isOpened, games, onClose}: {isOpened: boolean; games
 					checked={shouldManageAllEntries}
 					onChange={() => {
 						setShouldManageAllEntries(true)
-						onSetGamesIgnoredStatus({games, isIgnored: false})
+						onSetGamesExcludedStatus({games, isExcluded: false})
 					}}
 				/>
 
@@ -85,8 +87,8 @@ const ParserConfigModal = ({isOpened, games, onClose}: {isOpened: boolean; games
 							key={collection}
 							games={getGamesByCollection(collection)}
 							collection={collection}
-							onCollectionClick={() => onToggleCollectionIgnoredStatus(collection)}
-							onGameClick={onToggleGameIgnoredStatus}
+							onCollectionClick={() => onToggleCollectionExcludedStatus(collection)}
+							onGameClick={onToggleGameExcludedStatus}
 						/>
 					))}
 				</div>

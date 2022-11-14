@@ -31,14 +31,14 @@ enum EGameCardOption {
 const ITEMS_PER_PAGE = 10
 
 const ConfigureAssets = () => {
-	const [isLoading, setIsLoading] = useState(true)
+	const [isLoading, setIsLoading] = useState(false)
 	const [gameToChangeSearchTerm, setGameToChangeSearchTerm] = useState<TGame | null>(null)
 	const [isConfigModalOpened, setIsConfigModalOpened] = useState(true)
 	const [page, setPage] = useState(0)
 	const navigate = useNavigate()
 	const dispatch = useContext(CommonDispatchContext)
 	const apiKey = useSteamGridApiKey()
-	const games = useGames()
+	const games = useGames().filter((game) => !game.isExcluded)
 	const currentGameIndex = page * ITEMS_PER_PAGE
 	const pagesCount = Math.ceil(games.length / ITEMS_PER_PAGE)
 	const displayedGames = games.slice(currentGameIndex, currentGameIndex + ITEMS_PER_PAGE)
@@ -47,31 +47,22 @@ const ConfigureAssets = () => {
 		async ({start, end}: {start: number; end: number}) => {
 			try {
 				setIsLoading(true)
-				const gamesSlice = games
-					.slice(start, end)
-					.map((game, index) => ({...game, currentIndex: start + index}))
-					.filter((game) => !game.assets)
+				const gamesSlice = games.slice(start, end).filter((game) => !game.assets)
 				if (gamesSlice.length > 0 && apiKey) {
 					console.log('Fetching game assets: ', gamesSlice.map((game) => game.name).join())
 					const gameCollections = await Promise.all(
-						gamesSlice.map((game) => getGameAssetsByName({gameName: getGameSearchTerm(game), apiKey}))
+						gamesSlice.map(async (game) => ({
+							gameId: game.id,
+							assets: await getGameAssetsByName({gameName: getGameSearchTerm(game), apiKey})
+						}))
 					)
 
 					dispatch({
-						type: EAction.SET_GAMES,
-						payload: games.map((game, index) => {
-							if (game.assets) {
-								return game
-							}
-
-							const gameCollectionIndex = gamesSlice.findIndex((gameSlice) => gameSlice.currentIndex === index)
-							const gameAssets = gameCollectionIndex !== undefined ? gameCollections[gameCollectionIndex] : undefined
-
-							return {
-								...game,
-								assets: isCachedGame(game.id) ? getAssetsWithPreSelection(game.id, gameAssets) : gameAssets
-							}
-						})
+						type: EAction.UPDATE_GAMES_ASSETS,
+						payload: gameCollections.map(({gameId, assets}) => ({
+							gameId,
+							assets: isCachedGame(gameId) ? getAssetsWithPreSelection(gameId, assets) : assets
+						}))
 					})
 				}
 			} catch (error) {
@@ -82,10 +73,6 @@ const ConfigureAssets = () => {
 		},
 		[games, dispatch, apiKey]
 	)
-
-	useMount(() => {
-		void fetchGameAssets({start: 0, end: ITEMS_PER_PAGE})
-	})
 
 	const onBack = useCallback(() => navigate(getRoutePath(ERoute.SELECT_ACCOUNT)), [navigate])
 	const onSave = useCallback(() => navigate(getRoutePath(ERoute.SAVE)), [navigate])
@@ -117,6 +104,16 @@ const ConfigureAssets = () => {
 			value === EGameCardOption.MARK_IGNORED ? toggleIgnoredGameStatus(gameId) : openChangeSearchTermModal(gameId),
 		[toggleIgnoredGameStatus, openChangeSearchTermModal]
 	)
+
+	const confirmImportedGames = useCallback(() => {
+		setIsConfigModalOpened(false)
+		void fetchGameAssets({start: 0, end: ITEMS_PER_PAGE})
+	}, [fetchGameAssets])
+
+	if (isConfigModalOpened) {
+		return <ParserConfigModal isOpened={isConfigModalOpened} onClose={confirmImportedGames} />
+	}
+
 	return (
 		<Page
 			title='Configuration'
@@ -185,7 +182,6 @@ const ConfigureAssets = () => {
 			{gameToChangeSearchTerm && (
 				<ChangeSearchModal game={gameToChangeSearchTerm} onClose={() => setGameToChangeSearchTerm(null)} />
 			)}
-			<ParserConfigModal isOpened={isConfigModalOpened} games={games} onClose={() => setIsConfigModalOpened(false)} />
 		</Page>
 	)
 }
