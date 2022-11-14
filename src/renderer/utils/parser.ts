@@ -23,8 +23,7 @@ export const getGamesFromParser = (parser: TParserConfig): TGame[] => {
 				name,
 				collections: parser.category ? [parser.category] : [],
 				path,
-				launchOptions,
-				searchTerm: name
+				launchOptions
 			}
 		})
 		.map((game): TGame => ({...game, searchTerm: getGameSearchTerm(game)}))

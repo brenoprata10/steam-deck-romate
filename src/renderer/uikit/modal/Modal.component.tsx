@@ -39,7 +39,7 @@ const Modal = ({
 					</div>
 					<div className={className}>
 						{children}
-						{footer}
+						<div className={styles.footer}>{footer}</div>
 					</div>
 				</div>
 			</div>

@@ -1,0 +1,23 @@
+.parser-config-game-collection {
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+	gap: 0.5rem;
+
+	.label {
+		font-weight: bold;
+		margin-left: 0.3rem;
+		cursor: pointer;
+		user-select: none;
+		transition: letter-spacing 0.3s;
+
+		&:hover {
+			letter-spacing: 0.04rem;
+		}
+	}
+
+	.game-item {
+		width: 100%;
+		margin-left: 1.4rem;
+	}
+}

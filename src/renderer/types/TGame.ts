@@ -6,9 +6,12 @@ type TGame = {
 	path: string
 	exec: string
 	collections: string[]
-	searchTerm: string
+	searchTerm?: string
 	launchOptions?: string
 	assets?: TGameAssetCollection
+	// Used to define when a game is not imported
+	isExcluded?: boolean
+	// Used to define when a game is imported, but marked as ignored
 	isIgnored?: boolean
 	// Used to determine if game was already added on a previous run
 	hasCacheEntry?: boolean

@@ -14,7 +14,7 @@ const DESKTOP_FILE_PROPERTY_CONFIG: {[propertyName: string]: 'name' | 'exec'} = 
 export const getGameFromDesktopFile = async (path: string): Promise<TGame> => {
 	const propertyNameRegex = '^\\w*'
 	const valuePropertyRegex = '=.+$'
-	const game: TGame = {id: '', name: '', exec: '', path: '', collections: [], searchTerm: ''}
+	const game: TGame = {id: '', name: '', exec: '', path: '', collections: []}
 	const fileData = await getTextFileData(path)
 
 	for (const line of fileData.split('\n')) {
@@ -32,7 +32,6 @@ export const getGameFromDesktopFile = async (path: string): Promise<TGame> => {
 	}
 
 	game.id = generateShortAppId(game.path, game.name)
-	game.searchTerm = game.name
 
 	return game
 }

@@ -1,0 +1,34 @@
+@use '../../../scss/animations.scss';
+
+.parser-config-modal {
+	input,
+	label {
+		cursor: pointer;
+	}
+
+	.options-list {
+		margin-bottom: 1rem;
+		display: flex;
+		flex-direction: column;
+		font-weight: bold;
+		gap: 1rem;
+		user-select: none;
+	}
+
+	.collection-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.8rem;
+		margin-bottom: 1rem;
+		max-height: 50vh;
+		overflow-y: auto;
+		margin-left: 1.1rem;
+		animation: bottom-fade-in 0.3s;
+	}
+
+	.footer {
+		display: flex;
+		justify-content: flex-end;
+		width: 100%;
+	}
+}
