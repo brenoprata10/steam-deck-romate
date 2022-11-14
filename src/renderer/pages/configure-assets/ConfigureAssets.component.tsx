@@ -22,6 +22,8 @@ import TGame from 'renderer/types/TGame'
 import Tag from 'renderer/uikit/tag/Tag.component'
 import {getAssetsWithPreSelection, getGameSearchTerm, isCachedGame} from 'renderer/utils/game'
 import ParserConfigModal from './parser-config-modal/ParserConfigModal.component'
+import useSetupFlow from 'renderer/hooks/useSetupFlow'
+import ESetup from 'renderer/enums/ESetup'
 
 enum EGameCardOption {
 	MARK_IGNORED = 'Mark as Ignored',
@@ -33,7 +35,8 @@ const ITEMS_PER_PAGE = 10
 const ConfigureAssets = () => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [gameToChangeSearchTerm, setGameToChangeSearchTerm] = useState<TGame | null>(null)
-	const [isConfigModalOpened, setIsConfigModalOpened] = useState(true)
+	const setupFlow = useSetupFlow()
+	const [isConfigModalOpened, setIsConfigModalOpened] = useState(setupFlow === ESetup.EMU_DECK)
 	const [page, setPage] = useState(0)
 	const navigate = useNavigate()
 	const dispatch = useContext(CommonDispatchContext)
