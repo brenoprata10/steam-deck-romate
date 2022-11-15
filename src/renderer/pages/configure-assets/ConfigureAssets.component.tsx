@@ -51,6 +51,7 @@ const ConfigureAssets = () => {
 			try {
 				setIsLoading(true)
 				const gamesSlice = games.slice(start, end).filter((game) => !game.assets)
+				console.log({games, gamesSlice})
 				if (gamesSlice.length > 0 && apiKey) {
 					console.log('Fetching game assets: ', gamesSlice.map((game) => game.name).join())
 					const gameCollections = await Promise.all(
@@ -76,6 +77,16 @@ const ConfigureAssets = () => {
 		},
 		[games, dispatch, apiKey]
 	)
+
+	const fetchFirstPage = useCallback(() => {
+		void fetchGameAssets({start: 0, end: ITEMS_PER_PAGE})
+	}, [fetchGameAssets])
+
+	useMount(() => {
+		if (!isConfigModalOpened) {
+			fetchFirstPage()
+		}
+	})
 
 	const onBack = useCallback(() => navigate(getRoutePath(ERoute.SELECT_ACCOUNT)), [navigate])
 	const onSave = useCallback(() => navigate(getRoutePath(ERoute.SAVE)), [navigate])
@@ -110,8 +121,8 @@ const ConfigureAssets = () => {
 
 	const confirmImportedGames = useCallback(() => {
 		setIsConfigModalOpened(false)
-		void fetchGameAssets({start: 0, end: ITEMS_PER_PAGE})
-	}, [fetchGameAssets])
+		fetchFirstPage()
+	}, [fetchFirstPage])
 
 	if (isConfigModalOpened) {
 		return <ParserConfigModal isOpened={isConfigModalOpened} onClose={confirmImportedGames} />
