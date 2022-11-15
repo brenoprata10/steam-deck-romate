@@ -57,9 +57,18 @@ export const getAvailableUserAccounts = async (): Promise<TUserData[]> => {
 	return users
 }
 
-export const getSteamShortcuts = async ({steamUserId}: {steamUserId: string}): Promise<VdfMap> => {
-	const buffer = await getBufferFileData(getShortcutsPath(steamUserId))
-	return readVdf(buffer)
+export const getSteamShortcuts = async ({
+	steamUserId
+}: {
+	steamUserId: string
+}): Promise<{shortcuts: {[id: string]: VdfMap}}> => {
+	try {
+		const buffer = await getBufferFileData(getShortcutsPath(steamUserId))
+		return readVdf(buffer) as {shortcuts: {[id: string]: VdfMap}}
+	} catch (error) {
+		console.warn('Could not locate shortcuts.vdf file.')
+		return {shortcuts: {}}
+	}
 }
 
 export const saveSteamShortcuts = async ({shortcuts, steamUserId}: {shortcuts: VdfMap; steamUserId: string}) => {
