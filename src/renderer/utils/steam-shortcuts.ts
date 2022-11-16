@@ -34,20 +34,24 @@ export const getAvailableUserAccounts = async (): Promise<TUserData[]> => {
 	try {
 		for (const user of users) {
 			const localConfigData = await getTextFileData(getLocalConfigPath(user.id))
+			let hasReachedProfileObject = false
 
 			for (const line of localConfigData.split('\n')) {
 				if (user.name && user.avatarPictureSrc) {
 					break
+				}
+				if (line.match('\\d+')?.[0] === user.id) {
+					hasReachedProfileObject = true
 				}
 				const isPersonaNameLine = line.match('PersonaName')?.[0]
 				const isAvatarLine = line.match('avatar')?.[0]
 				if (!user.name && isPersonaNameLine) {
 					user.name = line.match(lineValuesRegex)?.pop()
 				}
-				/*if (!user.avatarPictureSrc && isAvatarLine && ) {
+				if (!user.avatarPictureSrc && isAvatarLine && hasReachedProfileObject) {
 					const avatarId = line.match(lineValuesRegex)?.pop()
 					user.avatarPictureSrc = avatarId ? `${STEAM_AVATAR_AKAMAI_URL}/${avatarId}_full.jpg` : 'Not available'
-				}*/
+				}
 			}
 		}
 	} catch (error) {
