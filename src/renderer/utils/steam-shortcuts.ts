@@ -31,8 +31,8 @@ export const getAvailableUserAccounts = async (): Promise<TUserData[]> => {
 		id: userId
 	}))
 
-	try {
-		for (const user of users) {
+	for (const user of users) {
+		try {
 			const localConfigData = await getTextFileData(getLocalConfigPath(user.id))
 			let hasReachedProfileObject = false
 
@@ -53,9 +53,9 @@ export const getAvailableUserAccounts = async (): Promise<TUserData[]> => {
 					user.avatarPictureSrc = avatarId ? `${STEAM_AVATAR_AKAMAI_URL}/${avatarId}_full.jpg` : 'Not available'
 				}
 			}
+		} catch (error) {
+			console.error(`Could not load localconfig.vdf file for user: ${user.id}`)
 		}
-	} catch (error) {
-		console.error(error)
 	}
 
 	return users
