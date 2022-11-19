@@ -4,13 +4,15 @@ import ESetup from 'renderer/enums/ESetup'
 import {TSteamGridAsset} from 'renderer/types/TApiSteamGridAssets'
 import TGame from 'renderer/types/TGame'
 import TGameAssetCollection from 'renderer/types/TGameAssetCollection'
+import TParserConfig from 'renderer/types/TParserConfig'
 
 export type TCommonState = {
 	games: TGame[]
 	steamUserId?: string | null
 	setupFlow?: ESetup
 	steamGridApiKey?: string | null
-	storageDevicePath?: string
+	// Used for `Create Parsers` setup flow
+	customParsers?: TParserConfig[]
 }
 
 export const INITIAL_STATE: TCommonState = {
@@ -28,10 +30,10 @@ export enum EAction {
 	SET_STEAM_GRID_API_KEY = 'SET_STEAM_GRID_API_KEY',
 	SELECT_ASSET = 'SELECT_ASSET',
 	SET_STEAM_USER_ID = 'SET_STEAM_USER_ID',
-	SET_STORAGE_DEVICE_PATH = 'SET_STORAGE_DEVICE_PATH',
 	UPDATE_GAME_ASSETS = 'UPDATE_GAME_ASSETS',
 	UPDATE_GAMES_ASSETS = 'UPDATE_GAMES_ASSETS',
-	UPDATE_GAME_SEARCH_TERM = 'UPDATE_GAME_SEARCH_TERM'
+	UPDATE_GAME_SEARCH_TERM = 'UPDATE_GAME_SEARCH_TERM',
+	SET_CUSTOM_PARSERS = 'SET_CUSTOM_PARSERS'
 }
 
 export type TAction =
@@ -47,9 +49,9 @@ export type TAction =
 	| {type: EAction.SET_STEAM_GRID_API_KEY; payload: string}
 	| {type: EAction.SELECT_ASSET; payload: {gameId: string; assetType: EAssetType; assetId: number}}
 	| {type: EAction.SET_STEAM_USER_ID; payload: string}
-	| {type: EAction.SET_STORAGE_DEVICE_PATH; payload: string}
 	| {type: EAction.UPDATE_GAMES_ASSETS; payload: Array<{gameId: string; assets?: TGameAssetCollection}>}
 	| {type: EAction.UPDATE_GAME_SEARCH_TERM; payload: {gameId: string; searchTerm: string}}
+	| {type: EAction.SET_CUSTOM_PARSERS; payload: TParserConfig[]}
 
 export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 	switch (action.type) {
@@ -94,8 +96,6 @@ export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 			return {...state, steamGridApiKey: action.payload}
 		case EAction.SET_STEAM_USER_ID:
 			return {...state, steamUserId: action.payload}
-		case EAction.SET_STORAGE_DEVICE_PATH:
-			return {...state, storageDevicePath: action.payload}
 		case EAction.UPDATE_GAMES_ASSETS:
 			return {
 				...state,
@@ -133,6 +133,8 @@ export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 				}))
 			}
 		}
+		case EAction.SET_CUSTOM_PARSERS:
+			return {...state, customParsers: action.payload}
 		default:
 			throw new Error('Action not defined.')
 	}

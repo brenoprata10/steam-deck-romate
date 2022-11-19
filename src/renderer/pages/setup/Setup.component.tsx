@@ -67,7 +67,7 @@ const Setup = () => {
 			[ESetup.CREATE_PARSERS]: {
 				label: 'Create Parsers',
 				image: PARSER_IMG,
-				onConfigure: () => alert('hey')
+				onConfigure: () => navigate(getRoutePath(ERoute.CONFIGURE_PARSERS))
 			},
 			[ESetup.EMU_DECK]: {
 				label: 'Emu Deck',
@@ -80,7 +80,7 @@ const Setup = () => {
 				onNext: getCustomFolderGames
 			}
 		}),
-		[getEmuDeckGames, getCustomFolderGames]
+		[getEmuDeckGames, getCustomFolderGames, navigate]
 	)
 
 	const changeSetupFlow = useCallback(

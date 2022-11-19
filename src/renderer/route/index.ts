@@ -10,6 +10,9 @@ const ROUTE_CONFIG: {[route in ERoute]: {path: string}} = {
 	[ERoute.CONFIGURE_ASSETS]: {
 		path: '/configure-assets'
 	},
+	[ERoute.CONFIGURE_PARSERS]: {
+		path: '/configure-parsers'
+	},
 	[ERoute.SAVE]: {
 		path: '/save'
 	}
