@@ -1,0 +1,31 @@
+.configure-parsers-modal {
+	display: flex;
+	gap: 4rem;
+
+	.parsers-list {
+		display: grid;
+		gap: 1rem;
+		width: 30%;
+		align-self: flex-start;
+		justify-items: center;
+		max-height: 25rem;
+		overflow-y: auto;
+		padding: 0.5rem;
+		grid-template-columns: repeat(auto-fit, 95%);
+
+		.item {
+			border-radius: 25px;
+			background-color: var(--ternary-color);
+			padding: 1rem 2rem;
+			font-weight: bold;
+			width: 75%;
+		}
+
+		.add-parser-btn {
+			width: 100%;
+		}
+	}
+
+	.form {
+	}
+}

@@ -37,10 +37,8 @@ const Modal = ({
 						<h4>{title}</h4>
 						{isCloseable && <FontAwesomeIcon icon={faClose} onClick={onClose} />}
 					</div>
-					<div className={className}>
-						{children}
-						<div className={styles.footer}>{footer}</div>
-					</div>
+					<div className={className}>{children}</div>
+					{footer && <div className={styles.footer}>{footer}</div>}
 				</div>
 			</div>
 		</div>
