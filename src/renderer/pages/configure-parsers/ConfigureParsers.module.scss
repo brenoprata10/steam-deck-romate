@@ -1,11 +1,13 @@
 .configure-parsers-modal {
+	$parsers-list-width: 30%;
+
 	display: flex;
 	gap: 4rem;
 
 	.parsers-list {
 		display: grid;
 		gap: 1rem;
-		width: 30%;
+		width: $parsers-list-width;
 		align-self: flex-start;
 		justify-items: center;
 		max-height: 25rem;
@@ -19,6 +21,16 @@
 			padding: 1rem 2rem;
 			font-weight: bold;
 			width: 75%;
+			transition: 0.3s;
+			cursor: pointer;
+
+			&:hover {
+				background-color: var(--secondary-color);
+			}
+
+			&-selected {
+				background-color: var(--primary-color) !important;
+			}
 		}
 
 		.add-parser-btn {
@@ -27,5 +39,6 @@
 	}
 
 	.form {
+		width: calc(100% - $parsers-list-width);
 	}
 }
