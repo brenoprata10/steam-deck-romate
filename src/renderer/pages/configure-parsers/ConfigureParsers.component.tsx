@@ -1,4 +1,5 @@
 import {useCallback, useContext, useState} from 'react'
+import {useMount} from 'react-use'
 import {CommonDispatchContext} from 'renderer/context'
 import useCustomParsers from 'renderer/hooks/useCustomParsers'
 import {EAction} from 'renderer/reducer'
@@ -7,7 +8,7 @@ import Button from 'renderer/uikit/button/Button.component'
 import Modal from 'renderer/uikit/modal/Modal.component'
 import {generateId} from 'renderer/utils/generate-id'
 import styles from './ConfigureParsers.module.scss'
-import ParserForm from './parser-form/ParserForm.component'
+import ParserForm from 'renderer/pages/configure-parsers/parser-form/ParserForm.component'
 
 const ConfigureParsers = () => {
 	const customParsers = useCustomParsers()
@@ -15,6 +16,18 @@ const ConfigureParsers = () => {
 	const [selectedParserId, setSelectedParser] = useState<string | undefined>()
 	const selectedParser = customParsers?.find(({id}) => id === selectedParserId)
 	const customParsersCount = customParsers?.length ?? 0
+
+	useMount(() => {
+		addEmptyParser()
+	})
+
+	const deleteSelectedParser = () => {
+		setSelectedParser(customParsers?.find((parser) => parser.id !== selectedParserId)?.id)
+		dispatch({
+			type: EAction.SET_CUSTOM_PARSERS,
+			payload: customParsers?.filter((parser) => parser.id !== selectedParserId) ?? []
+		})
+	}
 
 	const addParser = useCallback(
 		(parser: TParserConfig) => {
@@ -24,14 +37,27 @@ const ConfigureParsers = () => {
 		[customParsers, dispatch]
 	)
 
-	const addEmptyParser = () =>
-		addParser({
-			id: generateId().toString(),
-			name: `Parser #${customParsersCount + 1}`,
-			supportedFileTypes: [],
-			romDirectory: '<ROM_DIRECTORY>',
-			executable: {arguments: '{filePath}', path: '{filePath}'}
-		})
+	const addEmptyParser = useCallback(
+		() =>
+			addParser({
+				id: generateId().toString(),
+				name: `Parser #${customParsersCount + 1}`,
+				supportedFileTypes: ['zip', 'iso'],
+				romDirectory: '<ROM_DIRECTORY>',
+				executable: {path: '{filePath}'}
+			}),
+		[addParser, customParsersCount]
+	)
+
+	const onEditParser = useCallback(
+		(parser: TParserConfig) => {
+			dispatch({
+				type: EAction.SET_CUSTOM_PARSERS,
+				payload: customParsers?.map((customParser) => (customParser.id === parser.id ? parser : customParser)) ?? []
+			})
+		},
+		[customParsers, dispatch]
+	)
 
 	return (
 		<Modal
@@ -56,7 +82,15 @@ const ConfigureParsers = () => {
 					Add Parser
 				</Button>
 			</div>
-			{selectedParser && <ParserForm key={selectedParser.id} parser={selectedParser} className={styles.form} />}
+			{selectedParser && (
+				<ParserForm
+					key={selectedParser.id}
+					parser={selectedParser}
+					className={styles.form}
+					onChange={onEditParser}
+					onDelete={deleteSelectedParser}
+				/>
+			)}
 		</Modal>
 	)
 }

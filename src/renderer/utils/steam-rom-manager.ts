@@ -39,6 +39,7 @@ export const mapEmuDeckSteamRomManagerParser = (
 			path,
 			arguments: args
 		},
+		name: parserId,
 		romDirectory,
 		supportedFileTypes:
 			parserInputs.glob

@@ -1,0 +1,18 @@
+.parser-form {
+	display: flex;
+	flex-direction: column;
+
+	label {
+		margin-bottom: 0.3rem;
+		font-weight: bold;
+	}
+
+	input {
+		margin-bottom: 1rem;
+	}
+
+	.button-wrapper {
+		display: flex;
+		justify-content: flex-end;
+	}
+}
