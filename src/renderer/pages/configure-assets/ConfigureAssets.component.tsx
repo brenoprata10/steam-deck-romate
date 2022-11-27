@@ -36,7 +36,7 @@ const ConfigureAssets = () => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [gameToChangeSearchTerm, setGameToChangeSearchTerm] = useState<TGame | null>(null)
 	const setupFlow = useSetupFlow()
-	const [isConfigModalOpened, setIsConfigModalOpened] = useState(setupFlow === ESetup.EMU_DECK)
+	const [isConfigModalOpened, setIsConfigModalOpened] = useState(setupFlow !== ESetup.CUSTOM_FOLDER)
 	const [page, setPage] = useState(0)
 	const navigate = useNavigate()
 	const dispatch = useContext(CommonDispatchContext)
