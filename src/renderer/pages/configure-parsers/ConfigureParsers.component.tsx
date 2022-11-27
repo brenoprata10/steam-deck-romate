@@ -77,9 +77,17 @@ const ConfigureParsers = () => {
 		if (!customParsers) {
 			throw Error('Parser is not configured.')
 		}
+
+		const games = getGamesFromParsers(customParsers.map((parser) => ({...parser, category: parser.name})))
+
+		if (games.length === 0) {
+			alert('No games were found within your parsers configuration, check your configuration.')
+			return
+		}
+
 		dispatch({
 			type: EAction.SET_GAMES,
-			payload: getGamesFromParsers(customParsers.map((parser) => ({...parser, category: parser.name})))
+			payload: games
 		})
 		navigate(getRoutePath(ERoute.SELECT_ACCOUNT))
 	}, [navigate, dispatch, customParsers])
