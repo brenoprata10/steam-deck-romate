@@ -1,17 +1,18 @@
 import CardOption from 'renderer/uikit/card-option/CardOption.component'
 import Page from 'renderer/uikit/page/Page.component'
 import EMUDECK_IMG from '../../../../assets/setup-assets/emudeck.png'
+import PARSER_IMG from '../../../../assets/setup-assets/code.jpg'
 import CUSTOM_FOLDER_IMG from '../../../../assets/setup-assets/custom-folder.jpg'
 import styles from './Setup.module.scss'
 import PageFooter from 'renderer/uikit/page/footer/PageFooter.component'
 import Button, {EButtonVariant} from 'renderer/uikit/button/Button.component'
-import {useCallback, useContext, useState} from 'react'
+import {useCallback, useContext, useMemo, useState} from 'react'
 import {CommonDispatchContext} from 'renderer/context'
 import ESetup from 'renderer/enums/ESetup'
 import {EAction} from 'renderer/reducer'
 import AboutModal from 'renderer/pages/setup/about-modal/AboutModal.component'
 import useSelectMultipleFiles from 'renderer/hooks/useSelectMultipleFiles'
-import {getCachedGames, getGameFromDesktopFile} from 'renderer/utils/game'
+import {getGameFromDesktopFile, isCachedGame} from 'renderer/utils/game'
 import TGame from 'renderer/types/TGame'
 import {useNavigate} from 'react-router-dom'
 import {getRoutePath} from 'renderer/route'
@@ -36,11 +37,6 @@ const Setup = () => {
 	})
 	const {trigger: selectFolder} = useSelectFolder('Select "Emulation" folder used for Emu Deck Setup')
 
-	const changeSetupFlow = useCallback(
-		(setup: ESetup) => dispatch({type: EAction.SET_SETUP_FLOW, payload: setup}),
-		[dispatch]
-	)
-
 	const getCustomFolderGames = useCallback(async (): Promise<TGame[]> => {
 		const {canceled, filePaths} = await selectMultipleFiles()
 		if (canceled || filePaths.length === 0) {
@@ -64,12 +60,47 @@ const Setup = () => {
 		return getGamesFromParsers(emuDeckConfig)
 	}, [selectFolder])
 
+	const flowOptions: {
+		[setup in ESetup]: {label: string; image: string; onNext?: () => Promise<TGame[]>; onConfigure?: () => void}
+	} = useMemo(
+		() => ({
+			[ESetup.CREATE_PARSERS]: {
+				label: 'Create Parsers',
+				image: PARSER_IMG,
+				onConfigure: () => navigate(getRoutePath(ERoute.CONFIGURE_PARSERS))
+			},
+			[ESetup.EMU_DECK]: {
+				label: 'Emu Deck',
+				image: EMUDECK_IMG,
+				onNext: getEmuDeckGames
+			},
+			[ESetup.CUSTOM_FOLDER]: {
+				label: 'Desktop Files',
+				image: CUSTOM_FOLDER_IMG,
+				onNext: getCustomFolderGames
+			}
+		}),
+		[getEmuDeckGames, getCustomFolderGames, navigate]
+	)
+
+	const changeSetupFlow = useCallback(
+		(setup: ESetup) => dispatch({type: EAction.SET_SETUP_FLOW, payload: setup}),
+		[dispatch]
+	)
+
 	const onNext = useCallback(async () => {
-		const cachedGames = getCachedGames()
-		const gamesPromise = setupFlow === ESetup.CUSTOM_FOLDER ? getCustomFolderGames : getEmuDeckGames
-		const games = (await gamesPromise()).map((game) => ({
+		if (!setupFlow) {
+			return
+		}
+		const selectedFlow = flowOptions[setupFlow]
+		if (selectedFlow.onConfigure) {
+			flowOptions[setupFlow].onConfigure?.()
+			return
+		}
+		const gamesPromise = (await flowOptions[setupFlow].onNext?.()) ?? []
+		const games = gamesPromise.map((game) => ({
 			...game,
-			hasCacheEntry: cachedGames.some((cachedGame) => cachedGame.id === game.id)
+			hasCacheEntry: isCachedGame(game.id)
 		}))
 
 		if (games.length > 0) {
@@ -81,7 +112,7 @@ const Setup = () => {
 		} else {
 			alert('No games found.\nThe folder is empty, please check your input.')
 		}
-	}, [setupFlow, navigate, dispatch, getCustomFolderGames, getEmuDeckGames])
+	}, [setupFlow, navigate, dispatch, flowOptions])
 
 	const toggleAboutModalVisibility = useCallback(() => setIsAboutModalOpened(!isAboutModalOpened), [isAboutModalOpened])
 
@@ -128,23 +159,17 @@ const Setup = () => {
 			}
 		>
 			<div className={styles.grid}>
-				<CardOption
-					isSelected={setupFlow === ESetup.EMU_DECK}
-					imageSrc={EMUDECK_IMG}
-					label={'Emu Deck'}
-					onClick={() => {
-						changeSetupFlow(ESetup.EMU_DECK)
-					}}
-				/>
-				<CardOption
-					isSelected={setupFlow === ESetup.CUSTOM_FOLDER}
-					imageSrc={CUSTOM_FOLDER_IMG}
-					label={'Desktop Files'}
-					description={'Only .desktop files are supported.'}
-					onClick={() => {
-						changeSetupFlow(ESetup.CUSTOM_FOLDER)
-					}}
-				/>
+				{(Object.keys(flowOptions) as ESetup[]).map((flowType) => (
+					<CardOption
+						key={flowType}
+						isSelected={flowType === setupFlow}
+						imageSrc={flowOptions[flowType].image}
+						label={flowOptions[flowType].label}
+						onClick={() => {
+							changeSetupFlow(flowType)
+						}}
+					/>
+				))}
 			</div>
 			<AboutModal isOpened={isAboutModalOpened} onClose={toggleAboutModalVisibility} />
 			<SteamGridKeyModal

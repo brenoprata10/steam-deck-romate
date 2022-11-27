@@ -1,7 +1,9 @@
 type TParserConfig = {
+	id: string
+	name: string
 	romDirectory: string
 	executable: {
-		arguments: string
+		arguments?: string
 		path: string
 	}
 	supportedFileTypes: string[]

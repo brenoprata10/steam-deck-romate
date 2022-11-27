@@ -36,7 +36,7 @@ const ConfigureAssets = () => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [gameToChangeSearchTerm, setGameToChangeSearchTerm] = useState<TGame | null>(null)
 	const setupFlow = useSetupFlow()
-	const [isConfigModalOpened, setIsConfigModalOpened] = useState(setupFlow === ESetup.EMU_DECK)
+	const [isConfigModalOpened, setIsConfigModalOpened] = useState(setupFlow !== ESetup.CUSTOM_FOLDER)
 	const [page, setPage] = useState(0)
 	const navigate = useNavigate()
 	const dispatch = useContext(CommonDispatchContext)
@@ -51,7 +51,6 @@ const ConfigureAssets = () => {
 			try {
 				setIsLoading(true)
 				const gamesSlice = games.slice(start, end).filter((game) => !game.assets)
-				console.log({games, gamesSlice})
 				if (gamesSlice.length > 0 && apiKey) {
 					console.log('Fetching game assets: ', gamesSlice.map((game) => game.name).join())
 					const gameCollections = await Promise.all(

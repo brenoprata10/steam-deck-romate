@@ -90,6 +90,7 @@
     "promise-throttle": "^1.1.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.39.4",
     "react-router-dom": "^6.3.0",
     "react-use": "^17.4.0",
     "steam-binary-vdf": "^0.1.0"

@@ -39,7 +39,7 @@ const ChangeSearchModal = ({game, onClose}: {game: TGame; onClose: () => void}) 
 			isOpened={true}
 			title={'Change Search Term'}
 			className={styles['change-search-modal']}
-			footer={
+			footerTrailing={
 				<div className={styles.save}>
 					<Button disabled={!searchTerm || state.loading} onClick={fetchAssets}>
 						Save

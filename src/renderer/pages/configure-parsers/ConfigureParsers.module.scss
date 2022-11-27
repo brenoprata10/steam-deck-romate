@@ -1,0 +1,61 @@
+@use '../../scss/animations.scss';
+
+.configure-parsers-modal {
+	$parsers-list-width: 30%;
+
+	display: flex;
+	gap: 4rem;
+
+	.parsers-list {
+		display: grid;
+		gap: 1rem;
+		width: $parsers-list-width;
+		align-self: flex-start;
+		justify-items: center;
+		max-height: 25rem;
+		overflow-y: auto;
+		padding: 0.5rem;
+		grid-template-columns: repeat(auto-fit, 95%);
+
+		.item {
+			border-radius: 25px;
+			background-color: var(--ternary-color);
+			padding: 1rem 2rem;
+			font-weight: bold;
+			width: 75%;
+			transition: 0.3s;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			overflow: hidden;
+
+			&:hover {
+				background-color: var(--secondary-color);
+			}
+
+			&-selected {
+				background-color: var(--primary-color) !important;
+			}
+
+			&-invalid {
+				background-color: var(--error-color) !important;
+			}
+
+			.label {
+				margin-left: 0.5rem;
+			}
+
+			.error-icon {
+				animation: bottom-fade-in 0.3s;
+			}
+		}
+
+		.add-parser-btn {
+			width: 100%;
+		}
+	}
+
+	.form {
+		width: calc(100% - $parsers-list-width);
+	}
+}

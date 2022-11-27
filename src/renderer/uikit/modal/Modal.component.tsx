@@ -9,7 +9,8 @@ export type TModalProps = {
 	title: string
 	className?: string
 	isCloseable?: boolean
-	footer?: React.ReactNode
+	footerLeading?: React.ReactNode
+	footerTrailing?: React.ReactNode
 	onClose?: () => void
 	children?: React.ReactNode
 }
@@ -19,7 +20,8 @@ const Modal = ({
 	title,
 	className,
 	isCloseable = true,
-	footer,
+	footerLeading,
+	footerTrailing,
 	width,
 	height,
 	onClose,
@@ -37,10 +39,13 @@ const Modal = ({
 						<h4>{title}</h4>
 						{isCloseable && <FontAwesomeIcon icon={faClose} onClick={onClose} />}
 					</div>
-					<div className={className}>
-						{children}
-						<div className={styles.footer}>{footer}</div>
-					</div>
+					<div className={className}>{children}</div>
+					{(footerTrailing || footerLeading) && (
+						<div className={styles.footer}>
+							<div>{footerLeading}</div>
+							<div>{footerTrailing}</div>
+						</div>
+					)}
 				</div>
 			</div>
 		</div>

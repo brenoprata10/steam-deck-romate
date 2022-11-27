@@ -10,6 +10,12 @@ export enum EButtonSize {
 	MEDIUM = 'MEDIUM'
 }
 
+export enum EButtonType {
+	BUTTON = 'button',
+	SUBMIT = 'submit',
+	RESET = 'reset'
+}
+
 const Button = ({
 	variant = EButtonVariant.PRIMARY,
 	transparent,
@@ -17,6 +23,7 @@ const Button = ({
 	disabled,
 	className,
 	size = EButtonSize.MEDIUM,
+	type = EButtonType.BUTTON,
 	onClick
 }: {
 	variant?: EButtonVariant
@@ -25,6 +32,7 @@ const Button = ({
 	disabled?: boolean
 	className?: string
 	size?: EButtonSize
+	type?: EButtonType
 	onClick?: () => void | Promise<void>
 }) => (
 	<button
@@ -33,6 +41,7 @@ const Button = ({
 		}`}
 		onClick={onClick}
 		disabled={disabled}
+		type={type}
 	>
 		{children}
 	</button>
