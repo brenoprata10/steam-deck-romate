@@ -1,3 +1,5 @@
+@use '../../scss/animations.scss';
+
 .configure-parsers-modal {
 	$parsers-list-width: 30%;
 
@@ -25,6 +27,7 @@
 			cursor: pointer;
 			display: flex;
 			align-items: center;
+			overflow: hidden;
 
 			&:hover {
 				background-color: var(--secondary-color);
@@ -40,6 +43,10 @@
 
 			.label {
 				margin-left: 0.5rem;
+			}
+
+			.error-icon {
+				animation: bottom-fade-in 0.3s;
 			}
 		}
 

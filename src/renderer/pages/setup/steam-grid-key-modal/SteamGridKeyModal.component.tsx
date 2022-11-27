@@ -50,7 +50,7 @@ const SteamGridKeyModal = ({
 			isOpened={isOpened}
 			title={'Provide Steam Grid API Key'}
 			isCloseable={isCloseable}
-			footer={
+			footerTrailing={
 				<div className={styles.save}>
 					<span className={styles['error-message']}>{errorMessage}</span>
 					<Button disabled={!apiKey} onClick={testApiKey}>

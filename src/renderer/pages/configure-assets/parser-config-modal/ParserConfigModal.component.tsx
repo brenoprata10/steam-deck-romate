@@ -56,7 +56,7 @@ const ParserConfigModal = ({isOpened, onClose}: {isOpened: boolean; onClose: () 
 			isOpened={isOpened}
 			isCloseable={false}
 			onClose={onClose}
-			footer={
+			footerTrailing={
 				<div className={styles.footer}>
 					<Button onClick={onClose}>Continue</Button>
 				</div>

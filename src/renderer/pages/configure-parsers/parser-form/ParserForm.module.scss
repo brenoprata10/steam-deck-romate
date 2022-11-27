@@ -1,3 +1,5 @@
+@use '../../../scss/animations.scss';
+
 .parser-form {
 	display: flex;
 	flex-direction: column;
@@ -8,11 +10,24 @@
 	}
 
 	input {
-		margin-bottom: 1rem;
+		margin-bottom: 0.6rem;
+	}
+
+	.rom-directory-wrapper {
+		display: flex;
+		align-items: center;
+
+		.rom-directory-input {
+			width: 93%;
+		}
+
+		.rom-directory-folder-icon {
+			cursor: pointer;
+			margin-left: 0.5rem;
+		}
 	}
 
 	.button-wrapper {
 		display: flex;
-		justify-content: flex-end;
 	}
 }

@@ -51,7 +51,6 @@ const ConfigureAssets = () => {
 			try {
 				setIsLoading(true)
 				const gamesSlice = games.slice(start, end).filter((game) => !game.assets)
-				console.log({games, gamesSlice})
 				if (gamesSlice.length > 0 && apiKey) {
 					console.log('Fetching game assets: ', gamesSlice.map((game) => game.name).join())
 					const gameCollections = await Promise.all(
