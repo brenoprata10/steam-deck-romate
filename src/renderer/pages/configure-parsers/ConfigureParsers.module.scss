@@ -23,6 +23,8 @@
 			width: 75%;
 			transition: 0.3s;
 			cursor: pointer;
+			display: flex;
+			align-items: center;
 
 			&:hover {
 				background-color: var(--secondary-color);
@@ -30,6 +32,14 @@
 
 			&-selected {
 				background-color: var(--primary-color) !important;
+			}
+
+			&-invalid {
+				background-color: var(--error-color) !important;
+			}
+
+			.label {
+				margin-left: 0.5rem;
 			}
 		}
 

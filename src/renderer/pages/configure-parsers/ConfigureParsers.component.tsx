@@ -9,6 +9,8 @@ import Modal from 'renderer/uikit/modal/Modal.component'
 import {generateId} from 'renderer/utils/generate-id'
 import styles from './ConfigureParsers.module.scss'
 import ParserForm from 'renderer/pages/configure-parsers/parser-form/ParserForm.component'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faWarning} from '@fortawesome/free-solid-svg-icons'
 
 const ConfigureParsers = () => {
 	const customParsers = useCustomParsers()
@@ -50,14 +52,18 @@ const ConfigureParsers = () => {
 	)
 
 	const onEditParser = useCallback(
-		(parser: TParserConfig) => {
+		(parser: TParserConfig) =>
 			dispatch({
 				type: EAction.SET_CUSTOM_PARSERS,
 				payload: customParsers?.map((customParser) => (customParser.id === parser.id ? parser : customParser)) ?? []
-			})
-		},
+			}),
 		[customParsers, dispatch]
 	)
+
+	const isValidParser = ({id, romDirectory, executable, supportedFileTypes, name}: TParserConfig) =>
+		Boolean(id && name && romDirectory && executable.path && supportedFileTypes.length > 0)
+
+	const isParsersValid = customParsers?.every(isValidParser)
 
 	return (
 		<Modal
@@ -66,16 +72,19 @@ const ConfigureParsers = () => {
 			isCloseable={false}
 			className={styles['configure-parsers-modal']}
 			width={'min(55rem, 70%)'}
-			footer={<Button disabled={customParsersCount === 0}>Save</Button>}
+			footer={<Button disabled={customParsersCount === 0 || !isParsersValid}>Save</Button>}
 		>
 			<div className={styles['parsers-list']}>
 				{customParsers?.map((parser) => (
 					<div
 						key={parser.id}
-						className={`${styles.item} ${selectedParserId === parser.id ? styles['item-selected'] : ''}`}
+						className={`${styles.item} ${!isValidParser(parser) ? styles['item-invalid'] : ''} ${
+							selectedParserId === parser.id ? styles['item-selected'] : ''
+						}`}
 						onClick={() => setSelectedParser(parser.id)}
 					>
-						{parser.name}
+						{!isValidParser(parser) && <FontAwesomeIcon icon={faWarning} />}
+						<span className={styles.label}>{parser.name}</span>
 					</div>
 				))}
 				<Button transparent={true} className={styles['add-parser-btn']} onClick={addEmptyParser}>
