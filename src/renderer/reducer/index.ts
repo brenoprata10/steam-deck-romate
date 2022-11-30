@@ -17,7 +17,8 @@ export type TCommonState = {
 
 export const INITIAL_STATE: TCommonState = {
 	games: [],
-	steamGridApiKey: localStorage.getItem(ELocalStorageKey.STEAM_GRID_API_KEY)
+	steamGridApiKey: localStorage.getItem(ELocalStorageKey.STEAM_GRID_API_KEY),
+	customParsers: JSON.parse(localStorage.getItem(ELocalStorageKey.CUSTOM_PARSERS_KEY) ?? '[]') as TParserConfig[]
 }
 
 export enum EAction {

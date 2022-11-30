@@ -15,6 +15,7 @@ import {useNavigate} from 'react-router-dom'
 import {getRoutePath} from 'renderer/route'
 import ERoute from 'renderer/enums/ERoute'
 import {getGamesFromParsers} from 'renderer/utils/parser'
+import ELocalStorageKey from 'renderer/enums/ELocalStorageKey'
 
 const ConfigureParsers = () => {
 	const navigate = useNavigate()
@@ -84,6 +85,8 @@ const ConfigureParsers = () => {
 			alert('No games were found within your parsers configuration, check your configuration.')
 			return
 		}
+
+		localStorage.setItem(ELocalStorageKey.CUSTOM_PARSERS_KEY, JSON.stringify(customParsers))
 
 		dispatch({
 			type: EAction.SET_GAMES,
