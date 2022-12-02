@@ -1,17 +1,27 @@
-# Steam Deck Romate
+# Steam Deck Romate Beta
 
-A Steam ROM manager built from the ground up to work perfectly with Linux and primarily Steam Deck devices. 
+A beautiful Steam ROM manager built from the ground up to work perfectly with Linux and primarily Steam Deck devices. 
 
 This project was inpired by [Steam ROM Manager](https://github.com/SteamGridDB/steam-rom-manager), but aims to accomplish much more.
 
 ![image](https://user-images.githubusercontent.com/26099427/205311827-ee9cba98-a540-414a-98aa-b3795ac1415f.png)
 
 ## Features
-- 🎮 Configure your emu deck rom assets - Full support to [EmuDeck](https://github.com/dragoonDorise/EmuDeck);
+- 👾 Create custom parsers based on your preferences;
+- 🎮 Full support to [EmuDeck](https://github.com/dragoonDorise/EmuDeck);
 - 📂 Configure .desktop files;
 - 🙈 Mark specific roms to be ignored;
 - 🧐 Change Search Term;
+- 👍 Touch screen friendly design;
 - 🧠 Smart Cache.
+
+## Requirements
+- You will need an API key from (SteamGridDB)[https://www.steamgriddb.com/];
+- After you are logged in you might generate an API key (here)[https://www.steamgriddb.com/profile/preferences/api].
+
+## Installation
+1. Download the most recent version from [releases page](https://github.com/brenoprata10/steam-deck-romate/releases);
+2. Double click on the file and execute.
 
 ## Screenshots
 ![image](https://user-images.githubusercontent.com/26099427/205312144-29886a8a-0ea9-4ba2-8613-ea4056ec93de.png)
