@@ -16,8 +16,8 @@ This project was inpired by [Steam ROM Manager](https://github.com/SteamGridDB/s
 - 🧠 Smart Cache.
 
 ## Requirements
-- You will need an API key from (SteamGridDB)[https://www.steamgriddb.com/];
-- After you are logged in you might generate an API key (here)[https://www.steamgriddb.com/profile/preferences/api].
+- You will need an API key from [SteamGridDB](https://www.steamgriddb.com/);
+- After you are logged in you might generate an API key [here](https://www.steamgriddb.com/profile/preferences/api).
 
 ## Installation
 1. Download the most recent version from [releases page](https://github.com/brenoprata10/steam-deck-romate/releases);
