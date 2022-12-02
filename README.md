@@ -7,6 +7,11 @@ This project was inpired by [Steam ROM Manager](https://github.com/SteamGridDB/s
 ![image](https://user-images.githubusercontent.com/26099427/205311827-ee9cba98-a540-414a-98aa-b3795ac1415f.png)
 
 ## Features
+- 🎮 Configure your emu deck rom assets - Full support to [EmuDeck](https://github.com/dragoonDorise/EmuDeck);
+- 📂 Configure .desktop files;
+- 🙈 Mark specific roms to be ignored;
+- 🧐 Change Search Term;
+- 🧠 Smart Cache.
 
 ## Screenshots
 ![image](https://user-images.githubusercontent.com/26099427/205312144-29886a8a-0ea9-4ba2-8613-ea4056ec93de.png)
