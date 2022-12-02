@@ -30,4 +30,4 @@ This project was inpired by [Steam ROM Manager](https://github.com/SteamGridDB/s
 
 ![Screenshot from 2022-12-02 15-04-27](https://user-images.githubusercontent.com/26099427/205311459-4e096f80-dd03-4264-a373-84e7794225d3.png)
 
-![Screenshot from 2022-12-02 15-03-12](https://user-images.githubusercontent.com/26099427/205311464-f41081fb-8390-4f0e-ac06-c251670aa3bf.png)
+![image](https://user-images.githubusercontent.com/26099427/205326885-c1dff00f-a3ac-4bac-9b76-c5468d4a8a87.png)
