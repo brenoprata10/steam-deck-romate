@@ -1,3 +1,5 @@
+import {IconDefinition} from '@fortawesome/fontawesome-svg-core'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import styles from './Button.module.scss'
 
 export enum EButtonVariant {
@@ -22,6 +24,7 @@ const Button = ({
 	children,
 	disabled,
 	className,
+	icon,
 	size = EButtonSize.MEDIUM,
 	type = EButtonType.BUTTON,
 	onClick
@@ -31,6 +34,7 @@ const Button = ({
 	children: React.ReactNode
 	disabled?: boolean
 	className?: string
+	icon?: IconDefinition
 	size?: EButtonSize
 	type?: EButtonType
 	onClick?: () => void | Promise<void>
@@ -43,6 +47,7 @@ const Button = ({
 		disabled={disabled}
 		type={type}
 	>
+		{icon && <FontAwesomeIcon className={styles.icon} icon={icon} size={'xl'} />}
 		{children}
 	</button>
 )

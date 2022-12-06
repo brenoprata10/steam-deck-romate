@@ -3,6 +3,7 @@ import {getGameIdByName} from 'renderer/api/steam-grid.api'
 import Button from 'renderer/uikit/button/Button.component'
 import Modal from 'renderer/uikit/modal/Modal.component'
 import styles from './SteamGridKeyModal.module.scss'
+import Input from 'renderer/uikit/input/Input.component'
 
 const SteamGridKeyModal = ({
 	isOpened,
@@ -74,9 +75,19 @@ const SteamGridKeyModal = ({
 				</a>
 				.
 			</p>
-			<p>
-				Paste the key here: <input value={apiKey} type={'text'} onChange={onChange} />
-			</p>
+			<div>
+				Paste the key here:{' '}
+				<Input
+					nativeProps={{
+						value: apiKey,
+						type: 'text',
+						onChange
+					}}
+					onClipboardPaste={(text) => {
+						setApiKey(text)
+					}}
+				/>
+			</div>
 		</Modal>
 	)
 }

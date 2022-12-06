@@ -17,6 +17,9 @@ import {resolveHtmlPath} from './util'
 import EChannel from './enums/EChannel'
 import axios, {AxiosRequestConfig} from 'axios'
 import {download} from 'electron-dl'
+import contextMenu from 'electron-context-menu'
+
+contextMenu({})
 
 class AppUpdater {
 	constructor() {
@@ -112,8 +115,11 @@ const createWindow = async () => {
 
 	mainWindow = new BrowserWindow({
 		show: false,
-		width: 1024,
-		height: 728,
+		width: 1280,
+		height: 700,
+		autoHideMenuBar: true,
+		center: true,
+
 		icon: getAssetPath('icon.png'),
 		webPreferences: {
 			nodeIntegration: true,
