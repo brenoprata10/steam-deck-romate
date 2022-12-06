@@ -1,8 +1,17 @@
 .parser-config-game-collection {
 	display: flex;
-	flex-wrap: wrap;
+	flex-direction: column;
 	width: 100%;
 	gap: 0.5rem;
+
+	.collection-name {
+		display: flex;
+		align-items: center;
+
+		svg {
+			cursor: pointer;
+		}
+	}
 
 	.label {
 		font-weight: bold;
@@ -14,6 +23,14 @@
 		&:hover {
 			letter-spacing: 0.04rem;
 		}
+	}
+
+	.collection-list {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		gap: 0.5rem;
+		padding-bottom: 1rem;
 	}
 
 	.game-item {
