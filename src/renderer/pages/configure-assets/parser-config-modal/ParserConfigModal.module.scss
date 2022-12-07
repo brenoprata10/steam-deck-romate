@@ -26,9 +26,9 @@
 		animation: bottom-fade-in 0.3s;
 	}
 
-	.footer {
+	.footer-leading {
 		display: flex;
-		justify-content: flex-end;
-		width: 100%;
+		align-self: center;
+		user-select: none;
 	}
 }
