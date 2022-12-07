@@ -39,15 +39,13 @@ const Modal = ({
 						<h4>{title}</h4>
 						{isCloseable && <FontAwesomeIcon icon={faClose} onClick={onClose} />}
 					</div>
-					<div className={className}>
-						{children}
-						{(footerTrailing || footerLeading) && (
-							<div className={styles.footer}>
-								{footerLeading ?? <div />}
-								{footerTrailing ?? <div />}
-							</div>
-						)}
-					</div>
+					<div className={className}>{children}</div>
+					{(footerTrailing || footerLeading) && (
+						<div className={styles.footer}>
+							<div>{footerLeading}</div>
+							<div>{footerTrailing}</div>
+						</div>
+					)}
 				</div>
 			</div>
 		</div>
