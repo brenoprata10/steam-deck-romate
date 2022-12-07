@@ -8,6 +8,8 @@ import {CommonDispatchContext} from 'renderer/context'
 import {EAction} from 'renderer/reducer'
 import Radio from 'renderer/uikit/radio/Radio.component'
 import useGames from 'renderer/hooks/useGames'
+import {faChevronRight} from '@fortawesome/free-solid-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 
 const ParserConfigModal = ({isOpened, onClose}: {isOpened: boolean; onClose: () => void}) => {
 	const games = useGames()
@@ -20,7 +22,9 @@ const ParserConfigModal = ({isOpened, onClose}: {isOpened: boolean; onClose: () 
 
 	const getGamesByCollection = useCallback(
 		(collection: string) =>
-			games.filter((game) => game.collections.some((gameCollection) => gameCollection.trim() === collection.trim())),
+			games
+				.filter((game) => game.collections.some((gameCollection) => gameCollection.trim() === collection.trim()))
+				.sort((game1, game2) => game1.name.toUpperCase().localeCompare(game2.name.toUpperCase())),
 		[games]
 	)
 
@@ -56,11 +60,16 @@ const ParserConfigModal = ({isOpened, onClose}: {isOpened: boolean; onClose: () 
 			isOpened={isOpened}
 			isCloseable={false}
 			onClose={onClose}
-			footerTrailing={
-				<div className={styles.footer}>
-					<Button onClick={onClose}>Continue</Button>
-				</div>
+			footerLeading={
+				shouldManageAllEntries ? undefined : (
+					<span className={styles['footer-leading']}>
+						Tip: Click &apos;
+						<FontAwesomeIcon icon={faChevronRight} />
+						&apos; to show available roms.
+					</span>
+				)
 			}
+			footerTrailing={<Button onClick={onClose}>Continue</Button>}
 		>
 			<div className={styles['options-list']}>
 				<Radio

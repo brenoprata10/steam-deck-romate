@@ -26,6 +26,10 @@ const GameCollection = ({
 		[onGameClick]
 	)
 
+	const toggleCollapsedState = useCallback(() => {
+		setIsCollapsed(!isCollapsed)
+	}, [isCollapsed])
+
 	const isExcludedCollection = games.some((game) => game.isExcluded)
 
 	return (
@@ -47,9 +51,8 @@ const GameCollection = ({
 			<div className={styles['collection-name']}>
 				<FontAwesomeIcon
 					icon={faChevronRight}
-					transform={{rotate: isCollapsed ? 0 : 90}}
-					style={{transition: '.3s'}}
-					onClick={() => setIsCollapsed(!isCollapsed)}
+					style={{transition: '.3s', transform: `rotate(${isCollapsed ? 0 : 90}deg)`}}
+					onClick={toggleCollapsedState}
 				/>
 				<Checkbox id={collection} label={collection} onChange={onCollectionClick} checked={!isExcludedCollection} />
 			</div>
