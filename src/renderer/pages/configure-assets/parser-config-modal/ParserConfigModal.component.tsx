@@ -14,7 +14,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 const ParserConfigModal = ({isOpened, onClose}: {isOpened: boolean; onClose: () => void}) => {
 	const games = useGames()
 	const dispatch = useContext(CommonDispatchContext)
-	const [shouldManageAllEntries, setShouldManageAllEntries] = useState(true)
+	const [shouldManageAllEntries, setShouldManageAllEntries] = useState(games.every((game) => !game.isExcluded))
 
 	const availableCollections = new Set(
 		games.map((game) => game.collections).reduce((result, collection) => [...result, ...collection])
@@ -69,7 +69,11 @@ const ParserConfigModal = ({isOpened, onClose}: {isOpened: boolean; onClose: () 
 					</span>
 				)
 			}
-			footerTrailing={<Button onClick={onClose}>Continue</Button>}
+			footerTrailing={
+				<Button disabled={games.every((game) => game.isExcluded)} onClick={onClose}>
+					Continue
+				</Button>
+			}
 		>
 			<div className={styles['options-list']}>
 				<Radio
