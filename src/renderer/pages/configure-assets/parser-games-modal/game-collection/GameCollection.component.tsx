@@ -13,7 +13,6 @@ const GameCollection = ({
 	onGameClick
 }: {
 	games: TGame[]
-	isHidden?: boolean
 	collection: string
 	onCollectionClick: () => void
 	onGameClick: (game: TGame) => void
