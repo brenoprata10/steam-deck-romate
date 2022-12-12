@@ -21,7 +21,7 @@ import ChangeSearchModal from 'renderer/pages/configure-assets/change-search-mod
 import TGame from 'renderer/types/TGame'
 import Tag from 'renderer/uikit/tag/Tag.component'
 import {getAssetsWithPreSelection, getGameSearchTerm, isCachedGame} from 'renderer/utils/game'
-import ParserConfigModal from './parser-config-modal/ParserConfigModal.component'
+import ParserGamesModal from 'renderer/pages/configure-assets/parser-games-modal/ParserGamesModal.component'
 import useSetupFlow from 'renderer/hooks/useSetupFlow'
 import ESetup from 'renderer/enums/ESetup'
 
@@ -124,7 +124,7 @@ const ConfigureAssets = () => {
 	}, [fetchFirstPage])
 
 	if (isConfigModalOpened) {
-		return <ParserConfigModal isOpened={isConfigModalOpened} onClose={confirmImportedGames} />
+		return <ParserGamesModal isOpened={isConfigModalOpened} onClose={confirmImportedGames} />
 	}
 
 	return (

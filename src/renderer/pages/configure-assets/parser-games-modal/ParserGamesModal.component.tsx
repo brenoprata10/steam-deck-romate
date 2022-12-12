@@ -1,8 +1,8 @@
 import TGame from 'renderer/types/TGame'
 import Button from 'renderer/uikit/button/Button.component'
 import Modal from 'renderer/uikit/modal/Modal.component'
-import GameCollection from 'renderer/pages/configure-assets/parser-config-modal/game-collection/GameCollection.component'
-import styles from './ParserConfigModal.module.scss'
+import GameCollection from 'renderer/pages/configure-assets/parser-games-modal/game-collection/GameCollection.component'
+import styles from './ParserGamesModal.module.scss'
 import {useContext, useCallback, useState} from 'react'
 import {CommonDispatchContext} from 'renderer/context'
 import {EAction} from 'renderer/reducer'
@@ -11,7 +11,7 @@ import useGames from 'renderer/hooks/useGames'
 import {faChevronRight} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 
-const ParserConfigModal = ({isOpened, onClose}: {isOpened: boolean; onClose: () => void}) => {
+const ParserGamesModal = ({isOpened, onClose}: {isOpened: boolean; onClose: () => void}) => {
 	const games = useGames()
 	const dispatch = useContext(CommonDispatchContext)
 	const [shouldManageAllEntries, setShouldManageAllEntries] = useState(games.every((game) => !game.isExcluded))
@@ -93,21 +93,19 @@ const ParserConfigModal = ({isOpened, onClose}: {isOpened: boolean; onClose: () 
 					onChange={() => setShouldManageAllEntries(false)}
 				/>
 			</div>
-			{!shouldManageAllEntries && (
-				<div className={styles['collection-list']}>
-					{Array.from(availableCollections).map((collection) => (
-						<GameCollection
-							key={collection}
-							games={getGamesByCollection(collection)}
-							collection={collection}
-							onCollectionClick={() => onToggleCollectionExcludedStatus(collection)}
-							onGameClick={onToggleGameExcludedStatus}
-						/>
-					))}
-				</div>
-			)}
+			<div className={`${styles['collection-list']} ${shouldManageAllEntries ? styles['hidden-collections'] : ''}`}>
+				{Array.from(availableCollections).map((collection) => (
+					<GameCollection
+						key={collection}
+						games={getGamesByCollection(collection)}
+						collection={collection}
+						onCollectionClick={() => onToggleCollectionExcludedStatus(collection)}
+						onGameClick={onToggleGameExcludedStatus}
+					/>
+				))}
+			</div>
 		</Modal>
 	)
 }
 
-export default ParserConfigModal
+export default ParserGamesModal

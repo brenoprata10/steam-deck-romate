@@ -16,6 +16,8 @@ import {getRoutePath} from 'renderer/route'
 import ERoute from 'renderer/enums/ERoute'
 import {getGamesFromParsers} from 'renderer/utils/parser'
 import ELocalStorageKey from 'renderer/enums/ELocalStorageKey'
+import storage from 'electron-json-storage'
+import EStorageKey from 'renderer/enums/EStorageKey'
 
 const ConfigureParsers = () => {
 	const navigate = useNavigate()
@@ -74,6 +76,39 @@ const ConfigureParsers = () => {
 			}),
 		[customParsers, dispatch]
 	)
+
+	const exportParsers = useCallback(() => {
+		storage.set(EStorageKey.PARSERS, {parsers: customParsers}, {dataPath: './'}, function (error) {
+			if (error) {
+				alert('Could not save file. Please report this in our github page.')
+				console.error(error)
+				return
+			}
+			alert(`File ${EStorageKey.PARSERS}.json saved.\n\nThe file is located under the same path as this executable.`)
+		})
+	}, [customParsers])
+
+	const importParsers = useCallback(() => {
+		storage.get(EStorageKey.PARSERS, {dataPath: './'}, (error, data) => {
+			const storageParsers = (data as {parsers?: TParserConfig[]})?.parsers ?? []
+			if (error || !storageParsers || storageParsers.length === 0) {
+				alert(
+					`Could not read ${EStorageKey.PARSERS}.json file.\n\nPlease check if the file is within the same folder path.`
+				)
+				console.error(error ?? 'PARSERS.json is either empty or does not exist.')
+				return
+			}
+
+			const customParsersWithoutDuplicates =
+				customParsers?.filter((parser) => storageParsers.every((storageParser) => storageParser.id !== parser.id)) ?? []
+			dispatch({
+				type: EAction.SET_CUSTOM_PARSERS,
+				payload: [...customParsersWithoutDuplicates, ...storageParsers]
+			})
+			alert(`Imported ${storageParsers.length} parser${storageParsers.length > 1 ? 's' : ''} successfully.`)
+		})
+	}, [dispatch, customParsers])
+
 	const handleSave = useCallback(() => {
 		if (!customParsers) {
 			throw Error('Parser is not configured.')
@@ -133,6 +168,12 @@ const ConfigureParsers = () => {
 				))}
 				<Button transparent={true} className={styles['add-parser-btn']} onClick={addEmptyParser}>
 					Add Parser
+				</Button>
+				<Button transparent={true} className={styles['add-parser-btn']} onClick={importParsers}>
+					Import
+				</Button>
+				<Button transparent={true} className={styles['add-parser-btn']} onClick={exportParsers}>
+					Export
 				</Button>
 			</div>
 			{selectedParser && (
