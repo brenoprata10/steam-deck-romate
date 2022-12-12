@@ -23,6 +23,11 @@ This project was inpired by [Steam ROM Manager](https://github.com/SteamGridDB/s
 1. Download the most recent version from [releases page](https://github.com/brenoprata10/steam-deck-romate/releases);
 2. Double click on the file and execute.
 
+## Import/Export Parser Configuration
+When you select `Create Parsers` setup, there will be two buttons with Import/Export functionality:
+- Import -> The program will look for PARSERS.json file at the same folder path as the executable.
+- Export -> PARSERS.json file will be created with your current parsers.
+
 ## Screenshots
 ![image](https://user-images.githubusercontent.com/26099427/205312144-29886a8a-0ea9-4ba2-8613-ea4056ec93de.png)
 
