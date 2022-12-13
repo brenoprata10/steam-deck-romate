@@ -2,4 +2,8 @@
 
 .checkbox {
 	@include input.input-label;
+
+	label {
+		cursor: pointer;
+	}
 }
