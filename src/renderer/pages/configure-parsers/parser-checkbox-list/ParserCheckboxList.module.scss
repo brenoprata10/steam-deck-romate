@@ -1,0 +1,17 @@
+.parser-checkbox-list {
+	width: 60%;
+
+	.title {
+		font-size: 1.2rem;
+	}
+
+	.list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin: 1rem 0;
+		max-height: 19.5rem;
+		overflow-y: auto;
+		width: 100%;
+	}
+}

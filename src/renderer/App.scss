@@ -15,6 +15,14 @@ a {
 	color: white;
 }
 
+label {
+	cursor: default;
+}
+
+input[type='text'] {
+	min-width: 20rem;
+}
+
 input[type='text'],
 select {
 	padding: 12px 20px;

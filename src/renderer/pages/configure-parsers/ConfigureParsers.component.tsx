@@ -16,14 +16,23 @@ import {getRoutePath} from 'renderer/route'
 import ERoute from 'renderer/enums/ERoute'
 import {getGamesFromParsers} from 'renderer/utils/parser'
 import ELocalStorageKey from 'renderer/enums/ELocalStorageKey'
-import storage from 'electron-json-storage'
+import ParserImport from 'renderer/pages/configure-parsers/parser-import/ParserImport.component'
 import EStorageKey from 'renderer/enums/EStorageKey'
+import storage from 'electron-json-storage'
+import ParserExport from 'renderer/pages/configure-parsers/parser-export/ParserExport.component'
+
+enum EContentType {
+	PARSER_CONFIG = 'PARSER_CONFIG',
+	IMPORT = 'IMPORT',
+	EXPORT = 'EXPORT'
+}
 
 const ConfigureParsers = () => {
 	const navigate = useNavigate()
 	const customParsers = useCustomParsers()
 	const dispatch = useContext(CommonDispatchContext)
 	const [selectedParserId, setSelectedParser] = useState<string | undefined>()
+	const [contentType, setContentType] = useState(EContentType.PARSER_CONFIG)
 	const selectedParser = customParsers?.find(({id}) => id === selectedParserId)
 	const customParsersCount = customParsers?.length ?? 0
 
@@ -48,12 +57,17 @@ const ConfigureParsers = () => {
 		})
 	}
 
+	const selectParser = useCallback((parserId: string) => {
+		setContentType(EContentType.PARSER_CONFIG)
+		setSelectedParser(parserId)
+	}, [])
+
 	const addParser = useCallback(
 		(parser: TParserConfig) => {
 			dispatch({type: EAction.SET_CUSTOM_PARSERS, payload: [...(customParsers ?? []), parser]})
-			setSelectedParser(parser.id)
+			selectParser(parser.id)
 		},
-		[customParsers, dispatch]
+		[customParsers, dispatch, selectParser]
 	)
 
 	const addEmptyParser = useCallback(
@@ -69,16 +83,17 @@ const ConfigureParsers = () => {
 	)
 
 	const onEditParser = useCallback(
-		(parser: TParserConfig) =>
+		(parser: TParserConfig) => {
 			dispatch({
 				type: EAction.SET_CUSTOM_PARSERS,
 				payload: customParsers?.map((customParser) => (customParser.id === parser.id ? parser : customParser)) ?? []
-			}),
+			})
+		},
 		[customParsers, dispatch]
 	)
 
-	const exportParsers = useCallback(() => {
-		storage.set(EStorageKey.PARSERS, {parsers: customParsers}, {dataPath: './'}, function (error) {
+	const exportParsers = useCallback((exportedParsers: TParserConfig[]) => {
+		storage.set(EStorageKey.PARSERS, {parsers: exportedParsers}, {dataPath: './'}, function (error) {
 			if (error) {
 				alert('Could not save file. Please report this in our github page.')
 				console.error(error)
@@ -86,19 +101,10 @@ const ConfigureParsers = () => {
 			}
 			alert(`File ${EStorageKey.PARSERS}.json saved.\n\nThe file is located under the same path as this executable.`)
 		})
-	}, [customParsers])
+	}, [])
 
-	const importParsers = useCallback(() => {
-		storage.get(EStorageKey.PARSERS, {dataPath: './'}, (error, data) => {
-			const storageParsers = (data as {parsers?: TParserConfig[]})?.parsers ?? []
-			if (error || !storageParsers || storageParsers.length === 0) {
-				alert(
-					`Could not read ${EStorageKey.PARSERS}.json file.\n\nPlease check if the file is within the same folder path.`
-				)
-				console.error(error ?? 'PARSERS.json is either empty or does not exist.')
-				return
-			}
-
+	const importParsers = useCallback(
+		(storageParsers: TParserConfig[]) => {
 			const customParsersWithoutDuplicates =
 				customParsers?.filter((parser) => storageParsers.every((storageParser) => storageParser.id !== parser.id)) ?? []
 			dispatch({
@@ -106,8 +112,9 @@ const ConfigureParsers = () => {
 				payload: [...customParsersWithoutDuplicates, ...storageParsers]
 			})
 			alert(`Imported ${storageParsers.length} parser${storageParsers.length > 1 ? 's' : ''} successfully.`)
-		})
-	}, [dispatch, customParsers])
+		},
+		[dispatch, customParsers]
+	)
 
 	const handleSave = useCallback(() => {
 		if (!customParsers) {
@@ -158,25 +165,35 @@ const ConfigureParsers = () => {
 					<div
 						key={parser.id}
 						className={`${styles.item} ${!isValidParser(parser) ? styles['item-invalid'] : ''} ${
-							selectedParserId === parser.id ? styles['item-selected'] : ''
+							contentType === EContentType.PARSER_CONFIG && selectedParserId === parser.id
+								? styles['item-selected']
+								: ''
 						}`}
-						onClick={() => setSelectedParser(parser.id)}
+						onClick={() => selectParser(parser.id)}
 					>
 						{!isValidParser(parser) && <FontAwesomeIcon className={styles['error-icon']} icon={faWarning} />}
 						<span className={styles.label}>{parser.name}</span>
 					</div>
 				))}
-				<Button transparent={true} className={styles['add-parser-btn']} onClick={addEmptyParser}>
+				<Button transparent={true} className={styles['parser-cta']} onClick={addEmptyParser}>
 					Add Parser
 				</Button>
-				<Button transparent={true} className={styles['add-parser-btn']} onClick={importParsers}>
+				<Button
+					transparent={contentType !== EContentType.IMPORT}
+					className={styles['parser-cta']}
+					onClick={() => setContentType(EContentType.IMPORT)}
+				>
 					Import
 				</Button>
-				<Button transparent={true} className={styles['add-parser-btn']} onClick={exportParsers}>
+				<Button
+					transparent={contentType !== EContentType.EXPORT}
+					className={styles['parser-cta']}
+					onClick={() => setContentType(EContentType.EXPORT)}
+				>
 					Export
 				</Button>
 			</div>
-			{selectedParser && (
+			{selectedParser && contentType === EContentType.PARSER_CONFIG && (
 				<ParserForm
 					key={selectedParser.id}
 					parser={selectedParser}
@@ -185,6 +202,8 @@ const ConfigureParsers = () => {
 					onDelete={deleteSelectedParser}
 				/>
 			)}
+			{contentType === EContentType.IMPORT && <ParserImport onImport={importParsers} />}
+			{contentType === EContentType.EXPORT && <ParserExport parsers={customParsers ?? []} onExport={exportParsers} />}
 		</Modal>
 	)
 }
