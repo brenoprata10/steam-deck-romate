@@ -87,7 +87,7 @@ const ConfigureAssets = () => {
 		}
 	})
 
-	const onBack = useCallback(() => navigate(getRoutePath(ERoute.SELECT_ACCOUNT)), [navigate])
+	const onBack = useCallback(() => navigate(getRoutePath(ERoute.SETUP)), [navigate])
 	const onSave = useCallback(() => navigate(getRoutePath(ERoute.SAVE)), [navigate])
 
 	const onChangePage = useCallback(

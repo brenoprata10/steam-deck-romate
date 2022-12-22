@@ -31,7 +31,7 @@ export const getGameFromDesktopFile = async (path: string): Promise<TGame> => {
 		}
 	}
 
-	game.id = generateShortAppId(game.path, game.name)
+	game.id = generateShortAppId(game.path ?? '', game.name)
 
 	return game
 }

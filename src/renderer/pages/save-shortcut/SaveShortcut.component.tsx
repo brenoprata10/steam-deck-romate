@@ -116,7 +116,7 @@ const SaveShortcut = () => {
 			}`
 			const shortcutValue = {
 				AppName: game.name,
-				Exe: game.exec,
+				Exe: game.exec ?? '',
 				AppId: game.id,
 				icon: iconPath,
 				LaunchOptions: game.launchOptions ?? ''

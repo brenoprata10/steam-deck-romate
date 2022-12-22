@@ -5,7 +5,7 @@ import {CommonDispatchContext} from 'renderer/context'
 import ERoute from 'renderer/enums/ERoute'
 import useSteamUserId from 'renderer/hooks/useSteamUserId'
 import {getRoutePath} from 'renderer/route'
-import Button, {EButtonVariant} from 'renderer/uikit/button/Button.component'
+import Button from 'renderer/uikit/button/Button.component'
 import PageFooter from 'renderer/uikit/page/footer/PageFooter.component'
 import Page from 'renderer/uikit/page/Page.component'
 import {getAvailableUserAccounts} from 'renderer/utils/steam-shortcuts'
@@ -14,21 +14,14 @@ import TUserData from 'renderer/types/TUserData'
 import CardOption from 'renderer/uikit/card-option/CardOption.component'
 import DECK_LOGO from '../../../../assets/deck-logo.png'
 import styles from './SelectUserAccount.module.scss'
-import useSetupFlow from 'renderer/hooks/useSetupFlow'
-import ESetup from 'renderer/enums/ESetup'
 
 const SelectUserAccount = () => {
 	const navigate = useNavigate()
-	const setup = useSetupFlow()
 	const steamUserId = useSteamUserId()
 	const [userAccounts, setUserAccounts] = useState<TUserData[]>([])
 	const dispatch = useContext(CommonDispatchContext)
 
-	const onBack = useCallback(
-		() => navigate(getRoutePath(setup === ESetup.CREATE_PARSERS ? ERoute.CONFIGURE_PARSERS : ERoute.SETUP)),
-		[navigate, setup]
-	)
-	const onNext = useCallback(() => navigate(getRoutePath(ERoute.CONFIGURE_ASSETS)), [navigate])
+	const onNext = useCallback(() => navigate(getRoutePath(ERoute.SETUP)), [navigate])
 
 	const selectSteamUserId = useCallback(
 		(id: string) => dispatch({type: EAction.SET_STEAM_USER_ID, payload: id}),
@@ -55,11 +48,6 @@ const SelectUserAccount = () => {
 			contentClassName={styles['select-user-account']}
 			footerComponent={
 				<PageFooter
-					leadingComponent={
-						<Button onClick={onBack} variant={EButtonVariant.SECONDARY}>
-							Back
-						</Button>
-					}
 					trailingComponent={
 						<Button disabled={!steamUserId} onClick={onNext}>
 							Next

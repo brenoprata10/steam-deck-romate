@@ -9,15 +9,13 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path'
-import {app, BrowserWindow, shell, ipcMain, dialog} from 'electron'
+import {app, BrowserWindow, shell} from 'electron'
 import {autoUpdater} from 'electron-updater'
 import log from 'electron-log'
 import MenuBuilder from './menu'
 import {resolveHtmlPath} from './util'
-import EChannel from './enums/EChannel'
-import axios, {AxiosRequestConfig} from 'axios'
-import {download} from 'electron-dl'
 import contextMenu from 'electron-context-menu'
+import {initIpcHandle} from './ipc'
 
 contextMenu({})
 
@@ -30,51 +28,6 @@ class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null
-
-ipcMain.handle(EChannel.SELECT_FOLDER, async (_, arg: string) => {
-	return dialog.showOpenDialog({title: arg, properties: ['openDirectory']})
-})
-
-ipcMain.handle(EChannel.SELECT_MULTIPLE_FILES, async (_, ...args: Array<string>) => {
-	const extensions = args.slice(1)
-	return dialog.showOpenDialog({
-		title: args[0],
-		properties: ['openFile', 'multiSelections'],
-		filters: [{name: extensions.join(', '), extensions: args.slice(1)}]
-	})
-})
-
-ipcMain.handle(EChannel.STEAM_GRID_REQUEST, async (_, ...args) => {
-	const {url, apiKey, options = {}}: {url: string; apiKey: string; options?: AxiosRequestConfig} = args[0]
-	try {
-		const {data: response} = await axios(`https://www.steamgriddb.com/api/v2${url}`, {
-			...options,
-			headers: {...(options.headers ?? {}), Authorization: `Bearer ${apiKey}`}
-		})
-
-		return response
-	} catch (error) {
-		console.log(error)
-		if (axios.isAxiosError(error) && error.response) {
-			return {success: false, error: {status: error.response.status, statusText: error.response.statusText}}
-		}
-	}
-})
-
-ipcMain.handle(EChannel.DOWNLOAD_ASSET, async (_, ...args) => {
-	const {url, directory, fileName: filename}: {url: string; directory: string; fileName: string} = args[0]
-	try {
-		const win = BrowserWindow.getFocusedWindow()
-		if (win) {
-			console.log(await download(win, url, {directory, filename, saveAs: false, overwrite: true}))
-		}
-	} catch (error) {
-		console.log(error)
-		if (axios.isAxiosError(error) && error.response) {
-			return {error: {status: error.response.status, statusText: error.response.statusText}}
-		}
-	}
-})
 
 if (process.env.NODE_ENV === 'production') {
 	const sourceMapSupport = require('source-map-support')
@@ -157,6 +110,8 @@ const createWindow = async () => {
 	// eslint-disable-next-line
 	new AppUpdater()
 }
+
+initIpcHandle()
 
 /**
  * Add event listeners...

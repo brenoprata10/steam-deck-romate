@@ -7,7 +7,9 @@
 		grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
 	}
 
-	.about-button {
-		margin-right: 1rem;
+	.footer-leading {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
 	}
 }

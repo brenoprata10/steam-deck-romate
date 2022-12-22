@@ -9,15 +9,17 @@ import styles from './GameCollection.module.scss'
 const GameCollection = ({
 	games,
 	collection,
+	isCollapsedByDefault = true,
 	onCollectionClick,
 	onGameClick
 }: {
 	games: TGame[]
 	collection: string
+	isCollapsedByDefault: boolean
 	onCollectionClick: () => void
 	onGameClick: (game: TGame) => void
 }) => {
-	const [isCollapsed, setIsCollapsed] = useState(true)
+	const [isCollapsed, setIsCollapsed] = useState(isCollapsedByDefault)
 
 	const handleGameClick = useCallback(
 		(game: TGame) => {
