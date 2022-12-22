@@ -31,7 +31,9 @@ export const mapEmuDeckSteamRomManagerParser = (
 		path = `${executablePath} ${args}`
 		args = ''
 	}
-	const romDirectory = emudeckRomDirectory.replace(DEFAULT_EMUDECK_EMULATION_FOLDER_PATH, emulationFolderPath)
+	const romDirectory = emudeckRomDirectory
+		.replace('${romsdirglobal}', `${emulationFolderPath}/roms`)
+		.replace(DEFAULT_EMUDECK_EMULATION_FOLDER_PATH, emulationFolderPath)
 
 	return {
 		id: parserId,
