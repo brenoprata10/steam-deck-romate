@@ -1,8 +1,7 @@
-import {ipcMain} from 'electron'
 import EChannel from '../enums/EChannel'
 import {dialog} from 'electron'
 
-export const ipcHandleSelectMultipleFiles = () =>
+export const ipcHandleSelectMultipleFiles = (ipcMain: Electron.IpcMain) =>
 	ipcMain.handle(EChannel.SELECT_MULTIPLE_FILES, async (_, ...args: Array<string>) => {
 		const extensions = args.slice(1)
 		return dialog.showOpenDialog({

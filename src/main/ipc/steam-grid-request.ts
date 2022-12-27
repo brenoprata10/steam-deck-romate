@@ -1,9 +1,8 @@
-import {ipcMain} from 'electron/main'
 import EChannel from '../enums/EChannel'
 import axios from 'axios'
 import {AxiosRequestConfig} from 'axios'
 
-export const ipcHandleSteamGridRequest = () =>
+export const ipcHandleSteamGridRequest = (ipcMain: Electron.IpcMain) =>
 	ipcMain.handle(EChannel.STEAM_GRID_REQUEST, async (_, ...args) => {
 		const {url, apiKey, options = {}} = args[0] as {url: string; apiKey: string; options?: AxiosRequestConfig}
 		try {

@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path'
-import {app, BrowserWindow, shell} from 'electron'
+import {app, BrowserWindow, ipcMain, shell} from 'electron'
 import {autoUpdater} from 'electron-updater'
 import log from 'electron-log'
 import MenuBuilder from './menu'
@@ -111,7 +111,7 @@ const createWindow = async () => {
 	new AppUpdater()
 }
 
-initIpcHandle()
+initIpcHandle(ipcMain)
 
 /**
  * Add event listeners...

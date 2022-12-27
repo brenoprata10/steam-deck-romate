@@ -3,9 +3,9 @@ import {ipcHandleSelectFolder} from './select-folder'
 import {ipcHandleSelectMultipleFiles} from './select-multiple-files'
 import {ipcHandleSteamGridRequest} from './steam-grid-request'
 
-export const initIpcHandle = () => {
-	ipcHandleDownloadAsset()
-	ipcHandleSelectFolder()
-	ipcHandleSelectMultipleFiles()
-	ipcHandleSteamGridRequest()
+export const initIpcHandle = (ipcMain: Electron.IpcMain) => {
+	ipcHandleDownloadAsset(ipcMain)
+	ipcHandleSelectFolder(ipcMain)
+	ipcHandleSelectMultipleFiles(ipcMain)
+	ipcHandleSteamGridRequest(ipcMain)
 }

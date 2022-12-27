@@ -1,9 +1,9 @@
 import axios from 'axios'
-import {BrowserWindow, ipcMain} from 'electron'
+import {BrowserWindow} from 'electron'
 import {download} from 'electron-dl'
 import EChannel from '../enums/EChannel'
 
-export const ipcHandleDownloadAsset = () =>
+export const ipcHandleDownloadAsset = (ipcMain: Electron.IpcMain) =>
 	ipcMain.handle(EChannel.DOWNLOAD_ASSET, async (_, ...args) => {
 		const {url, directory, fileName: filename} = args[0] as {url: string; directory: string; fileName: string}
 		try {
