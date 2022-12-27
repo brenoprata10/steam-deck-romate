@@ -8,7 +8,9 @@ import {getGameAssetsByName} from 'renderer/api/steam-grid.api'
 import EAssetType from 'renderer/enums/EAssetType'
 import ELocalStorageKey from 'renderer/enums/ELocalStorageKey'
 import ERoute from 'renderer/enums/ERoute'
+import ESetup from 'renderer/enums/ESetup'
 import useGames from 'renderer/hooks/useGames'
+import useSetupFlow from 'renderer/hooks/useSetupFlow'
 import useSteamGridApiKey from 'renderer/hooks/useSteamGridApiKey'
 import useSteamUserId from 'renderer/hooks/useSteamUserId'
 import {getRoutePath} from 'renderer/route'
@@ -42,6 +44,7 @@ const SaveShortcut = () => {
 	const navigate = useNavigate()
 	const apiKey = useSteamGridApiKey()
 	const steamUserId = useSteamUserId()
+	const setupFlow = useSetupFlow()
 	const games = useGames().filter((game) => !game.isIgnored && !game.isExcluded)
 
 	const addToLog = (message: string, color = 'white') => {
@@ -161,7 +164,9 @@ const SaveShortcut = () => {
 			await downloadAssets(unloadedGamesWithAssets)
 			addToLog('All assets were downloaded.', PRIMARY_LOG_COLOR)
 			setStep(EStep.SAVE_SHORTCUTS)
-			await saveShortcuts()
+			if (setupFlow !== ESetup.STEAM_ASSETS) {
+				await saveShortcuts()
+			}
 			saveGamesToLocalStorage(
 				games.map((game) => unloadedGamesWithAssets.find((unloadedGame) => unloadedGame.id === game.id) ?? game)
 			)
