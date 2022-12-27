@@ -134,7 +134,7 @@ const ConfigureParsers = () => {
 			type: EAction.SET_GAMES,
 			payload: games
 		})
-		navigate(getRoutePath(ERoute.SELECT_ACCOUNT))
+		navigate(getRoutePath(ERoute.CONFIGURE_ASSETS))
 	}, [navigate, dispatch, customParsers])
 
 	const isValidParser = ({id, romDirectory, executable, supportedFileTypes, name}: TParserConfig) =>

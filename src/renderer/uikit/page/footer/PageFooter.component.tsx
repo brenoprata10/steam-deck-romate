@@ -9,8 +9,8 @@ const PageFooter = ({
 }) => (
 	<div className={styles['page-footer']}>
 		<div className={styles['content']}>
-			{leadingComponent}
-			{trailingComponent}
+			{leadingComponent ?? <div />}
+			{trailingComponent ?? <div />}
 		</div>
 	</div>
 )

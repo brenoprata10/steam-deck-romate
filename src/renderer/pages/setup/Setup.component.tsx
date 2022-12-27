@@ -3,6 +3,7 @@ import Page from 'renderer/uikit/page/Page.component'
 import EMUDECK_IMG from '../../../../assets/setup-assets/emudeck.png'
 import PARSER_IMG from '../../../../assets/setup-assets/code.jpg'
 import CUSTOM_FOLDER_IMG from '../../../../assets/setup-assets/custom-folder.jpg'
+import STEAM_IMG from '../../../../assets/setup-assets/steam.jpg'
 import styles from './Setup.module.scss'
 import PageFooter from 'renderer/uikit/page/footer/PageFooter.component'
 import Button, {EButtonVariant} from 'renderer/uikit/button/Button.component'
@@ -23,12 +24,15 @@ import useSteamGridApiKey from 'renderer/hooks/useSteamGridApiKey'
 import useSelectFolder from 'renderer/hooks/useSelectFolder'
 import {getEmuDeckConfigFile} from 'renderer/api/emu-deck.api'
 import {getGamesFromParsers} from 'renderer/utils/parser'
+import useSteamUserId from 'renderer/hooks/useSteamUserId'
+import {getSteamGamesByUserId} from 'renderer/utils/steam-assets'
 
 const Setup = () => {
 	const [isAboutModalOpened, setIsAboutModalOpened] = useState(false)
 	const [isSteamGridModalOpened, setIsSteamGridModalOpened] = useState(false)
 	const steamGridApiKey = useSteamGridApiKey()
 	const setupFlow = useSetupFlow()
+	const steamUserId = useSteamUserId()
 	const navigate = useNavigate()
 	const dispatch = useContext(CommonDispatchContext)
 	const {trigger: selectMultipleFiles} = useSelectMultipleFiles({
@@ -60,6 +64,13 @@ const Setup = () => {
 		return getGamesFromParsers(emuDeckConfig)
 	}, [selectFolder])
 
+	const getSteamGames = useCallback(async (): Promise<TGame[]> => {
+		if (!steamUserId) {
+			throw Error('Could not fetch steam games. User is not selected.')
+		}
+		return getSteamGamesByUserId(steamUserId)
+	}, [steamUserId])
+
 	const flowOptions: {
 		[setup in ESetup]: {label: string; image: string; onNext?: () => Promise<TGame[]>; onConfigure?: () => void}
 	} = useMemo(
@@ -74,13 +85,18 @@ const Setup = () => {
 				image: EMUDECK_IMG,
 				onNext: getEmuDeckGames
 			},
+			[ESetup.STEAM_ASSETS]: {
+				label: 'Steam Assets',
+				image: STEAM_IMG,
+				onNext: getSteamGames
+			},
 			[ESetup.CUSTOM_FOLDER]: {
 				label: 'Desktop Files',
 				image: CUSTOM_FOLDER_IMG,
 				onNext: getCustomFolderGames
 			}
 		}),
-		[getEmuDeckGames, getCustomFolderGames, navigate]
+		[getEmuDeckGames, getCustomFolderGames, navigate, getSteamGames]
 	)
 
 	const changeSetupFlow = useCallback(
@@ -108,11 +124,13 @@ const Setup = () => {
 				type: EAction.SET_GAMES,
 				payload: games
 			})
-			navigate(getRoutePath(ERoute.SELECT_ACCOUNT))
+			navigate(getRoutePath(ERoute.CONFIGURE_ASSETS))
 		} else {
 			alert('No games found.\nThe folder is empty, please check your input.')
 		}
 	}, [setupFlow, navigate, dispatch, flowOptions])
+
+	const changeSelectedUser = useCallback(() => navigate(getRoutePath(ERoute.SELECT_ACCOUNT)), [navigate])
 
 	const toggleAboutModalVisibility = useCallback(() => setIsAboutModalOpened(!isAboutModalOpened), [isAboutModalOpened])
 
@@ -137,16 +155,15 @@ const Setup = () => {
 			footerComponent={
 				<PageFooter
 					leadingComponent={
-						<div>
-							<Button
-								onClick={toggleAboutModalVisibility}
-								variant={EButtonVariant.SECONDARY}
-								className={styles['about-button']}
-							>
+						<div className={styles['footer-leading']}>
+							<Button onClick={toggleAboutModalVisibility} variant={EButtonVariant.SECONDARY}>
 								About
 							</Button>
 							<Button onClick={toggleSteamGridModalVisibility} variant={EButtonVariant.SECONDARY}>
 								Modify Steam Grid Key
+							</Button>
+							<Button onClick={changeSelectedUser} variant={EButtonVariant.SECONDARY}>
+								Change Selected User
 							</Button>
 						</div>
 					}

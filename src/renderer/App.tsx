@@ -20,8 +20,8 @@ export default function App() {
 				<main className={'main-wrapper'}>
 					<Router>
 						<Routes>
-							<Route path={getRoutePath(ERoute.SETUP)} element={<Setup />} />
 							<Route path={getRoutePath(ERoute.SELECT_ACCOUNT)} element={<SelectUserAccount />} />
+							<Route path={getRoutePath(ERoute.SETUP)} element={<Setup />} />
 							<Route path={getRoutePath(ERoute.CONFIGURE_ASSETS)} element={<ConfigureAssets />} />
 							<Route path={getRoutePath(ERoute.CONFIGURE_PARSERS)} element={<ConfigureParsers />} />
 							<Route path={getRoutePath(ERoute.SAVE)} element={<SaveShortcut />} />

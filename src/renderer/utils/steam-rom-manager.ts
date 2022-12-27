@@ -25,7 +25,9 @@ export const mapEmuDeckSteamRomManagerParser = (
 		.replace('${os:win|cores|${os:mac|${racores}|${os:linux|${racores}}}}', '')
 		.replace('${/}', '/')
 		.replace('${os:win|dll|${os:mac|dylib|${os:linux|so}}}', 'so')
-	const executablePath = executableModifier.replaceAll('${exePath}', executable.path)
+	const executablePath = executableModifier
+		.replaceAll('${exePath}', executable.path)
+		.replace('${retroarchpath}', '/usr/bin/flatpak')
 	let path = executablePath
 	if (executable.appendArgsToExecutable) {
 		path = `${executablePath} ${args}`

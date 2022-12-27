@@ -99,6 +99,7 @@ const ParserGamesModal = ({isOpened, onClose}: {isOpened: boolean; onClose: () =
 						key={collection}
 						games={getGamesByCollection(collection)}
 						collection={collection}
+						isCollapsedByDefault={availableCollections.size !== 1}
 						onCollectionClick={() => onToggleCollectionExcludedStatus(collection)}
 						onGameClick={onToggleGameExcludedStatus}
 					/>
