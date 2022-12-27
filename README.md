@@ -4,7 +4,7 @@ A beautiful Steam ROM manager built from the ground up to work perfectly with Li
 
 This project was inpired by [Steam ROM Manager](https://github.com/SteamGridDB/steam-rom-manager), but aims to accomplish much more.
 
-![image](https://user-images.githubusercontent.com/26099427/205311827-ee9cba98-a540-414a-98aa-b3795ac1415f.png)
+![image](https://user-images.githubusercontent.com/26099427/209691525-9425951e-d2a8-409c-bc9e-fa7fd1ec71f3.png)
 
 ## Features
 - 👾 Create custom parsers based on your preferences;
@@ -29,10 +29,10 @@ When you select `Create Parsers` setup, there will be two buttons with Import/Ex
 - Export -> PARSERS.json file will be created with your current parsers.
 
 ## Screenshots
-![image](https://user-images.githubusercontent.com/26099427/205312144-29886a8a-0ea9-4ba2-8613-ea4056ec93de.png)
+![image](https://user-images.githubusercontent.com/26099427/209691582-83da2c21-6b76-449d-867d-55d677fab4bd.png)
 
 ![Screenshot from 2022-12-02 15-04-36](https://user-images.githubusercontent.com/26099427/205311454-105f5b64-ed85-4859-ba6f-3cc11f34083b.png)
 
 ![Screenshot from 2022-12-02 15-04-27](https://user-images.githubusercontent.com/26099427/205311459-4e096f80-dd03-4264-a373-84e7794225d3.png)
 
-![image](https://user-images.githubusercontent.com/26099427/205326885-c1dff00f-a3ac-4bac-9b76-c5468d4a8a87.png)
+![image](https://user-images.githubusercontent.com/26099427/209691637-eda5af6a-bfe2-4a0b-82ab-4d38aae2b240.png)
