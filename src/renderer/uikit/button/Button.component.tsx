@@ -1,5 +1,6 @@
 import {IconDefinition} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import Loader, {ESize} from 'renderer/uikit/loader/Loader.component'
 import styles from './Button.module.scss'
 
 export enum EButtonVariant {
@@ -27,6 +28,7 @@ const Button = ({
 	icon,
 	size = EButtonSize.MEDIUM,
 	type = EButtonType.BUTTON,
+	showLoader,
 	onClick
 }: {
 	variant?: EButtonVariant
@@ -37,6 +39,7 @@ const Button = ({
 	icon?: IconDefinition
 	size?: EButtonSize
 	type?: EButtonType
+	showLoader?: boolean
 	onClick?: () => void | Promise<void>
 }) => (
 	<button
@@ -44,11 +47,11 @@ const Button = ({
 			transparent ? `${styles['button-transparent']} ${styles[`button-transparent-${variant}`]}` : ''
 		}`}
 		onClick={onClick}
-		disabled={disabled}
+		disabled={disabled || showLoader}
 		type={type}
 	>
 		{icon && <FontAwesomeIcon className={styles.icon} icon={icon} size={'xl'} />}
-		{children}
+		{showLoader ? <Loader size={ESize.SMALL} /> : children}
 	</button>
 )
 
