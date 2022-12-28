@@ -30,6 +30,7 @@ import {getSteamGamesByUserId} from 'renderer/utils/steam-assets'
 const Setup = () => {
 	const [isAboutModalOpened, setIsAboutModalOpened] = useState(false)
 	const [isSteamGridModalOpened, setIsSteamGridModalOpened] = useState(false)
+	const [isLoading, setIsLoading] = useState(false)
 	const steamGridApiKey = useSteamGridApiKey()
 	const setupFlow = useSetupFlow()
 	const steamUserId = useSteamUserId()
@@ -108,6 +109,7 @@ const Setup = () => {
 		if (!setupFlow) {
 			return
 		}
+		setIsLoading(true)
 		const selectedFlow = flowOptions[setupFlow]
 		if (selectedFlow.onConfigure) {
 			flowOptions[setupFlow].onConfigure?.()
@@ -128,6 +130,7 @@ const Setup = () => {
 		} else {
 			alert('No games found.\nThe folder is empty, please check your input.')
 		}
+		setIsLoading(false)
 	}, [setupFlow, navigate, dispatch, flowOptions])
 
 	const changeSelectedUser = useCallback(() => navigate(getRoutePath(ERoute.SELECT_ACCOUNT)), [navigate])
@@ -168,8 +171,8 @@ const Setup = () => {
 						</div>
 					}
 					trailingComponent={
-						<Button disabled={!setupFlow} onClick={onNext}>
-							Next
+						<Button disabled={!setupFlow} showLoader={isLoading} onClick={onNext}>
+							<span>Next</span>
 						</Button>
 					}
 				/>
