@@ -1,12 +1,12 @@
 {
-  "name": "electron-react-boilerplate",
-  "version": "4.6.0",
-  "description": "A foundation for scalable desktop apps",
+  "name": "steam-deck-romate",
+  "version": "0.0.5",
+  "description": "Steam Deck Rom Manager",
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "name": "Breno Prata",
+    "email": "brenoprata10@gmail.com",
+    "url": "https://brenoprata10.github.io/curriculum/"
   },
   "main": "./dist/main/main.js",
   "scripts": {

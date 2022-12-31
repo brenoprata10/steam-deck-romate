@@ -174,8 +174,8 @@
     "webpack-merge": "5.8.0"
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.erb.ElectronReact",
+    "productName": "SteamRomate",
+    "appId": "com.SteamRomate",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
