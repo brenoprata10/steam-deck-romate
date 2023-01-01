@@ -17,7 +17,7 @@ const Input = ({
 	}, [onClipboardPaste])
 
 	return (
-		<div className={styles['input-wrapper']}>
+		<div className={styles['input-wrapper']} style={onClipboardPaste ? {display: 'flex'} : undefined}>
 			<input {...nativeProps} />{' '}
 			{onClipboardPaste && (
 				<Button variant={EButtonVariant.SECONDARY} className={styles['paste-button']} icon={faPaste} onClick={onPaste}>

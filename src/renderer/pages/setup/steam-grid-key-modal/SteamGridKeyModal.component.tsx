@@ -75,7 +75,7 @@ const SteamGridKeyModal = ({
 				</a>
 				.
 			</p>
-			<div>
+			<div className={styles['input-wrapper']}>
 				Paste the key here:{' '}
 				<Input
 					nativeProps={{

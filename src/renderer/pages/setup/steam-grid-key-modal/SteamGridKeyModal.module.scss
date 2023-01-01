@@ -8,7 +8,13 @@
 		}
 	}
 
-	input {
-		width: 18rem;
+	.input-wrapper {
+		display: flex;
+		align-items: center;
+
+		input {
+			width: 18rem;
+			margin-left: 0.5rem;
+		}
 	}
 }
