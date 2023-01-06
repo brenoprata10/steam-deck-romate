@@ -8,6 +8,9 @@ declare global {
 				on(channel: Channels, func: (...args: unknown[]) => void): (() => void) | undefined
 				once(channel: Channels, func: (...args: unknown[]) => void): void
 			}
+			isMac: () => boolean
+			isWindows: () => boolean
+			isLinux: () => boolean
 		}
 	}
 }

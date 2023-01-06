@@ -38,6 +38,7 @@ module.exports = {
 		"react-hooks/rules-of-hooks": "error",
 		"react-hooks/exhaustive-deps": "error",
 		'prettier/prettier': 'error',
-		'@typescript-eslint/parser': 'off'
+		'@typescript-eslint/parser': 'off',
+		'linebreak-style': ['error', process.platform === 'win32' ? 'windows' : 'unix'],
 	}
 }
