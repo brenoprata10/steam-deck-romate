@@ -1,9 +1,5 @@
 import CardOption from 'renderer/uikit/card-option/CardOption.component'
 import Page from 'renderer/uikit/page/Page.component'
-import EMUDECK_IMG from '../../../../assets/setup-assets/emudeck.png'
-import PARSER_IMG from '../../../../assets/setup-assets/code.jpg'
-import CUSTOM_FOLDER_IMG from '../../../../assets/setup-assets/custom-folder.jpg'
-import STEAM_IMG from '../../../../assets/setup-assets/steam.jpg'
 import styles from './Setup.module.scss'
 import PageFooter from 'renderer/uikit/page/footer/PageFooter.component'
 import Button, {EButtonVariant} from 'renderer/uikit/button/Button.component'
@@ -26,6 +22,9 @@ import {getEmuDeckConfigFile} from 'renderer/api/emu-deck.api'
 import {getGamesFromParsers} from 'renderer/utils/parser'
 import useSteamUserId from 'renderer/hooks/useSteamUserId'
 import {getSteamGamesByUserId} from 'renderer/utils/steam-assets'
+import TSetupConfig from 'renderer/types/TSetupConfig'
+import {getSetupConfig} from 'renderer/utils/setup-config'
+import usePlatform from 'renderer/hooks/usePlatform'
 
 const Setup = () => {
 	const [isAboutModalOpened, setIsAboutModalOpened] = useState(false)
@@ -35,6 +34,7 @@ const Setup = () => {
 	const setupFlow = useSetupFlow()
 	const steamUserId = useSteamUserId()
 	const navigate = useNavigate()
+	const platform = usePlatform()
 	const dispatch = useContext(CommonDispatchContext)
 	const {trigger: selectMultipleFiles} = useSelectMultipleFiles({
 		title: 'Select .desktop files',
@@ -73,27 +73,23 @@ const Setup = () => {
 	}, [steamUserId])
 
 	const flowOptions: {
-		[setup in ESetup]: {label: string; image: string; onNext?: () => Promise<TGame[]>; onConfigure?: () => void}
+		[setup in ESetup]: TSetupConfig & {onNext?: () => Promise<TGame[]>; onConfigure?: () => void}
 	} = useMemo(
 		() => ({
 			[ESetup.CREATE_PARSERS]: {
-				label: 'Create Parsers',
-				image: PARSER_IMG,
+				...getSetupConfig(ESetup.CREATE_PARSERS),
 				onConfigure: () => navigate(getRoutePath(ERoute.CONFIGURE_PARSERS))
 			},
 			[ESetup.EMU_DECK]: {
-				label: 'Emu Deck',
-				image: EMUDECK_IMG,
+				...getSetupConfig(ESetup.EMU_DECK),
 				onNext: getEmuDeckGames
 			},
 			[ESetup.STEAM_ASSETS]: {
-				label: 'Steam Assets',
-				image: STEAM_IMG,
+				...getSetupConfig(ESetup.STEAM_ASSETS),
 				onNext: getSteamGames
 			},
 			[ESetup.CUSTOM_FOLDER]: {
-				label: 'Desktop Files',
-				image: CUSTOM_FOLDER_IMG,
+				...getSetupConfig(ESetup.CUSTOM_FOLDER),
 				onNext: getCustomFolderGames
 			}
 		}),
@@ -150,6 +146,10 @@ const Setup = () => {
 		[dispatch]
 	)
 
+	const supportedSetups = (Object.keys(flowOptions) as ESetup[]).filter((flowType) =>
+		platform ? flowOptions[flowType].supportedPlatforms.includes(platform) : true
+	)
+
 	return (
 		<Page
 			title='Welcome!'
@@ -179,7 +179,7 @@ const Setup = () => {
 			}
 		>
 			<div className={styles.grid}>
-				{(Object.keys(flowOptions) as ESetup[]).map((flowType) => (
+				{supportedSetups.map((flowType) => (
 					<CardOption
 						key={flowType}
 						isSelected={flowType === setupFlow}

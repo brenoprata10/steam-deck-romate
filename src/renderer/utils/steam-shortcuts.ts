@@ -6,9 +6,8 @@ import fsPromise from 'fs/promises'
 import TUserData from 'renderer/types/TUserData'
 import VDF from 'vdf-parser'
 import TSteamLocalConfig from 'renderer/types/TSteamLocalConfig'
-import {ipcRenderer} from 'electron'
-import EChannel from 'main/enums/EChannel'
 import EPlatform from 'main/enums/EPlatform'
+import {getPlatform} from 'renderer/utils/platform'
 
 const STEAM_LINUX_USER_DATA_PATH = '.steam/steam/userdata'
 const STEAM_WINDOWS_USER_DATA_PATH = 'C:\\Program Files (x86)\\Steam'
@@ -26,7 +25,7 @@ export const getSteamPathConfig = async (
 	  }
 	| {hasSteamId: false; userDataDirectory: string}
 > => {
-	const platform = (await ipcRenderer.invoke(EChannel.PLATFORM)) as EPlatform
+	const platform = await getPlatform()
 	const isWindows = platform === EPlatform.WINDOWS
 
 	const userDataDirectory = isWindows
