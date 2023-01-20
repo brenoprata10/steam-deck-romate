@@ -1,6 +1,6 @@
 # Steam Deck Romate Beta
 
-A beautiful Steam ROM manager built from the ground up to work perfectly with Linux and primarily Steam Deck devices. 
+A beautiful Steam ROM manager built from the ground up to work perfectly with Windows, Linux and primarily Steam Deck devices. 
 
 This project was inpired by [Steam ROM Manager](https://github.com/SteamGridDB/steam-rom-manager), but aims to accomplish much more.
 
