@@ -1,3 +1,4 @@
+import EPlatform from 'main/enums/EPlatform'
 import EAssetType from 'renderer/enums/EAssetType'
 import ELocalStorageKey from 'renderer/enums/ELocalStorageKey'
 import ESetup from 'renderer/enums/ESetup'
@@ -8,6 +9,7 @@ import TParserConfig from 'renderer/types/TParserConfig'
 
 export type TCommonState = {
 	games: TGame[]
+	platform?: EPlatform
 	steamUserId?: string | null
 	setupFlow?: ESetup
 	steamGridApiKey?: string | null
@@ -34,7 +36,8 @@ export enum EAction {
 	UPDATE_GAME_ASSETS = 'UPDATE_GAME_ASSETS',
 	UPDATE_GAMES_ASSETS = 'UPDATE_GAMES_ASSETS',
 	UPDATE_GAME_SEARCH_TERM = 'UPDATE_GAME_SEARCH_TERM',
-	SET_CUSTOM_PARSERS = 'SET_CUSTOM_PARSERS'
+	SET_CUSTOM_PARSERS = 'SET_CUSTOM_PARSERS',
+	SET_PLATFORM = 'SET_PLATFORM'
 }
 
 export type TAction =
@@ -53,6 +56,7 @@ export type TAction =
 	| {type: EAction.UPDATE_GAMES_ASSETS; payload: Array<{gameId: string; assets?: TGameAssetCollection}>}
 	| {type: EAction.UPDATE_GAME_SEARCH_TERM; payload: {gameId: string; searchTerm: string}}
 	| {type: EAction.SET_CUSTOM_PARSERS; payload: TParserConfig[]}
+	| {type: EAction.SET_PLATFORM; payload: EPlatform}
 
 export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 	switch (action.type) {
@@ -136,6 +140,8 @@ export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 		}
 		case EAction.SET_CUSTOM_PARSERS:
 			return {...state, customParsers: action.payload}
+		case EAction.SET_PLATFORM:
+			return {...state, platform: action.payload}
 		default:
 			throw new Error('Action not defined.')
 	}

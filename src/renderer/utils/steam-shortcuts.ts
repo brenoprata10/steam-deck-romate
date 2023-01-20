@@ -6,33 +6,58 @@ import fsPromise from 'fs/promises'
 import TUserData from 'renderer/types/TUserData'
 import VDF from 'vdf-parser'
 import TSteamLocalConfig from 'renderer/types/TSteamLocalConfig'
+import EPlatform from 'main/enums/EPlatform'
+import {getPlatform} from 'renderer/utils/platform'
 
-const STEAM_USER_DATA_PATH = '.steam/steam/userdata'
+const STEAM_LINUX_USER_DATA_PATH = '.steam/steam/userdata'
+const STEAM_WINDOWS_USER_DATA_PATH = 'C:\\Program Files (x86)\\Steam'
 const STEAM_AVATAR_AKAMAI_URL = 'https://avatars.akamai.steamstatic.com'
 
-export const getSteamGridAssetsFolderPath = (steamId: string) => {
-	return path.join(homedir(), `${STEAM_USER_DATA_PATH}/${steamId}/config/grid`)
-}
+export const getSteamPathConfig = async (
+	steamId?: string | null
+): Promise<
+	| {
+			hasSteamId: true
+			userDataDirectory: string
+			shortcutsFile: string
+			localConfigFile: string
+			assetsDirectory: string
+	  }
+	| {hasSteamId: false; userDataDirectory: string}
+> => {
+	const platform = await getPlatform()
+	const isWindows = platform === EPlatform.WINDOWS
 
-const getShortcutsPath = (steamId: string) => {
-	return path.join(homedir(), `${STEAM_USER_DATA_PATH}/${steamId}/config/shortcuts.vdf`)
-}
+	const userDataDirectory = isWindows
+		? path.join(STEAM_WINDOWS_USER_DATA_PATH, 'userdata')
+		: path.join(homedir(), STEAM_LINUX_USER_DATA_PATH)
 
-const getLocalConfigPath = (steamId: string) => {
-	return path.join(homedir(), `${STEAM_USER_DATA_PATH}/${steamId}/config/localconfig.vdf`)
-}
+	if (!steamId) {
+		return {hasSteamId: false, userDataDirectory}
+	}
 
-const getUserAccountsPath = () => {
-	return path.join(homedir(), STEAM_USER_DATA_PATH)
+	return {
+		hasSteamId: true,
+		userDataDirectory,
+		assetsDirectory: path.join(userDataDirectory, steamId, 'config', 'grid'),
+		shortcutsFile: path.join(userDataDirectory, steamId, 'config', 'shortcuts.vdf'),
+		localConfigFile: path.join(userDataDirectory, steamId, 'config', 'localconfig.vdf')
+	}
 }
 
 export const getSteamLocalConfigData = async (userId: string): Promise<TSteamLocalConfig> => {
-	const localConfigData = await getTextFileData(getLocalConfigPath(userId))
-	return VDF.parse(localConfigData) as TSteamLocalConfig
+	const steamPathConfig = await getSteamPathConfig(userId)
+	if (steamPathConfig.hasSteamId) {
+		const localConfigPath = steamPathConfig.localConfigFile
+		const localConfigData = await getTextFileData(localConfigPath)
+		return VDF.parse(localConfigData) as TSteamLocalConfig
+	}
+	throw Error('User ID is not available.')
 }
 
 export const getAvailableUserAccounts = async (): Promise<TUserData[]> => {
-	const usersId = getFileNamesFromFolder(getUserAccountsPath())
+	const steamPathConfig = await getSteamPathConfig()
+	const usersId = getFileNamesFromFolder(steamPathConfig.userDataDirectory)
 	const users: TUserData[] = usersId.map((userId) => ({
 		id: userId
 	}))
@@ -57,8 +82,12 @@ export const getSteamShortcuts = async ({
 	steamUserId: string
 }): Promise<{shortcuts: {[id: string]: VdfMap}}> => {
 	try {
-		const buffer = await getBufferFileData(getShortcutsPath(steamUserId))
-		return readVdf(buffer) as {shortcuts: {[id: string]: VdfMap}}
+		const steamPathConfig = await getSteamPathConfig(steamUserId)
+		if (steamPathConfig.hasSteamId) {
+			const buffer = await getBufferFileData(steamPathConfig.shortcutsFile)
+			return readVdf(buffer) as {shortcuts: {[id: string]: VdfMap}}
+		}
+		throw Error('User ID is not available.')
 	} catch (error) {
 		console.warn('Could not locate shortcuts.vdf file.')
 		return {shortcuts: {}}
@@ -68,5 +97,9 @@ export const getSteamShortcuts = async ({
 export const saveSteamShortcuts = async ({shortcuts, steamUserId}: {shortcuts: VdfMap; steamUserId: string}) => {
 	const outBuffer = writeVdf(shortcuts)
 
-	await fsPromise.writeFile(getShortcutsPath(steamUserId), outBuffer)
+	const steamPathConfig = await getSteamPathConfig(steamUserId)
+	if (steamPathConfig.hasSteamId) {
+		await fsPromise.writeFile(steamPathConfig.shortcutsFile, outBuffer)
+	}
+	throw Error('User ID is not available.')
 }
