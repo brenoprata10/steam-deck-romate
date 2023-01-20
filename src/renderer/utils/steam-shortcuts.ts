@@ -100,6 +100,7 @@ export const saveSteamShortcuts = async ({shortcuts, steamUserId}: {shortcuts: V
 	const steamPathConfig = await getSteamPathConfig(steamUserId)
 	if (steamPathConfig.hasSteamId) {
 		await fsPromise.writeFile(steamPathConfig.shortcutsFile, outBuffer)
+		return
 	}
 	throw Error('User ID is not available.')
 }
