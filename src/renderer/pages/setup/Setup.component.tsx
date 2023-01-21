@@ -25,6 +25,7 @@ import {getSteamGamesByUserId} from 'renderer/utils/steam-assets'
 import TSetupConfig from 'renderer/types/TSetupConfig'
 import {getSetupConfig} from 'renderer/utils/setup-config'
 import usePlatform from 'renderer/hooks/usePlatform'
+import SetupTitle from 'renderer/pages/setup/setup-title/SetupTitle.component'
 
 const Setup = () => {
 	const [isAboutModalOpened, setIsAboutModalOpened] = useState(false)
@@ -152,7 +153,7 @@ const Setup = () => {
 
 	return (
 		<Page
-			title='Welcome!'
+			title={<SetupTitle />}
 			subtitle='Choose setup:'
 			contentClassName={styles['setup-step']}
 			footerComponent={

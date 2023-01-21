@@ -21,7 +21,7 @@ const SelectUserAccount = () => {
 	const [userAccounts, setUserAccounts] = useState<TUserData[]>([])
 	const dispatch = useContext(CommonDispatchContext)
 
-	const onNext = useCallback(() => navigate(getRoutePath(ERoute.SETUP)), [navigate])
+	const navigateToSetupFlow = useCallback(() => navigate(getRoutePath(ERoute.SETUP)), [navigate])
 
 	const selectSteamUserId = useCallback(
 		(id: string) => dispatch({type: EAction.SET_STEAM_USER_ID, payload: id}),
@@ -35,6 +35,8 @@ const SelectUserAccount = () => {
 
 			if (availableUserAccounts.length === 1 && !steamUserId) {
 				selectSteamUserId(availableUserAccounts[0].id)
+				navigateToSetupFlow()
+				return
 			}
 		}
 
@@ -49,7 +51,7 @@ const SelectUserAccount = () => {
 			footerComponent={
 				<PageFooter
 					trailingComponent={
-						<Button disabled={!steamUserId} onClick={onNext}>
+						<Button disabled={!steamUserId} onClick={navigateToSetupFlow}>
 							Next
 						</Button>
 					}

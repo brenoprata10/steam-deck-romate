@@ -1,3 +1,4 @@
+import {ReactNode} from 'react'
 import styles from './Page.module.scss'
 
 const Page = ({
@@ -7,7 +8,7 @@ const Page = ({
 	contentClassName,
 	footerComponent
 }: {
-	title: string
+	title: ReactNode | string
 	subtitle?: string
 	children: React.ReactNode
 	contentClassName?: string
