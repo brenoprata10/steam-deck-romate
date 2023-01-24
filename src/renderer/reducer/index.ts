@@ -20,7 +20,8 @@ export type TCommonState = {
 export const INITIAL_STATE: TCommonState = {
 	games: [],
 	steamGridApiKey: localStorage.getItem(ELocalStorageKey.STEAM_GRID_API_KEY),
-	customParsers: JSON.parse(localStorage.getItem(ELocalStorageKey.CUSTOM_PARSERS_KEY) ?? '[]') as TParserConfig[]
+	customParsers: JSON.parse(localStorage.getItem(ELocalStorageKey.CUSTOM_PARSERS_KEY) ?? '[]') as TParserConfig[],
+	steamUserId: localStorage.getItem(ELocalStorageKey.USER_ACCOUNT)
 }
 
 export enum EAction {
@@ -100,6 +101,7 @@ export const reducer = (state: TCommonState, action: TAction): TCommonState => {
 			localStorage.setItem(ELocalStorageKey.STEAM_GRID_API_KEY, action.payload)
 			return {...state, steamGridApiKey: action.payload}
 		case EAction.SET_STEAM_USER_ID:
+			localStorage.setItem(ELocalStorageKey.USER_ACCOUNT, action.payload)
 			return {...state, steamUserId: action.payload}
 		case EAction.UPDATE_GAMES_ASSETS:
 			return {

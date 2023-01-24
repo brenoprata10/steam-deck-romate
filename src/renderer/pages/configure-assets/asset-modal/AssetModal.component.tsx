@@ -53,7 +53,7 @@ const AssetModal = ({
 			isOpened={isOpened}
 			title={title}
 			width={'min(85%, 66.8rem)'}
-			height={'42rem'}
+			height={'40rem'}
 			onClose={onClose}
 		>
 			<div className={styles['selected-asset']}>

@@ -25,6 +25,7 @@ import {getSteamGamesByUserId} from 'renderer/utils/steam-assets'
 import TSetupConfig from 'renderer/types/TSetupConfig'
 import {getSetupConfig} from 'renderer/utils/setup-config'
 import usePlatform from 'renderer/hooks/usePlatform'
+import SetupTitle from 'renderer/pages/setup/setup-title/SetupTitle.component'
 
 const Setup = () => {
 	const [isAboutModalOpened, setIsAboutModalOpened] = useState(false)
@@ -129,8 +130,6 @@ const Setup = () => {
 		setIsLoading(false)
 	}, [setupFlow, navigate, dispatch, flowOptions])
 
-	const changeSelectedUser = useCallback(() => navigate(getRoutePath(ERoute.SELECT_ACCOUNT)), [navigate])
-
 	const toggleAboutModalVisibility = useCallback(() => setIsAboutModalOpened(!isAboutModalOpened), [isAboutModalOpened])
 
 	const toggleSteamGridModalVisibility = useCallback(
@@ -152,7 +151,7 @@ const Setup = () => {
 
 	return (
 		<Page
-			title='Welcome!'
+			title={<SetupTitle />}
 			subtitle='Choose setup:'
 			contentClassName={styles['setup-step']}
 			footerComponent={
@@ -164,9 +163,6 @@ const Setup = () => {
 							</Button>
 							<Button onClick={toggleSteamGridModalVisibility} variant={EButtonVariant.SECONDARY}>
 								Modify Steam Grid Key
-							</Button>
-							<Button onClick={changeSelectedUser} variant={EButtonVariant.SECONDARY}>
-								Change Selected User
 							</Button>
 						</div>
 					}

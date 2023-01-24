@@ -8,7 +8,6 @@ import ConfigureAssets from 'renderer/pages/configure-assets/ConfigureAssets.com
 import {EAction, INITIAL_STATE, reducer} from 'renderer/reducer'
 import {getRoutePath} from 'renderer/route'
 import SaveShortcut from 'renderer/pages/save-shortcut/SaveShortcut.component'
-import SelectUserAccount from 'renderer/pages/select-user-account/SelectUserAccount.component'
 import ConfigureParsers from './pages/configure-parsers/ConfigureParsers.component'
 import {useMount} from 'react-use'
 import {getPlatform} from 'renderer/utils/platform'
@@ -32,7 +31,6 @@ export default function App() {
 				<main className={'main-wrapper'}>
 					<Router>
 						<Routes>
-							<Route path={getRoutePath(ERoute.SELECT_ACCOUNT)} element={<SelectUserAccount />} />
 							<Route path={getRoutePath(ERoute.SETUP)} element={<Setup />} />
 							<Route path={getRoutePath(ERoute.CONFIGURE_ASSETS)} element={<ConfigureAssets />} />
 							<Route path={getRoutePath(ERoute.CONFIGURE_PARSERS)} element={<ConfigureParsers />} />

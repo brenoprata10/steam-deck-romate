@@ -1,0 +1,29 @@
+@use '../../../scss/animations.scss';
+
+.setup-title {
+	display: flex;
+	align-items: center;
+	background-color: rgba(0, 0, 0, 0.5);
+	color: white;
+	border-radius: 1rem;
+	padding: 0.8rem;
+	transition: 0.3s;
+	cursor: pointer;
+	width: fit-content;
+
+	img {
+		$wrapper-size: 3rem;
+
+		width: $wrapper-size;
+		height: $wrapper-size;
+		border-radius: 50%;
+		margin-right: 0.5rem;
+	}
+
+	.icon {
+		margin-left: 0.7rem;
+		g {
+			transition: 0.3s;
+		}
+	}
+}
