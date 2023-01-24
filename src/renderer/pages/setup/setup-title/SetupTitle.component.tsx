@@ -28,7 +28,7 @@ const SetupTitle = () => {
 			const availableUserAccounts = await getAvailableUserAccounts()
 			setUserAccounts(availableUserAccounts)
 
-			if (availableUserAccounts.length > 1 && !steamUserId) {
+			if (availableUserAccounts.length > 0 && !steamUserId) {
 				selectSteamUserId(availableUserAccounts[0].id)
 				return
 			}
