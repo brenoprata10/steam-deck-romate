@@ -1,11 +1,8 @@
 import ERoute from 'renderer/enums/ERoute'
 
 const ROUTE_CONFIG: {[route in ERoute]: {path: string}} = {
-	[ERoute.SELECT_ACCOUNT]: {
-		path: '/'
-	},
 	[ERoute.SETUP]: {
-		path: '/setup'
+		path: '/'
 	},
 	[ERoute.CONFIGURE_ASSETS]: {
 		path: '/configure-assets'

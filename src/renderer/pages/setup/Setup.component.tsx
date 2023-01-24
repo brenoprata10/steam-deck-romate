@@ -130,8 +130,6 @@ const Setup = () => {
 		setIsLoading(false)
 	}, [setupFlow, navigate, dispatch, flowOptions])
 
-	const changeSelectedUser = useCallback(() => navigate(getRoutePath(ERoute.SELECT_ACCOUNT)), [navigate])
-
 	const toggleAboutModalVisibility = useCallback(() => setIsAboutModalOpened(!isAboutModalOpened), [isAboutModalOpened])
 
 	const toggleSteamGridModalVisibility = useCallback(
@@ -165,9 +163,6 @@ const Setup = () => {
 							</Button>
 							<Button onClick={toggleSteamGridModalVisibility} variant={EButtonVariant.SECONDARY}>
 								Modify Steam Grid Key
-							</Button>
-							<Button onClick={changeSelectedUser} variant={EButtonVariant.SECONDARY}>
-								Change Selected User
 							</Button>
 						</div>
 					}
