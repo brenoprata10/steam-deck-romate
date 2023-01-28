@@ -53,6 +53,33 @@ const installExtensions = async () => {
 		.catch(console.log)
 }
 
+function sendStatusToWindow(text: string) {
+	log.info(text)
+	mainWindow?.webContents.send('message', text)
+}
+
+autoUpdater.on('checking-for-update', () => {
+	sendStatusToWindow('Checking for update...')
+})
+autoUpdater.on('update-available', () => {
+	sendStatusToWindow('Update available.')
+})
+autoUpdater.on('update-not-available', () => {
+	sendStatusToWindow('Update not available.')
+})
+autoUpdater.on('error', (err) => {
+	sendStatusToWindow(`Error in auto-updater. ${err.message}`)
+})
+autoUpdater.on('download-progress', (progressObj) => {
+	let log_message = `Download speed: ${progressObj.bytesPerSecond}`
+	log_message = `log_message - Downloaded ${progressObj.percent}%`
+	log_message = `log_message (${progressObj.transferred}/${progressObj.total})`
+	sendStatusToWindow(log_message)
+})
+autoUpdater.on('update-downloaded', () => {
+	sendStatusToWindow('Update downloaded')
+})
+
 const createWindow = async () => {
 	if (isDebug) {
 		await installExtensions()
