@@ -1,13 +1,4 @@
 /* eslint global-require: off, no-console: off, @typescript-eslint/no-unsafe-assignment: off, @typescript-eslint/no-unsafe-assignment: off, @typescript-eslint/no-var-requires: off, @typescript-eslint/no-unsafe-member-access: off, @typescript-eslint/no-unsafe-call: off, @typescript-eslint/no-unsafe-return: off */
-
-/**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `npm run build` or `npm run build:main`, this file is compiled to
- * `./src/main.js` using webpack. This gives us some performance wins.
- */
 import path from 'path'
 import {app, BrowserWindow, ipcMain, shell} from 'electron'
 import {autoUpdater} from 'electron-updater'
@@ -52,33 +43,6 @@ const installExtensions = async () => {
 		)
 		.catch(console.log)
 }
-
-function sendStatusToWindow(text: string) {
-	log.info(text)
-	mainWindow?.webContents.send('message', text)
-}
-
-autoUpdater.on('checking-for-update', () => {
-	sendStatusToWindow('Checking for update...')
-})
-autoUpdater.on('update-available', () => {
-	sendStatusToWindow('Update available.')
-})
-autoUpdater.on('update-not-available', () => {
-	sendStatusToWindow('Update not available.')
-})
-autoUpdater.on('error', (err) => {
-	sendStatusToWindow(`Error in auto-updater. ${err.message}`)
-})
-autoUpdater.on('download-progress', (progressObj) => {
-	let log_message = `Download speed: ${progressObj.bytesPerSecond}`
-	log_message = `log_message - Downloaded ${progressObj.percent}%`
-	log_message = `log_message (${progressObj.transferred}/${progressObj.total})`
-	sendStatusToWindow(log_message)
-})
-autoUpdater.on('update-downloaded', () => {
-	sendStatusToWindow('Update downloaded')
-})
 
 const createWindow = async () => {
 	if (isDebug) {
@@ -133,16 +97,10 @@ const createWindow = async () => {
 		return {action: 'deny'}
 	})
 
-	// Remove this if your app does not use auto updates
-	// eslint-disable-next-line
 	new AppUpdater()
 }
 
-initIpcHandle(ipcMain)
-
-/**
- * Add event listeners...
- */
+initIpcHandle({ipcMain, mainWindow})
 
 app.on('window-all-closed', () => {
 	// Respect the OSX convention of having the application in memory even

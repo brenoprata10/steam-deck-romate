@@ -1,3 +1,4 @@
+import * as Electron from 'electron'
 import {useReducer} from 'react'
 import {MemoryRouter as Router, Routes, Route} from 'react-router-dom'
 import './App.scss'
@@ -11,11 +12,16 @@ import SaveShortcut from 'renderer/pages/save-shortcut/SaveShortcut.component'
 import ConfigureParsers from './pages/configure-parsers/ConfigureParsers.component'
 import {useMount} from 'react-use'
 import {getPlatform} from 'renderer/utils/platform'
+import EChannel from 'main/enums/EChannel'
 
 export default function App() {
 	const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
 
 	useMount(() => {
+		Electron.ipcRenderer.on(EChannel.AUTO_UPDATER, (event, message) => {
+			console.log(message) // Prints 'whoooooooh!'
+		})
+
 		getPlatform()
 			.then((platform) => {
 				dispatch({type: EAction.SET_PLATFORM, payload: platform})
