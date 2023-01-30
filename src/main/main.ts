@@ -7,6 +7,7 @@ import MenuBuilder from './menu'
 import {resolveHtmlPath} from './util'
 import contextMenu from 'electron-context-menu'
 import {initIpcHandle} from './ipc'
+import {ipcHandleAutoUpdater} from './ipc/auto-updater'
 
 contextMenu({})
 
@@ -97,10 +98,12 @@ const createWindow = async () => {
 		return {action: 'deny'}
 	})
 
+	ipcHandleAutoUpdater(mainWindow)
+
 	new AppUpdater()
 }
 
-initIpcHandle({ipcMain, mainWindow})
+initIpcHandle({ipcMain})
 
 app.on('window-all-closed', () => {
 	// Respect the OSX convention of having the application in memory even
