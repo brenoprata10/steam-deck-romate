@@ -11,6 +11,7 @@ import SaveShortcut from 'renderer/pages/save-shortcut/SaveShortcut.component'
 import ConfigureParsers from './pages/configure-parsers/ConfigureParsers.component'
 import {useMount} from 'react-use'
 import {getPlatform} from 'renderer/utils/platform'
+import AutoUpdater from './pages/auto-updater/AutoUpdater.component'
 
 export default function App() {
 	const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
@@ -31,6 +32,7 @@ export default function App() {
 				<main className={'main-wrapper'}>
 					<Router>
 						<Routes>
+							<Route path={getRoutePath(ERoute.AUTO_UPDATER)} element={<AutoUpdater />} />
 							<Route path={getRoutePath(ERoute.SETUP)} element={<Setup />} />
 							<Route path={getRoutePath(ERoute.CONFIGURE_ASSETS)} element={<ConfigureAssets />} />
 							<Route path={getRoutePath(ERoute.CONFIGURE_PARSERS)} element={<ConfigureParsers />} />
