@@ -24,10 +24,11 @@ export const ipcHandleAutoUpdater = (mainWindow: BrowserWindow | null) => {
 		sendStatusToWindow({status: EAutoUpdaterMessage.ERROR, text: `Error in auto-updater. ${err.message}`})
 	})
 	autoUpdater.on('download-progress', (progressObj) => {
-		let log_message = `Download speed: ${progressObj.bytesPerSecond}`
-		log_message = `log_message - Downloaded ${progressObj.percent}%`
-		log_message = `log_message (${progressObj.transferred}/${progressObj.total})`
-		sendStatusToWindow({status: EAutoUpdaterMessage.DOWNLOAD_IN_PROGRESS, text: log_message})
+		const megabytesPerSecond = progressObj.bytesPerSecond / 1000000
+		sendStatusToWindow({
+			status: EAutoUpdaterMessage.DOWNLOAD_IN_PROGRESS,
+			text: `Downloaded ${Math.round(progressObj.percent)}% (${megabytesPerSecond.toFixed(2)} MB/s)`
+		})
 	})
 	autoUpdater.on('update-downloaded', () => {
 		sendStatusToWindow({status: EAutoUpdaterMessage.UPDATE_DOWNLOADED})

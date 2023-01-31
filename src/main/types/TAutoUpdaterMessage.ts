@@ -1,5 +1,7 @@
+import EAutoUpdaterMessage from '../enums/EAutoUpdaterMessage'
+
 type TAutoUpdaterMessage = {
-	status: string
+	status: EAutoUpdaterMessage
 	text?: string
 }
 
