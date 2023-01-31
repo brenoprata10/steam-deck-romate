@@ -1,18 +1,34 @@
 import * as Electron from 'electron'
-import {useMount} from 'react-use'
+import EAutoUpdaterMessage from 'main/enums/EAutoUpdaterMessage'
 import EChannel from 'main/enums/EChannel'
+import TAutoUpdaterMessage from 'main/types/TAutoUpdaterMessage'
 import {useState} from 'react'
+import {useNavigate} from 'react-router-dom'
+import {useMount} from 'react-use'
+import {isDeveloperMode} from 'renderer/utils/node-env'
+import styles from './AutoUpdater.module.scss'
 
 const AutoUpdater = () => {
-	const [updateStatus, setUpdateStatus] = useState('Checking Update...')
+	const navigate = useNavigate()
+	const [updateStatus, setUpdateStatus] = useState<TAutoUpdaterMessage>({status: EAutoUpdaterMessage.CHECKING_UPDATE})
 
 	useMount(() => {
-		Electron.ipcRenderer.on(EChannel.AUTO_UPDATER, (_, message: string) => {
+		Electron.ipcRenderer.on(EChannel.AUTO_UPDATER, (_, message: TAutoUpdaterMessage) => {
 			setUpdateStatus(message)
+			console.log(message)
 		})
+		if (isDeveloperMode) {
+			//navigate(getRoutePath(ERoute.SETUP))
+		}
 	})
 
-	return <span>{updateStatus}</span>
+	return (
+		<div className={styles['auto-updater']}>
+			<h3>
+				{updateStatus.status} - {updateStatus.text}
+			</h3>
+		</div>
+	)
 }
 
 export default AutoUpdater
