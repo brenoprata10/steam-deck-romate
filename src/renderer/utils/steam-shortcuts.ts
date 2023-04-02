@@ -1,7 +1,7 @@
 import {readVdf, VdfMap, writeVdf} from 'steam-binary-vdf'
 import {homedir} from 'os'
 import path from 'path'
-import {getBufferFileData, getFileNamesFromFolder, getTextFileData} from 'renderer/utils/files'
+import {getBufferFileData, getFolderContents, getTextFileData} from 'renderer/utils/files'
 import fsPromise from 'fs/promises'
 import TUserData from 'renderer/types/TUserData'
 import VDF from 'vdf-parser'
@@ -57,9 +57,9 @@ export const getSteamLocalConfigData = async (userId: string): Promise<TSteamLoc
 
 export const getAvailableUserAccounts = async (): Promise<TUserData[]> => {
 	const steamPathConfig = await getSteamPathConfig()
-	const usersId = getFileNamesFromFolder(steamPathConfig.userDataDirectory)
+	const usersId = getFolderContents(steamPathConfig.userDataDirectory)
 	const users: TUserData[] = usersId.map((userId) => ({
-		id: userId
+		id: userId.name
 	}))
 
 	for (const user of users) {
