@@ -1,19 +1,19 @@
 import TGame from 'renderer/types/TGame'
 import TParserConfig from 'renderer/types/TParserConfig'
-import {getFileExtension, getFileNamesFromFolder, getFileNameWithoutExtension} from 'renderer/utils/files'
+import {getFileExtension, getFolderContents, getFileNameWithoutExtension} from 'renderer/utils/files'
 import {generateShortAppId} from 'renderer/utils/generate-app-id'
 import {getGameSearchTerm} from 'renderer/utils/game'
 
 export const getGamesFromParser = (parser: TParserConfig): TGame[] => {
-	const files = getFileNamesFromFolder(parser.romDirectory)
+	const files = getFolderContents(parser.romDirectory, {scanSubDirectories: true})
 	const romsFileNames = files.filter((file) =>
-		parser.supportedFileTypes.some((fileType) => fileType === getFileExtension(file))
+		parser.supportedFileTypes.some((fileType) => fileType === getFileExtension(file.name))
 	)
 
 	return romsFileNames
 		.map((romFileName): TGame => {
-			const name = getFileNameWithoutExtension(romFileName)
-			const path = `${parser.romDirectory}/${romFileName}`
+			const name = getFileNameWithoutExtension(romFileName.name)
+			const path = `${romFileName.path}/${romFileName.name}`
 			const exec = parser.executable.path.replace('${filePath}', path)
 			const launchOptions = parser.executable.arguments?.replace('${filePath}', path)
 
