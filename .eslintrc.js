@@ -40,5 +40,6 @@ module.exports = {
 		'prettier/prettier': 'error',
 		'@typescript-eslint/parser': 'off',
 		'linebreak-style': ['error', process.platform === 'win32' ? 'windows' : 'unix'],
+		'@typescript-eslint/ban-ts-comment': 'off'
 	}
 }

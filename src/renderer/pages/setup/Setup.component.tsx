@@ -1,31 +1,33 @@
-import CardOption from 'renderer/uikit/card-option/CardOption.component'
-import Page from 'renderer/uikit/page/Page.component'
-import styles from './Setup.module.scss'
-import PageFooter from 'renderer/uikit/page/footer/PageFooter.component'
-import Button, {EButtonVariant} from 'renderer/uikit/button/Button.component'
+import Electron from 'electron'
+import EChannel from 'main/enums/EChannel'
 import {useCallback, useContext, useMemo, useState} from 'react'
-import {CommonDispatchContext} from 'renderer/context'
-import ESetup from 'renderer/enums/ESetup'
-import {EAction} from 'renderer/reducer'
-import AboutModal from 'renderer/pages/setup/about-modal/AboutModal.component'
-import useSelectMultipleFiles from 'renderer/hooks/useSelectMultipleFiles'
-import {getGameFromDesktopFile, isCachedGame} from 'renderer/utils/game'
-import TGame from 'renderer/types/TGame'
 import {useNavigate} from 'react-router-dom'
-import {getRoutePath} from 'renderer/route'
+import {getEmuDeckConfigFile} from 'renderer/api/emu-deck.api'
+import {CommonDispatchContext} from 'renderer/context'
 import ERoute from 'renderer/enums/ERoute'
-import SteamGridKeyModal from 'renderer/pages/setup/steam-grid-key-modal/SteamGridKeyModal.component'
+import ESetup from 'renderer/enums/ESetup'
+import usePlatform from 'renderer/hooks/usePlatform'
+import useSelectFolder from 'renderer/hooks/useSelectFolder'
+import useSelectMultipleFiles from 'renderer/hooks/useSelectMultipleFiles'
 import useSetupFlow from 'renderer/hooks/useSetupFlow'
 import useSteamGridApiKey from 'renderer/hooks/useSteamGridApiKey'
-import useSelectFolder from 'renderer/hooks/useSelectFolder'
-import {getEmuDeckConfigFile} from 'renderer/api/emu-deck.api'
-import {getGamesFromParsers} from 'renderer/utils/parser'
 import useSteamUserId from 'renderer/hooks/useSteamUserId'
-import {getSteamGamesByUserId} from 'renderer/utils/steam-assets'
-import TSetupConfig from 'renderer/types/TSetupConfig'
-import {getSetupConfig} from 'renderer/utils/setup-config'
-import usePlatform from 'renderer/hooks/usePlatform'
+import AboutModal from 'renderer/pages/setup/about-modal/AboutModal.component'
 import SetupTitle from 'renderer/pages/setup/setup-title/SetupTitle.component'
+import SteamGridKeyModal from 'renderer/pages/setup/steam-grid-key-modal/SteamGridKeyModal.component'
+import {EAction} from 'renderer/reducer'
+import {getRoutePath} from 'renderer/route'
+import TGame from 'renderer/types/TGame'
+import TSetupConfig from 'renderer/types/TSetupConfig'
+import Button, {EButtonVariant} from 'renderer/uikit/button/Button.component'
+import CardOption from 'renderer/uikit/card-option/CardOption.component'
+import PageFooter from 'renderer/uikit/page/footer/PageFooter.component'
+import Page from 'renderer/uikit/page/Page.component'
+import {getGameFromDesktopFile, isCachedGame} from 'renderer/utils/game'
+import {getGamesFromParsers} from 'renderer/utils/parser'
+import {getSetupConfig} from 'renderer/utils/setup-config'
+import {getSteamGamesByUserId} from 'renderer/utils/steam-assets'
+import styles from './Setup.module.scss'
 
 const Setup = () => {
 	const [isAboutModalOpened, setIsAboutModalOpened] = useState(false)
@@ -148,6 +150,8 @@ const Setup = () => {
 	const supportedSetups = (Object.keys(flowOptions) as ESetup[]).filter((flowType) =>
 		platform ? flowOptions[flowType].supportedPlatforms.includes(platform) : true
 	)
+
+	void Electron.ipcRenderer.invoke(EChannel.FETCH_STEAM_USER_COLLECTIONS, steamUserId)
 
 	return (
 		<Page

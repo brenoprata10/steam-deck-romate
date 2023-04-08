@@ -8,9 +8,8 @@ import VDF from 'vdf-parser'
 import TSteamLocalConfig from 'renderer/types/TSteamLocalConfig'
 import EPlatform from 'main/enums/EPlatform'
 import {getPlatform} from 'renderer/utils/platform'
+import ESteamUserDataPath from 'main/enums/ESteamUserDataPath'
 
-const STEAM_LINUX_USER_DATA_PATH = '.steam/steam/userdata'
-const STEAM_WINDOWS_USER_DATA_PATH = 'C:\\Program Files (x86)\\Steam'
 const STEAM_AVATAR_AKAMAI_URL = 'https://avatars.akamai.steamstatic.com'
 
 export const getSteamPathConfig = async (
@@ -29,8 +28,8 @@ export const getSteamPathConfig = async (
 	const isWindows = platform === EPlatform.WINDOWS
 
 	const userDataDirectory = isWindows
-		? path.join(STEAM_WINDOWS_USER_DATA_PATH, 'userdata')
-		: path.join(homedir(), STEAM_LINUX_USER_DATA_PATH)
+		? path.join(ESteamUserDataPath.WINDOWS, 'userdata')
+		: path.join(homedir(), ESteamUserDataPath.LINUX, 'userdata')
 
 	if (!steamId) {
 		return {hasSteamId: false, userDataDirectory}
