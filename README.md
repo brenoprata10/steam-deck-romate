@@ -1,4 +1,5 @@
 [![GitHub all releases](https://img.shields.io/github/downloads/brenoprata10/steam-deck-romate/total?logo=github)](https://github.com/brenoprata10/steam-deck-romate/releases)
+[![Discord](https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/vP8X2wu6)
 # Steam Deck Romate Beta [![Sponsor](https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://github.com/sponsors/brenoprata10)
 
 A beautiful Steam ROM manager built from the ground up to work perfectly with Windows, Linux and primarily Steam Deck devices. 
