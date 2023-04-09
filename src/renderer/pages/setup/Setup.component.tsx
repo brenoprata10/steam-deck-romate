@@ -151,8 +151,6 @@ const Setup = () => {
 		platform ? flowOptions[flowType].supportedPlatforms.includes(platform) : true
 	)
 
-	void Electron.ipcRenderer.invoke(EChannel.FETCH_STEAM_USER_COLLECTIONS, steamUserId)
-
 	return (
 		<Page
 			title={<SetupTitle />}

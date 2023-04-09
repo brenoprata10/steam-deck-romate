@@ -1,3 +1,4 @@
+import TSteamCategory from '../types/TSteamCategory'
 import {homedir} from 'os'
 import path from 'path'
 import SteamCat from 'steam-categories'
@@ -6,36 +7,48 @@ import ESteamUserDataPath from '../enums/ESteamUserDataPath'
 
 type TSteamCat = {
 	read: () => Promise<{test: string}>
-	get: (collection: string) => {test: string}[]
+	get: (collection: string) => TSteamCategory
 	list: () => string[]
+	add: (key: string, collection: TSteamCategory['value']) => void
 	close: () => Promise<void>
+	save: () => Promise<void>
 }
 
 export const ipcHandleFetchSteamCategories = (ipcMain: Electron.IpcMain) => {
 	ipcMain.handle(EChannel.FETCH_STEAM_USER_COLLECTIONS, async (_, ...args) => {
-		const steamRootPath = path.join(homedir(), ESteamUserDataPath.LINUX)
-		const userSteamId = args[0] as string
-		const levelDBPath = path.join(steamRootPath, 'config', 'htmlcache', 'Local Storage', 'leveldb')
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-		const steamCat: TSteamCat = new SteamCat(levelDBPath, userSteamId)
-		const collections = await steamCat.read()
-		for (const collection of steamCat.list() as unknown as string[]) {
-			const testCollection = steamCat.get(collection)
-			console.log({collection, value: testCollection})
+		const steamCat = getSteamCollectionObject({userSteamId: args[0] as string})
+		await steamCat.read()
+
+		const userCollections: TSteamCategory[] = []
+
+		for (const collectionKey of steamCat.list() as unknown as string[]) {
+			const value = steamCat.get(collectionKey)
+			if (value && !value?.is_deleted) {
+				userCollections.push(value)
+			}
 		}
 		await steamCat.close()
-		/*	steamCat.add('someUniqueKey', {
-			name: 'Super Cool Collection',
-			added: [10, 220, 379720]
-		})
-
-		// Save collections
-		steamCat.save().then(() => {
-			console.info('yay!')
-			// Close the database when you're done
-			steamCat.close().then(() => {
-				console.info('Database closed, safe to open Steam again.')
-			})
-		})*/
+		return userCollections
 	})
+}
+
+export const ipcHandleSaveSteamCategory = (ipcMain: Electron.IpcMain) => {
+	ipcMain.handle(EChannel.SAVE_STEAM_COLLECTION, async (_, ...args) => {
+		const userSteamId = args[0] as string
+		const collectionData = args[1] as {key: string; value: TSteamCategory['value']}
+		const steamCat = getSteamCollectionObject({userSteamId})
+		await steamCat.read()
+
+		steamCat.add(collectionData.key, collectionData.value)
+
+		await steamCat.save()
+		await steamCat.close()
+	})
+}
+
+const getSteamCollectionObject = ({userSteamId}: {userSteamId: string}) => {
+	const steamRootPath = path.join(homedir(), ESteamUserDataPath.LINUX)
+	const levelDBPath = path.join(steamRootPath, 'config', 'htmlcache', 'Local Storage', 'leveldb')
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+	return new SteamCat(levelDBPath, userSteamId) as TSteamCat
 }

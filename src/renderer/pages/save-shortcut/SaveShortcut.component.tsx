@@ -22,6 +22,7 @@ import {getSelectedAsset} from 'renderer/utils/asset'
 import {getFileExtension} from 'renderer/utils/files'
 import {getAssetsWithPreSelection, getCachedGames, getGameSearchTerm} from 'renderer/utils/game'
 import {getAssetFileName} from 'renderer/utils/steam-assets'
+import {getCategoriesByUser, saveCategoryByUser} from 'renderer/utils/steam-categories'
 import {getSteamPathConfig, getSteamShortcuts, saveSteamShortcuts} from 'renderer/utils/steam-shortcuts'
 import {VdfMap} from 'steam-binary-vdf'
 import styles from './SaveShortcut.module.scss'
@@ -145,6 +146,21 @@ const SaveShortcut = () => {
 		addToLog('Saving shortcut.vdf to Steam folder.', PRIMARY_LOG_COLOR)
 	}
 
+	const saveCollections = async (games: TGame[]) => {
+		if (!steamUserId) {
+			throw Error('Steam user Id not provided.')
+		}
+		await saveCategoryByUser({
+			steamUserId,
+			collection: {
+				key: 'testing-romate',
+				value: {id: 'testing-romate', name: 'testing-romate', added: games.map((game) => Number(game.id))}
+			}
+		})
+		const categories = await getCategoriesByUser({steamUserId})
+		console.log(categories)
+	}
+
 	const saveGamesToLocalStorage = useCallback((updatedGames: TGame[]) => {
 		const updatedCachedGames = [...updatedGames]
 		const cachedGames = getCachedGames()
@@ -172,6 +188,7 @@ const SaveShortcut = () => {
 			setStep(EStep.SAVE_SHORTCUTS)
 			if (setupFlow !== ESetup.STEAM_ASSETS) {
 				await saveShortcuts()
+				await saveCollections(games)
 			}
 			saveGamesToLocalStorage(
 				games.map((game) => unloadedGamesWithAssets.find((unloadedGame) => unloadedGame.id === game.id) ?? game)
