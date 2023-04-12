@@ -150,15 +150,41 @@ const SaveShortcut = () => {
 		if (!steamUserId) {
 			throw Error('Steam user Id not provided.')
 		}
-		await saveCategoryByUser({
-			steamUserId,
-			collection: {
-				key: 'testing-romate',
-				value: {id: 'testing-romate', name: 'testing-romate', added: games.map((game) => Number(game.id))}
+
+		const collections = games.reduce((result, game) => {
+			const firstCollection = game.collections?.[0]
+			if (!firstCollection) {
+				return result
 			}
-		})
+			return {...result, [firstCollection]: [...(result[firstCollection] ?? []), Number(game.id)]}
+		}, {} as {[collection in string]: number[]})
+
+		if (Object.keys(collections).length === 0) {
+			return
+		}
+
+		addToLog('Saving collections.', PRIMARY_LOG_COLOR)
+
 		const categories = await getCategoriesByUser({steamUserId})
-		console.log(categories)
+		for (const collectionName of Object.keys(collections)) {
+			const collectionId = `romate.${collectionName}`
+			const alreadyCreatedCollection = categories.find((category) => category.value.id === collectionId)
+			const collectionGames = Array.from(
+				new Set([...(alreadyCreatedCollection?.value.added ?? []), ...collections[collectionName]])
+			)
+
+			await saveCategoryByUser({
+				steamUserId,
+				collection: {
+					key: collectionId,
+					value: {
+						id: collectionId,
+						name: collectionName,
+						added: collectionGames
+					}
+				}
+			})
+		}
 	}
 
 	const saveGamesToLocalStorage = useCallback((updatedGames: TGame[]) => {
