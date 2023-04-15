@@ -1,5 +1,3 @@
-import Electron from 'electron'
-import EChannel from 'main/enums/EChannel'
 import {useCallback, useContext, useMemo, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {getEmuDeckConfigFile} from 'renderer/api/emu-deck.api'

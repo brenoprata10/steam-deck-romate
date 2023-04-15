@@ -1,4 +1,4 @@
-import {useReducer} from 'react'
+import {useReducer, useState} from 'react'
 import {MemoryRouter as Router, Route, Routes} from 'react-router-dom'
 import {useMount} from 'react-use'
 import ERoute from 'renderer/enums/ERoute'
@@ -12,9 +12,21 @@ import './App.scss'
 import {CommonContext, CommonDispatchContext} from './context'
 import AutoUpdater from './pages/auto-updater/AutoUpdater.component'
 import ConfigureParsers from './pages/configure-parsers/ConfigureParsers.component'
+import Button from './uikit/button/Button.component'
+import Modal from './uikit/modal/Modal.component'
+import {isSteamCategoriesReady} from './utils/steam-categories'
 
 export default function App() {
 	const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
+	const [isSteamProcessClosed, setIsSteamProcessClosed] = useState(true)
+
+	const checkSteamProcess = async () => {
+		if (state.steamUserId) {
+			setIsSteamProcessClosed(true)
+			const isReady = await isSteamCategoriesReady({steamUserId: state.steamUserId})
+			setIsSteamProcessClosed(isReady)
+		}
+	}
 
 	useMount(() => {
 		getPlatform()
@@ -24,6 +36,7 @@ export default function App() {
 			.catch(() => {
 				throw Error('Could not detect platform')
 			})
+		void checkSteamProcess()
 	})
 
 	return (
@@ -39,6 +52,16 @@ export default function App() {
 							<Route path={getRoutePath(ERoute.SAVE)} element={<SaveShortcut />} />
 						</Routes>
 					</Router>
+					{!isSteamProcessClosed && (
+						<Modal
+							isOpened={true}
+							isCloseable={false}
+							footerTrailing={<Button onClick={checkSteamProcess}>Retry</Button>}
+							title={'Steam is still running.'}
+						>
+							Steam should not be running while Steam Deck Romate operates. Please close Steam and try again.
+						</Modal>
+					)}
 				</main>
 			</CommonContext.Provider>
 		</CommonDispatchContext.Provider>

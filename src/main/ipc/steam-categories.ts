@@ -4,6 +4,7 @@ import path from 'path'
 import SteamCat from 'steam-categories'
 import EChannel from '../enums/EChannel'
 import ESteamUserDataPath from '../enums/ESteamUserDataPath'
+import {ipcMain} from 'electron'
 
 type TSteamCat = {
 	read: () => Promise<{test: string}>
@@ -43,6 +44,21 @@ export const ipcHandleSaveSteamCategory = (ipcMain: Electron.IpcMain) => {
 
 		await steamCat.save()
 		await steamCat.close()
+	})
+}
+
+export const ipcHandleIsSteamCategoriesReady = (ipcMain: Electron.IpcMain) => {
+	ipcMain.handle(EChannel.IS_STEAM_CATEGORIES_READY, async (_, ...args) => {
+		try {
+			const userSteamId = args[0] as string
+			const steamCat = getSteamCollectionObject({userSteamId})
+			await steamCat.read()
+			await steamCat.close()
+			return true
+		} catch (error) {
+			console.log(error)
+			return false
+		}
 	})
 }
 
