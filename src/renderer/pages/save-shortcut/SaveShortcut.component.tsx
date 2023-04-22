@@ -22,6 +22,7 @@ import {getSelectedAsset} from 'renderer/utils/asset'
 import {getFileExtension} from 'renderer/utils/files'
 import {getAssetsWithPreSelection, getCachedGames, getGameSearchTerm} from 'renderer/utils/game'
 import {getAssetFileName} from 'renderer/utils/steam-assets'
+import {getCategoriesByUser, saveCategoryByUser} from 'renderer/utils/steam-categories'
 import {getSteamPathConfig, getSteamShortcuts, saveSteamShortcuts} from 'renderer/utils/steam-shortcuts'
 import {VdfMap} from 'steam-binary-vdf'
 import styles from './SaveShortcut.module.scss'
@@ -145,6 +146,47 @@ const SaveShortcut = () => {
 		addToLog('Saving shortcut.vdf to Steam folder.', PRIMARY_LOG_COLOR)
 	}
 
+	const saveCollections = async (games: TGame[]) => {
+		if (!steamUserId) {
+			throw Error('Steam user Id not provided.')
+		}
+
+		const collections = games.reduce((result, game) => {
+			const firstCollection = game.collections?.[0]
+			if (!firstCollection) {
+				return result
+			}
+			return {...result, [firstCollection]: [...(result[firstCollection] ?? []), Number(game.id)]}
+		}, {} as {[collection in string]: number[]})
+
+		if (Object.keys(collections).length === 0) {
+			return
+		}
+
+		addToLog('Saving collections.', PRIMARY_LOG_COLOR)
+
+		const categories = await getCategoriesByUser({steamUserId})
+		for (const collectionName of Object.keys(collections)) {
+			const collectionId = `romate.${collectionName}`
+			const alreadyCreatedCollection = categories.find((category) => category.value.id === collectionId)
+			const collectionGames = Array.from(
+				new Set([...(alreadyCreatedCollection?.value.added ?? []), ...collections[collectionName]])
+			)
+
+			await saveCategoryByUser({
+				steamUserId,
+				collection: {
+					key: collectionId,
+					value: {
+						id: collectionId,
+						name: collectionName,
+						added: collectionGames
+					}
+				}
+			})
+		}
+	}
+
 	const saveGamesToLocalStorage = useCallback((updatedGames: TGame[]) => {
 		const updatedCachedGames = [...updatedGames]
 		const cachedGames = getCachedGames()
@@ -172,6 +214,7 @@ const SaveShortcut = () => {
 			setStep(EStep.SAVE_SHORTCUTS)
 			if (setupFlow !== ESetup.STEAM_ASSETS) {
 				await saveShortcuts()
+				await saveCollections(games)
 			}
 			saveGamesToLocalStorage(
 				games.map((game) => unloadedGamesWithAssets.find((unloadedGame) => unloadedGame.id === game.id) ?? game)
