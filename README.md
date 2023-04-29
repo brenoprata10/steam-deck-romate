@@ -38,3 +38,11 @@ When you select `Create Parsers` setup, there will be two buttons with Import/Ex
 ![Screenshot from 2022-12-02 15-04-27](https://user-images.githubusercontent.com/26099427/205311459-4e096f80-dd03-4264-a373-84e7794225d3.png)
 
 ![image](https://user-images.githubusercontent.com/26099427/209691637-eda5af6a-bfe2-4a0b-82ab-4d38aae2b240.png)
+
+## Supporters
+Thank you for keeping this project alive! 💝
+
+![image](https://user-images.githubusercontent.com/26099427/233806179-fde33ff0-05b7-4793-ad99-ce12108c3b71.png)
+
+        Paulo Teixeira
+
