@@ -17,7 +17,7 @@ type TSteamRomManagerParserConfig = {
 		skipWithMissingDataDir: boolean
 		useCredentials: boolean
 	}
-	parserInputs: {glob: string}
+	parserInputs: {glob?: string}
 	titleFromVariable: {
 		limitToGroups: string
 		skipFileIfVariableWasNotFound: boolean

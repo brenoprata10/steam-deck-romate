@@ -47,7 +47,7 @@ export const mapEmuDeckSteamRomManagerParser = (
 		romDirectory,
 		supportedFileTypes:
 			parserInputs.glob
-				.match(new RegExp('\\.\\w+', 'mg'))
+				?.match(new RegExp('\\.\\w+', 'mg'))
 				?.map((fileFormat) => fileFormat.replace('.', '').toString()) ?? [],
 		category: steamCategory.match('[\\w\\s]+')?.[0] ?? steamCategory,
 		defaultIcon,
