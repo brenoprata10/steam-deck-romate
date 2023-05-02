@@ -62,7 +62,7 @@ const Setup = () => {
 			return []
 		}
 		const emulationFolderPath = filePaths[0]
-		const emuDeckConfig = await getEmuDeckConfigFile(emulationFolderPath)
+		const emuDeckConfig = getEmuDeckConfigFile(emulationFolderPath)
 		return getGamesFromParsers(emuDeckConfig)
 	}, [selectFolder])
 
